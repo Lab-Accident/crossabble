@@ -1,5 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import './styles/main.scss';
+
 import HomeScreen from './pages/HomeScreen';
 import PlayScreen from './pages/PlayScreen';
 import GameListScreen from './pages/GameListScreen';

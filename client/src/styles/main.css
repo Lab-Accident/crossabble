@@ -1,0 +1,7 @@
+@import url("https://fonts.googleapis.com/css?family=VT323");
+:root {
+  font-family: "VT323", monospace;
+  font-size: 22px;
+  color: hsl(46, 32%, 92%);
+  background-color: hsl(0, 0%, 9%);
+}
