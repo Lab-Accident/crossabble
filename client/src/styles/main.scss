@@ -2,9 +2,10 @@
 @import './grid.scss';
 @import './variables.scss';
 @import './cell.scss';
+@import './game-board.scss';
 
 :root {
-    font-family: 'VT323', monospace;
+    font-family: $MAIN_FONT;
     font-size: 22px;
     color: $COLOR_HIGHLIGHT;
     background-color: $COLOR_DARK;

@@ -1,0 +1,24 @@
+.game-board {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 1px solid white;
+  }
+  
+  .team-label {
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .team-label.blue {
+    transform: translateY(-50%) rotate(-90deg);
+    color: $COLOR_TEAM_2;
+  }
+  
+  .team-label.green {
+    transform: translateY(-50%) rotate(90deg);
+    color: $COLOR_TEAM_1;
+  }
+  

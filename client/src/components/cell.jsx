@@ -3,6 +3,9 @@ import React, { useContext, useState } from 'react'
 
 function Cell() {
 
+  let index = 0;
+  let letter = 'A';
+
   // const [letter, setLetter] = useState('')
   // const [index, setIndex] = useState('')
   // const [owner, setOwner] = useState('')
@@ -43,12 +46,10 @@ function Cell() {
 
   return (
     <div>
-      <button className='cell'> </button>
-      {/* <button
-          className='Cell'
-          onClick={() => handleSelect(game_state.current_player)}>
-          {letter}
-      </button> */}
+      <button className='cell team2 empty'> 
+        <span className="index">{index}</span>
+        <span className="letter">{letter}</span>
+      </button>
     </div>
   )
 }

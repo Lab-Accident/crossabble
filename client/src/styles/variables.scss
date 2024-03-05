@@ -1,3 +1,5 @@
+// COLORS
+
 // Dark - for background, empty cells
 // Black
 $COLOR_DARK: hsl(0, 0%, 9%);
@@ -27,3 +29,43 @@ $COLOR_TEAM_1_DARKER: darken($COLOR_TEAM_1, 5%);
 $COLOR_TEAM_2: hsl(165, 78%, 41%);
 $COLOR_TEAM_2_LIGHTER: lighten($COLOR_TEAM_2, 5%);
 $COLOR_TEAM_2_DARKER: darken($COLOR_TEAM_2, 5%);
+
+// FONTS
+$MAIN_FONT: 'VT323', monospace;
+
+// GRID-VARS
+$GRID_SIZE: 10;
+
+
+@mixin generate-css-variables($variable-map) {
+    :root {
+      @each $name, $value in $variable-map {
+        --#{$name}: #{$value};
+      }
+    }
+}
+
+@include generate-css-variables((
+    //COLORS
+    color-dark: $COLOR_DARK,
+    color-dark-lighter: $COLOR_DARK_LIGHTER,
+    color-dark-darker: $COLOR_DARK_DARKER,
+    color-neutral: $COLOR_NEUTRAL,
+    color-neutral-lighter: $COLOR_NEUTRAL_LIGHTER,
+    color-neutral-darker: $COLOR_NEUTRAL_DARKER,
+    color-highlight: $COLOR_HIGHLIGHT,
+    color-highlight-lighter: $COLOR_HIGHLIGHT_LIGHTER,
+    color-highlight-darker: $COLOR_HIGHLIGHT_DARKER,
+    color-team-1: $COLOR_TEAM_1,
+    color-team-1-lighter: $COLOR_TEAM_1_LIGHTER,
+    color-team-1-darker: $COLOR_TEAM_1_DARKER,
+    color-team-2: $COLOR_TEAM_2,
+    color-team-2-lighter: $COLOR_TEAM_2_LIGHTER,
+    color-team-2-darker: $COLOR_TEAM_2_DARKER,
+
+    //FONTS
+    main-font: $MAIN_FONT,
+
+    //GRID-VARS
+    grid-size: $GRID_SIZE
+));
