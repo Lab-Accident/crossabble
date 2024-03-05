@@ -12,7 +12,7 @@ import GameListScreen from './pages/GameListScreen';
 const App = () => {
   return (
     <>
-    <h1>App</h1>
+    <PlayScreen />
 
     <BrowserRouter>
     <Routes>

@@ -1,0 +1,16 @@
+{
+	"folders": [
+        {
+            "path": "client",
+            "name": "Client"
+        },
+        {
+            "path": "server",
+            "name": "Server"
+        }
+	],
+	"settings": {
+        "editor.tabSize": 2,
+        "editor.wordWrap": "on"
+	}
+}

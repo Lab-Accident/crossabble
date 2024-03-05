@@ -2,7 +2,7 @@ import React from 'react'
 
 function Grid() {
   return (
-    <div>grid</div>
+    <h1>Grid</h1>
   )
 }
 

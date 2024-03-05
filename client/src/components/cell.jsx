@@ -1,53 +1,54 @@
 import React, { useContext, useState } from 'react'
-import { GameContext } from '../game_context'
+//import { GameContext } from '../game_context'
 
 function Cell() {
 
-  const [letter, setLetter] = useState('')
-  const [index, setIndex] = useState('')
-  const [owner, setOwner] = useState('')
-  const [block, setBlock] = useState(False)
-  const [selected, setSelected] = useState(False)
+  // const [letter, setLetter] = useState('')
+  // const [index, setIndex] = useState('')
+  // const [owner, setOwner] = useState('')
+  // const [block, setBlock] = useState(False)
+  // const [selected, setSelected] = useState(False)
 
-  let game_state = useContext(GameContext)
+  // let game_state = useContext(GameContext)
 
-  function handleSelect(player) {
-    setSelected(!selected)
-    // change outline color of cell to players color and increase width
-  }
+  // function handleSelect(player) {
+  //   setSelected(!selected)
+  //   // change outline color of cell to players color and increase width
+  // }
 
-  function handleletterChange(event) {
-    setLetter(event.target.value)
-    // this will be more complicated cause we will just get one letter from the input box
-  }
+  // function handleletterChange(event) {
+  //   setLetter(event.target.value)
+  //   // this will be more complicated cause we will just get one letter from the input box
+  // }
 
-  function handleAddIndex() {
+  // function handleAddIndex() {
 
-  }
+  // }
 
-  function handleRemoveIndex() {
+  // function handleRemoveIndex() {
 
-  }
+  // }
 
-  function handleAddTemporaryBlock() {
+  // function handleAddTemporaryBlock() {
 
-  }
+  // }
 
-  function handleRemoveTemporaryBlock() {
+  // function handleRemoveTemporaryBlock() {
 
-  }
+  // }
 
-  function handleAddPermanantBlock() {
+  // function handleAddPermanantBlock() {
 
-  }
+  // }
 
   return (
     <div>
-      <button
+      <button> </button>
+      {/* <button
           className='Cell'
           onClick={() => handleSelect(game_state.current_player)}>
           {letter}
-      </button>
+      </button> */}
     </div>
   )
 }
