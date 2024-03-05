@@ -1,9 +1,9 @@
 import React from 'react'
 
-function clue_list() {
+function ClueList() {
   return (
     <div>clue_list</div>
   )
 }
 
-export default clue_list
+export default ClueList

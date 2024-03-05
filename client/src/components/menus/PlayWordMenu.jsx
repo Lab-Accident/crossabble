@@ -1,9 +1,9 @@
 import React from 'react'
 
-function play_word_menu() {
+function PlayWordMenu() {
   return (
     <div>play_word_menu</div>
   )
 }
 
-export default play_word_menu
+export default PlayWordMenu

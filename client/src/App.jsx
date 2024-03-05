@@ -1,14 +1,23 @@
 import React from 'react'
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
-import home_screen from './pages/home_screen';
-import play_screen from './pages/play_screen';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HomeScreen from './pages/HomeScreen';
+import PlayScreen from './pages/PlayScreen';
+import GameListScreen from './pages/GameListScreen';
 
 
 
 const App = () => {
   return (
     <>
-    <home_screen />
+    <h1>App</h1>
+
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={HomeScreen} />
+      <Route path="/play" element={PlayScreen} />
+      <Route path="/games" element={GameListScreen} />
+    </Routes>
+    </BrowserRouter>    
     </>
   )
 }

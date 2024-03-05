@@ -1,9 +1,9 @@
 import React from 'react'
 
-function play_clue_menu() {
+function PlayClueMenu() {
   return (
     <div>play_clue_menu</div>
   )
 }
 
-export default play_clue_menu
+export default PlayClueMenu

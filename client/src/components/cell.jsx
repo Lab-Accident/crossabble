@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { GameContext } from '../game_context'
 
-function cell() {
+function Cell() {
 
   const [letter, setLetter] = useState('')
   const [index, setIndex] = useState('')
@@ -52,4 +52,4 @@ function cell() {
   )
 }
 
-export default cell
+export default Cell

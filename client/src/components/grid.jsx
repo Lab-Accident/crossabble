@@ -1,9 +1,9 @@
 import React from 'react'
 
-function grid() {
+function Grid() {
   return (
     <div>grid</div>
   )
 }
 
-export default grid
+export default Grid

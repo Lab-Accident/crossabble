@@ -1,9 +1,9 @@
 import React from 'react'
 
-function game_board() {
+function GameBoard() {
   return (
     <div>game_board</div>
   )
 }
 
-export default game_board
+export default GameBoard
