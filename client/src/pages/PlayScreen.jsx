@@ -1,5 +1,6 @@
 import React from 'react'
 import Grid from '../components/Grid'
+import Cell from '../components/Cell'
 import ClueList from '../components/ClueList'
 
 const PlayScreen = () => {
@@ -9,9 +10,8 @@ const PlayScreen = () => {
           <span className="team1">CROSS</span>
           <span className="team2">ABBLE</span>
       </h1>
-      <h2 className = 'team2' >PLAYER GREEN 2</h2>
-      <Grid></Grid>
-      <ClueList></ClueList>
+      <h2 className = 'player-name team2' >PLAYER GREEN 2</h2>
+      <Grid />
     </div>
   )
 }

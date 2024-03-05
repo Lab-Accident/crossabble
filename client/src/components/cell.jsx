@@ -43,7 +43,7 @@ function Cell() {
 
   return (
     <div>
-      <button> </button>
+      <button className='cell'> </button>
       {/* <button
           className='Cell'
           onClick={() => handleSelect(game_state.current_player)}>

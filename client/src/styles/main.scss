@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=VT323');
 @import './grid.scss';
 @import './variables.scss';
+@import './cell.scss';
 
 :root {
     font-family: 'VT323', monospace;
@@ -9,16 +10,13 @@
     background-color: $COLOR_DARK;
 }
 
-h1 {
-    font-size: 5rem; 
-}   
-
-h2 {
+.player-name {
     font-size: 2.5rem;
     margin: 0;
 }
 
 .game-title {
+    font-size: 4.5rem; 
     text-transform: uppercase;
     margin: 0;
 
