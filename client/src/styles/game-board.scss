@@ -1,24 +1,84 @@
-.game-board {
-    display: flex;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    border: 1px solid white;
+
+  /* Team labels */
+  .team-label { 
+    font-size: 1.8rem;
+    position: absolute;
+    white-space: nowrap;
+    top: 50%;
+    left: 50%;
+    // outline: 1px solid red;
   }
   
-  .team-label {
-    font-size: 1.5rem;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .team-label.blue {
-    transform: translateY(-50%) rotate(-90deg);
+  .blue-team-label { 
+    grid-area: 2 / 4 / 3 / 5; 
+    transform: translateX(-50%) translateY(-50%) rotate(-90deg) scaleY(1.5);
     color: $COLOR_TEAM_2;
   }
   
-  .team-label.green {
-    transform: translateY(-50%) rotate(90deg);
+  .green-team-label { 
+    grid-area: 2 / 2 / 3 / 3;
+    transform: translateX(-50%) translateY(-50%) rotate(90deg) scaleY(1.5);
     color: $COLOR_TEAM_1;
+    
   }
-  
+
+.gameboard {
+    margin-top: 1rem;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 70px auto 70px auto;
+    grid-template-rows: 70px auto 70px;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    justify-items: center;
+    // outline: 1px solid red;
+    }
+
+    .grid-cont { 
+        grid-area: 1 / 3 / 4 / 4; 
+        aspect-ratio: 1 / 1;
+        width: 90%;
+        // outline: 1px solid red;
+    }
+
+    .player-card {
+      font-size: 3rem;
+      display: flex; 
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      // outline: 1px solid red;
+  }
+
+    .T1-P1 { 
+        grid-area: 1 / 2 / 2 / 3;
+        background-color: $COLOR_TEAM_1;
+    }
+    .T1-P2 { 
+        grid-area: 3 / 2 / 4 / 3;
+        background-color: $COLOR_TEAM_1 
+    }
+    .T2-P1 { 
+        grid-area: 1 / 4 / 2 / 5; 
+        background-color: $COLOR_TEAM_2;
+    }
+    .T2-P2 { 
+        grid-area: 3 / 4 / 4 / 5;
+        background-color: $COLOR_TEAM_2; 
+    }
+    .left-col { 
+        grid-area: 2 / 4 / 3 / 5; 
+        position: relative;
+        // outline: 1px solid red;
+    }
+    .right-col { 
+        grid-area: 2 / 2 / 3 / 3; 
+        position: relative;
+        // outline: 1px solid red;
+    }
+    .left-margin { 
+        grid-area: 1 / 1 / 4 / 2; 
+    }
+    .right-margin { 
+        grid-area: 1 / 5 / 4 / 6; 
+    }
