@@ -8,7 +8,6 @@ function Grid() {
   return (
     <div className="grid">
         {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => (
-            // <Cell key={index}></Cell>
             <div className="cell-container" key={index}>
               <Cell/>
             </div>

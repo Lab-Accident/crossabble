@@ -9,28 +9,29 @@ function GameBoard() {
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(0);
 
   useEffect(() => {
-    updateColHeights();
-    updateTeamLabelTextWidth();
+    const handleResize = () => {
+      updateColHeights();
+      updateTeamLabelTextWidth();
+    };
+    handleResize();
 
-    window.addEventListener('resize', updateColHeights);
-    window.addEventListener('resize', updateTeamLabelTextWidth);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', updateColHeights);
-      window.removeEventListener('resize', updateTeamLabelTextWidth);
+      window.removeEventListener('resize', handleResize);
     };
   }, [blueScore, greenScore]);
 
 
   const updateColHeights = () => {
-    const col = document.querySelector('.left-col');
+    const col = document.querySelector('.-left');
     if (col) {
       setColHeight(col.offsetHeight);
     }
   };
 
   const updateTeamLabelTextWidth = () => {
-    const text = document.querySelector('.blue-team-label');
+    const text = document.querySelector('.team-label-blue');
     if (text) {
       setTeamLabelTextWidth(text.offsetWidth);
     }
@@ -38,9 +39,9 @@ function GameBoard() {
 
 
   const getTeamLabelStyle = (height, width, left) => {
-    const scaleY = Math.min(2, (230 / width));
+    const scaleY = Math.min(2.5, (230 / width));
     const fontSize = height / 4;
-    const direction = left ? 90 : -90;
+    const direction = left ? -90 : 90;
     return {
       transform: `translateX(-50%) translateY(-50%) rotate(${direction}deg) scaleY(${scaleY})`,
       fontSize: `${fontSize}px`,
@@ -51,24 +52,22 @@ function GameBoard() {
   return ( 
 
   <div class="gameboard">
-    <div class="grid-cont">  
-      <Grid />
+    <div class="grid-container">  
+      {/* <Grid /> */}
     </div>
 
-    <div class="player-card T1-P1"> B1 </div>
-    <div class="player-card T1-P2"> B2 </div>
-    <div class="player-card T2-P1"> G1 </div>
-    <div class="player-card T2-P2"> G2 </div>
+    <div class="player-card T1 T1-P1"> B1 </div>
+    <div class="player-card T1 T1-P2"> B2 </div>
+    <div class="player-card T2 T2-P1"> G1 </div>
+    <div class="player-card T2 T2-P2"> G2 </div>
 
-    <div className="left-col">
-      <span className="team-label green-team-label" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}>BLUE: {blueScore}</span>
+    <div className="col -left">
+      <span className="team-label team-label-green" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}>BLUE: {blueScore}</span>
     </div>
-    <div className="right-col">
-      <span className="team-label blue-team-label" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}>GREEN: {greenScore}</span>
+    <div className="col -right">
+      <span className="team-label team-label-blue" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}>GREEN: {greenScore}</span>
     </div>
 
-    <div class="left-margin"></div>
-    <div class="right-margin"></div>
   </div>
   )
 }

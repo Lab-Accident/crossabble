@@ -1,7 +1,258 @@
 @import url("https://fonts.googleapis.com/css?family=VT323");
 :root {
+  --color-dark: hsl(0, 0%, 9%);
+  --color-dark-lighter: #242424;
+  --color-dark-darker: #0a0a0a;
+  --color-neutral: hsl(26, 7%, 42%);
+  --color-neutral-lighter: #80776f;
+  --color-neutral-darker: #655d58;
+  --color-highlight: hsl(46, 32%, 92%);
+  --color-highlight-lighter: #faf9f5;
+  --color-highlight-darker: #e8e4d3;
+  --color-team-1: hsl(217, 100%, 56%);
+  --color-team-1-lighter: #3884ff;
+  --color-team-1-darker: #0565ff;
+  --color-team-2: hsl(165, 78%, 41%);
+  --color-team-2-lighter: #1ad1a3;
+  --color-team-2-darker: #14a380;
+  --main-font: VT323, monospace;
+  --grid-size: 5;
+}
+
+.grid {
+  aspect-ratio: 1/1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+}
+
+:root {
+  --color-dark: hsl(0, 0%, 9%);
+  --color-dark-lighter: #242424;
+  --color-dark-darker: #0a0a0a;
+  --color-neutral: hsl(26, 7%, 42%);
+  --color-neutral-lighter: #80776f;
+  --color-neutral-darker: #655d58;
+  --color-highlight: hsl(46, 32%, 92%);
+  --color-highlight-lighter: #faf9f5;
+  --color-highlight-darker: #e8e4d3;
+  --color-team-1: hsl(217, 100%, 56%);
+  --color-team-1-lighter: #3884ff;
+  --color-team-1-darker: #0565ff;
+  --color-team-2: hsl(165, 78%, 41%);
+  --color-team-2-lighter: #1ad1a3;
+  --color-team-2-darker: #14a380;
+  --main-font: VT323, monospace;
+  --grid-size: 5;
+}
+
+:root {
+  --color-dark: hsl(0, 0%, 9%);
+  --color-dark-lighter: #242424;
+  --color-dark-darker: #0a0a0a;
+  --color-neutral: hsl(26, 7%, 42%);
+  --color-neutral-lighter: #80776f;
+  --color-neutral-darker: #655d58;
+  --color-highlight: hsl(46, 32%, 92%);
+  --color-highlight-lighter: #faf9f5;
+  --color-highlight-darker: #e8e4d3;
+  --color-team-1: hsl(217, 100%, 56%);
+  --color-team-1-lighter: #3884ff;
+  --color-team-1-darker: #0565ff;
+  --color-team-2: hsl(165, 78%, 41%);
+  --color-team-2-lighter: #1ad1a3;
+  --color-team-2-darker: #14a380;
+  --main-font: VT323, monospace;
+  --grid-size: 5;
+}
+
+.cell-container {
+  display: grid;
+}
+
+.cell {
+  height: 100%;
+  aspect-ratio: 1/1;
+  background-color: hsl(0, 0%, 9%);
+  border: hsl(46, 32%, 92%) 0.1rem solid;
+  border-radius: 0.1rem;
+  position: relative;
+  cursor: pointer;
+}
+.cell .index {
+  position: absolute;
+  top: 0.2em;
+  left: 0.3em;
+  font-size: 25px;
   font-family: "VT323", monospace;
-  font-size: 22px;
+  color: hsl(46, 32%, 92%);
+}
+.cell .letter {
+  font-size: 60px;
+  font-family: "VT323", monospace;
+  color: hsl(46, 32%, 92%);
+}
+.cell.empty.team1:hover {
+  border: hsl(217, 100%, 56%) 0.1rem solid;
+}
+.cell.empty.team2:hover {
+  border: hsl(165, 78%, 41%) 0.1rem solid;
+}
+.cell.unguessed.team1 {
+  background-color: hsl(217, 100%, 56%);
+}
+.cell.unguessed.team2 {
+  background-color: hsl(165, 78%, 41%);
+}
+.cell.unguessed:hover {
+  border: #faf9f5 0.1rem solid;
+}
+.cell.guessed {
+  cursor: default;
+}
+.cell.guessed.team1 {
+  border-color: hsl(217, 100%, 56%);
+}
+.cell.guessed.team2 {
+  border-color: hsl(165, 78%, 41%);
+}
+.cell.guessed:hover {
+  border-width: hsl(46, 32%, 92%) 0.1rem solid;
+}
+.cell.temp-block, .cell.block {
+  cursor: default;
+}
+.cell.temp-block.temp-block, .cell.block.temp-block {
+  background-color: hsl(26, 7%, 42%);
+}
+.cell.temp-block.block, .cell.block.block {
+  background-color: hsl(46, 32%, 92%);
+}
+.cell.temp-block:hover, .cell.block:hover {
+  border: hsl(46, 32%, 92%) 0.1rem solid;
+}
+
+.gameboard {
+  margin-top: 1rem;
+  width: fit-content;
+  display: grid;
+  grid-template-columns: 70px auto 70px;
+  grid-template-rows: 70px auto 70px;
+}
+
+.grid-container {
+  grid-area: 1/2/4/3;
+  aspect-ratio: 1/1;
+  width: max(250px, 40vh);
+  margin: 0 0.7rem;
+  outline: 3px solid green;
+}
+
+.player-card {
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1/1;
+}
+
+.T1 {
+  background-color: hsl(217, 100%, 56%);
+}
+.T1-P1 {
+  grid-area: 1/1/2/2;
+}
+.T1-P2 {
+  grid-area: 3/1/4/2;
+}
+
+.T2 {
+  background-color: hsl(165, 78%, 41%);
+}
+.T2-P1 {
+  grid-area: 1/3/2/4;
+}
+.T2-P2 {
+  grid-area: 3/3/4/4;
+}
+
+.col {
+  position: relative;
+  width: 100%;
+}
+.col-left {
+  grid-area: 2/1/3/2;
+}
+.col-right {
+  grid-area: 2/3/3/4;
+}
+.col .team-label {
+  font-size: 1.8rem;
+  position: absolute;
+  white-space: nowrap;
+  top: 50%;
+}
+.col .team-label-blue {
+  grid-area: 2/4/3/5;
+  transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+  left: 55%;
+  color: hsl(165, 78%, 41%);
+}
+.col .team-label-green {
+  grid-area: 2/2/3/3;
+  transform: translateX(-50%) translateY(-50%) rotate(90deg);
+  left: 45%;
+  color: hsl(217, 100%, 56%);
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: max(250px, 40vh);
+  height: 500px;
+  margin-top: 1rem;
+  outline: 3px solid red;
+}
+
+:root {
+  font-family: "VT323", monospace;
+  font-size: 1.2rem;
   color: hsl(46, 32%, 92%);
   background-color: hsl(0, 0%, 9%);
+  overflow-y: scroll;
+}
+
+.player-name {
+  font-size: 2.7rem;
+  margin: 0;
+}
+
+.game-title {
+  font-size: 4.3rem;
+  text-transform: uppercase;
+  margin: 0;
+}
+.game-title span.team1 {
+  color: hsl(217, 100%, 56%);
+}
+.game-title span.team2 {
+  color: hsl(165, 78%, 41%);
+}
+
+.team1 {
+  color: hsl(217, 100%, 56%);
+}
+
+.team2 {
+  color: hsl(165, 78%, 41%);
+}
+
+.screen-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding-top: 10px;
 }

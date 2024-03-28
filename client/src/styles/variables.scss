@@ -34,7 +34,7 @@ $COLOR_TEAM_2_DARKER: darken($COLOR_TEAM_2, 5%);
 $MAIN_FONT: 'VT323', monospace;
 
 // GRID-VARS
-$GRID_SIZE: 10;
+$GRID_SIZE: 5;
 
 
 @mixin generate-css-variables($variable-map) {

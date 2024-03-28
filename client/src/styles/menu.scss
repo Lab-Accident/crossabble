@@ -1,0 +1,121 @@
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: max(250px, 40vh);
+  margin: 1rem 0;
+  // outline: 3px solid red;
+}
+
+.options-menu {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 0.15rem;
+  }
+
+  .half-button, .full-width-button {
+    border: none;
+    font-family: $MAIN_FONT;
+    color: $COLOR_HIGHLIGHT;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    border-radius: 0.1rem;
+    cursor: pointer;
+  }
+  
+  .half-button {
+    border: none;
+    height: 1.5rem;
+    &.T1{
+      background-color: $COLOR_TEAM_2;
+    }
+    &.T2{
+      background-color: $COLOR_TEAM_1;
+    }
+  }
+  
+  .full-width-button {
+    grid-column: 1 / span 2; 
+    height: 1.5rem;
+    &.T2{
+        background-color: $COLOR_TEAM_2;
+        border: 2px solid $COLOR_TEAM_1;
+      }
+    &.T1{
+        background-color: $COLOR_TEAM_1;
+        border: 2px solid $COLOR_TEAM_2;
+    }
+  }
+
+  .input-container{
+    display: grid;
+    margin: 0.1rem 0;
+    width: 100%;
+    height: 1.5rem;
+    grid-template-columns: min-content auto min-content;
+  
+    label.menu-input {
+        display: flex;
+        align-items: center; 
+        height: 100%;
+        border: none;
+        font-family: $MAIN_FONT;
+        color: $COLOR_HIGHLIGHT;
+        background-color: $COLOR_TEAM_1;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        border-radius: 0.1rem;
+        padding: 0 0.5rem;
+        text-wrap: nowrap;
+
+        &.T2{
+            background-color: $COLOR_TEAM_1;
+          }
+        &.T1{
+            background-color: $COLOR_TEAM_2;
+        }
+    }
+
+    input.menu-input {
+        height: 86%;
+        background-color: $COLOR_DARK;
+        font-family: $MAIN_FONT;
+        color: $COLOR_HIGHLIGHT;
+        font-size: 1.2rem;
+        padding: 0 0.5rem;
+        text-transform: uppercase;
+        margin: 0 -2px;
+        overflow-x: scroll;
+
+        &.T2{
+            border: 2px solid $COLOR_TEAM_1;
+        }
+        &.T1{
+            border: 2px solid $COLOR_TEAM_2;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: $COLOR_HIGHLIGHT; 
+          }
+    }
+
+    .enter-button {
+        height: 100%;
+        border: none;
+        font-family: $MAIN_FONT;
+        font-size: 1.2rem;
+        color: $COLOR_HIGHLIGHT;
+        border-radius: 0.1rem;
+        cursor: pointer;
+
+        &.T2{
+            background-color: $COLOR_TEAM_1;
+          }
+        &.T1{
+            background-color: $COLOR_TEAM_2;
+        }
+    }
+}

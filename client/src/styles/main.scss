@@ -3,12 +3,14 @@
 @import './variables.scss';
 @import './cell.scss';
 @import './game-board.scss';
+@import './menu.scss';
 
 :root {
     font-family: $MAIN_FONT;
     font-size: 1.2rem;
     color: $COLOR_HIGHLIGHT;
     background-color: $COLOR_DARK;
+    overflow-y: scroll;
 }
 
 .player-name {
@@ -44,5 +46,6 @@
     align-items: center;
     height: 100vh; 
     padding-top: 10px;
+    // overflow-y: scroll;
   }
   

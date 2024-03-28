@@ -1,6 +1,7 @@
 import React from 'react'
 import ClueList from '../components/ClueList'
 import GameBoard from '../components/GameBoard'
+import PlayClueMenu from '../components/menus/PlayClueMenu'
 
 const PlayScreen = () => {
   return (
@@ -12,6 +13,8 @@ const PlayScreen = () => {
         </h1>
         <h2 className='player-name team2'>PLAYER GREEN 2</h2>
         <GameBoard />
+        <PlayClueMenu />
+        <ClueList />
       </div>
     </>
   )

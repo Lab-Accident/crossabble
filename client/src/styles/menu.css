@@ -1,0 +1,25 @@
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: max(250px, 40vh);
+  margin-top: 1rem;
+  outline: 3px solid red;
+}
+
+.options-menu {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.25rem;
+}
+
+.half-button {
+  height: 1.5rem;
+}
+
+.full-width-button {
+  grid-column: 1/span 2;
+  height: 1.5rem;
+}

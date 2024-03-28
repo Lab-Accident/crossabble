@@ -1,0 +1,26 @@
+:root {
+  --color-dark: hsl(0, 0%, 9%);
+  --color-dark-lighter: #242424;
+  --color-dark-darker: #0a0a0a;
+  --color-neutral: hsl(26, 7%, 42%);
+  --color-neutral-lighter: #80776f;
+  --color-neutral-darker: #655d58;
+  --color-highlight: hsl(46, 32%, 92%);
+  --color-highlight-lighter: #faf9f5;
+  --color-highlight-darker: #e8e4d3;
+  --color-team-1: hsl(217, 100%, 56%);
+  --color-team-1-lighter: #3884ff;
+  --color-team-1-darker: #0565ff;
+  --color-team-2: hsl(165, 78%, 41%);
+  --color-team-2-lighter: #1ad1a3;
+  --color-team-2-darker: #14a380;
+  --main-font: VT323, monospace;
+  --grid-size: 5;
+}
+
+.grid {
+  aspect-ratio: 1/1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+}

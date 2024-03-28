@@ -1,84 +1,73 @@
+.gameboard {
+  margin-top: 1rem;
+  width: fit-content;
+  display: grid;
+  grid-template-columns: 70px auto 70px;
+  grid-template-rows: 70px auto 70px;
+  }
 
-  /* Team labels */
+  .grid-container { 
+    grid-area: 1 / 2 / 4 / 3; 
+    aspect-ratio: 1 / 1;
+    width: max(250px, 40vh);
+    margin: 0 0.7rem;
+    outline: 3px solid green;
+  }
+
+  .player-card {
+    font-size: 3rem;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+  }
+
+  .T1 {
+    background-color: $COLOR_TEAM_1;
+    &-P1 {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+    &-P2 {
+      grid-area: 3 / 1 / 4 / 2;
+    }
+  }
+  .T2 {
+    background-color: $COLOR_TEAM_2;
+    &-P1 {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+    &-P2 {
+      grid-area: 3 / 3 / 4 / 4;
+    }
+  }
+
+  .col {
+    position: relative;
+    width: 100%;
+    &-left {
+      grid-area: 2 / 1 / 3 / 2;
+    }
+    &-right {
+      grid-area: 2 / 3 / 3 / 4;
+    }
+
   .team-label { 
     font-size: 1.8rem;
     position: absolute;
     white-space: nowrap;
     top: 50%;
-    left: 50%;
-    // outline: 1px solid red;
-  }
-  
-  .blue-team-label { 
-    grid-area: 2 / 4 / 3 / 5; 
-    transform: translateX(-50%) translateY(-50%) rotate(-90deg) scaleY(1.5);
-    color: $COLOR_TEAM_2;
-  }
-  
-  .green-team-label { 
-    grid-area: 2 / 2 / 3 / 3;
-    transform: translateX(-50%) translateY(-50%) rotate(90deg) scaleY(1.5);
-    color: $COLOR_TEAM_1;
-    
-  }
 
-.gameboard {
-    margin-top: 1rem;
-    width: 100%;
-    display: grid;
-    grid-template-columns: auto 70px auto 70px auto;
-    grid-template-rows: 70px auto 70px;
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    justify-items: center;
-    // outline: 1px solid red;
+    &-blue {
+      grid-area: 2 / 4 / 3 / 5; 
+      transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+      left: 55%;
+      color: $COLOR_TEAM_2;
     }
-
-    .grid-cont { 
-        grid-area: 1 / 3 / 4 / 4; 
-        aspect-ratio: 1 / 1;
-        width: 90%;
-        // outline: 1px solid red;
+    &-green {
+      grid-area: 2 / 2 / 3 / 3;
+      transform: translateX(-50%) translateY(-50%) rotate(90deg);
+      left: 45%;
+      color: $COLOR_TEAM_1;
     }
-
-    .player-card {
-      font-size: 3rem;
-      display: flex; 
-      align-items: center;
-      justify-content: center;
-      aspect-ratio: 1 / 1;
-      // outline: 1px solid red;
   }
-
-    .T1-P1 { 
-        grid-area: 1 / 2 / 2 / 3;
-        background-color: $COLOR_TEAM_1;
-    }
-    .T1-P2 { 
-        grid-area: 3 / 2 / 4 / 3;
-        background-color: $COLOR_TEAM_1 
-    }
-    .T2-P1 { 
-        grid-area: 1 / 4 / 2 / 5; 
-        background-color: $COLOR_TEAM_2;
-    }
-    .T2-P2 { 
-        grid-area: 3 / 4 / 4 / 5;
-        background-color: $COLOR_TEAM_2; 
-    }
-    .left-col { 
-        grid-area: 2 / 4 / 3 / 5; 
-        position: relative;
-        // outline: 1px solid red;
-    }
-    .right-col { 
-        grid-area: 2 / 2 / 3 / 3; 
-        position: relative;
-        // outline: 1px solid red;
-    }
-    .left-margin { 
-        grid-area: 1 / 1 / 4 / 2; 
-    }
-    .right-margin { 
-        grid-area: 1 / 5 / 4 / 6; 
-    }
+}
