@@ -51,15 +51,15 @@ function GameBoard() {
 
   return ( 
 
-  <div class="gameboard">
-    <div class="grid-container">  
+  <div className="gameboard">
+    <div className="grid-container">  
       {/* <Grid /> */}
     </div>
 
-    <div class="player-card T1 T1-P1"> B1 </div>
-    <div class="player-card T1 T1-P2"> B2 </div>
-    <div class="player-card T2 T2-P1"> G1 </div>
-    <div class="player-card T2 T2-P2"> G2 </div>
+    <div className="player-card T1 T1-P1"> B1 </div>
+    <div className="player-card T1 T1-P2"> B2 </div>
+    <div className="player-card T2 T2-P1"> G1 </div>
+    <div className="player-card T2 T2-P2"> G2 </div>
 
     <div className="col -left">
       <span className="team-label team-label-green" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}>BLUE: {blueScore}</span>

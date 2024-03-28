@@ -1,14 +1,50 @@
 import React from 'react'
 
-function OptionsMenu() {
+function OptionsMenu({ currentScreenLabel }) {
+
+  let usersTeam = 'T2';
+  const allOptions = [
+    { label: 'guess word', function: guessWordFunction },
+    { label: 'skip', function: skipFunction },
+    { label: 'buy new word', function: buyNewWordFunction },
+    { label: 'buy letter', function: buyLetterFunction },
+    { label: 'play word', function: playWordFunction }
+  ];
+
+  function guessWordFunction() {
+    console.log("Guessing word...");
+  }
+  
+  function skipFunction() {
+    console.log("Skipping...");
+  }
+  
+  function buyNewWordFunction() {
+    console.log("Buying new word...");
+  }
+  
+  function buyLetterFunction() {
+    console.log("Buying letter...");
+  }
+  
+  function playWordFunction() {
+    console.log("Playing word...");
+  }
+
   return (
     <div className='menu-container'>
-      <div class="options-menu">
-        <button class="half-button T1">guess word</button>
-        <button class="half-button T1">skip</button>
-        <button class="half-button T1">buy new word</button>
-        <button class="half-button T1">buy letter</button>
-        <button class="full-width-button T1">back</button>
+      <div className="options-menu">
+      {allOptions
+            .filter(option => option.label !== currentScreenLabel)
+            .map((option, index) => (
+              <button 
+                key={index} 
+                className={`half-button ${usersTeam}`}
+                onClick={option.function}>
+                  {option.label}
+              </button>
+          ))}
+        <button className={`full-width-button ${usersTeam}`}>back</button>
       </div>
     </div>
   )

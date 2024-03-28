@@ -16,6 +16,9 @@
   }
 
   .half-button, .full-width-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     font-family: $MAIN_FONT;
     color: $COLOR_HIGHLIGHT;
@@ -30,9 +33,21 @@
     height: 1.5rem;
     &.T1{
       background-color: $COLOR_TEAM_2;
+      &:hover {
+        background-color: $COLOR_TEAM_2_LIGHTER;
+      }
+      &:active {
+        background-color: $COLOR_TEAM_2_DARKER;
+      }
     }
     &.T2{
       background-color: $COLOR_TEAM_1;
+      &:hover {
+        background-color: $COLOR_TEAM_1_LIGHTER;
+      }
+      &:active {
+        background-color: $COLOR_TEAM_1_DARKER;
+      }
     }
   }
   
@@ -42,10 +57,22 @@
     &.T2{
         background-color: $COLOR_TEAM_2;
         border: 2px solid $COLOR_TEAM_1;
+        &:hover {
+            background-color: $COLOR_TEAM_2_LIGHTER;
+        }
+        &:active {
+            background-color: $COLOR_TEAM_2_DARKER;
+        }
       }
     &.T1{
         background-color: $COLOR_TEAM_1;
         border: 2px solid $COLOR_TEAM_2;
+        &:hover {
+            background-color: $COLOR_TEAM_1_LIGHTER;
+        }
+        &:active {
+            background-color: $COLOR_TEAM_1_DARKER;
+        }
     }
   }
 
@@ -86,7 +113,8 @@
         font-size: 1.2rem;
         padding: 0 0.5rem;
         text-transform: uppercase;
-        margin: 0 -2px;
+        margin: 0 0 0 -2px;
+        border-radius: 0.1rem;
         overflow-x: scroll;
 
         &.T2{
@@ -100,6 +128,10 @@
             outline: none;
             border-color: $COLOR_HIGHLIGHT; 
           }
+        &.inactive {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
     }
 
     .enter-button {
@@ -109,13 +141,72 @@
         font-size: 1.2rem;
         color: $COLOR_HIGHLIGHT;
         border-radius: 0.1rem;
+        margin: 0 0 0 -2px;
         cursor: pointer;
+        display: block;
+        
 
         &.T2{
             background-color: $COLOR_TEAM_1;
+            &:hover {
+                background-color: $COLOR_TEAM_1_LIGHTER;
+            }
+            &:active {
+                background-color: $COLOR_TEAM_1_DARKER;
+            }
           }
         &.T1{
             background-color: $COLOR_TEAM_2;
+            &:hover {
+                background-color: $COLOR_TEAM_2_LIGHTER;
+            }
+            &:active {
+                background-color: $COLOR_TEAM_2_DARKER;
+            }
         }
+
+        &.hide {
+            display: none;
+          }
     }
+
+
+}
+
+.nav-bar{
+    display: grid;
+    width: 100%;
+    height: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 0.15rem;
+
+    .qtr-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $MAIN_FONT;
+        color: $COLOR_HIGHLIGHT;
+        font-size: 1.2rem;
+        border-radius: 0.1rem;
+        cursor: pointer;
+
+        &.T1{
+          background-color: $COLOR_TEAM_2;
+          &:hover {
+            background-color: $COLOR_TEAM_2_LIGHTER;
+          }
+          &:active {
+            background-color: $COLOR_TEAM_2_DARKER;
+          }
+        }
+        &.T2{
+          background-color: $COLOR_TEAM_1;
+          &:hover {
+            background-color: $COLOR_TEAM_1_LIGHTER;
+          }
+          &:active {
+            background-color: $COLOR_TEAM_1_DARKER;
+          }
+        }
+      }
 }
