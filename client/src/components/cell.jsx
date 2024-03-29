@@ -1,46 +1,38 @@
 import React, { useContext, useEffect, useState } from 'react'
 //import { GameContext } from '../game_context'
+import { gridCellSizeContext } from './GameBoard'
 
 function Cell() {
 
-  const [cellSize, setCellSize] = useState(0);
+  const { cellSize } = useContext(gridCellSizeContext);
 
   let index = 0;
   let letter = 'A';
 
-  useEffect(() => {
-    const updateCellSize = () => {
-      const cell = document.querySelector('.cell');
-      if (cell) {
-        setCellSize(cell.offsetHeight);
-      }
-    };
-    updateCellSize();
-
-    window.addEventListener('resize', updateCellSize);
-
-    return () => {
-      window.removeEventListener('resize', updateCellSize);
-    };
-  }, []);
-
   const getIndexTextStyle = (size) => {
-    const fontSize = size / 3;
+    const fontSize = size / 2.7;
     return {
       fontSize: `${fontSize}px`,
     };
   };
   
   const getLetterTextStyle = (size) => {
-    const fontSize = size / 1.1;
+    const fontSize = size / 1.3;
     return {
       fontSize: `${fontSize}px`,
     };
   };
 
+  const getCellSize = (size) => {
+    return {
+      height: `${size}px`,
+      width: `${size}px`,
+    };
+  };
+
   return (
     <div>
-      <button className='cell team2 empty'> 
+      <button className='cell team1 guessed' style={getCellSize(cellSize)}> 
         <span className="index" style={getIndexTextStyle(cellSize)} >{index}</span>
         <span className="letter" style={getLetterTextStyle(cellSize)}>{letter}</span>
       </button>

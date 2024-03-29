@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import Grid from './Grid'
+
+export const gridCellSizeContext = React.createContext();
+const GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--grid-size');
 
 function GameBoard() {
 
   const [blueScore, setBlueScore] = useState(0);
   const [greenScore, setGreenScore] = useState(0);
   const [colHeight, setColHeight] = useState(0);
+  const [cellSize, setCellSize] = useState(0);
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
       updateColHeights();
       updateTeamLabelTextWidth();
+      updateCellSize();
     };
     handleResize();
 
@@ -37,6 +42,12 @@ function GameBoard() {
     }
   };
 
+  const updateCellSize = () => {
+    const cell = document.querySelector('.grid-container');
+    if (cell) {
+      setCellSize(Math.round(cell.offsetWidth / GRID_SIZE));
+    }
+  };
 
   const getTeamLabelStyle = (height, width, left) => {
     const scaleY = Math.min(2.5, (230 / width));
@@ -53,7 +64,9 @@ function GameBoard() {
 
   <div className="gameboard">
     <div className="grid-container">  
-      <Grid />
+      <gridCellSizeContext.Provider value={{ cellSize }}>
+        <Grid />
+      </gridCellSizeContext.Provider>
     </div>
 
     <div className="player-card T1 T1-P1"> B1 </div>

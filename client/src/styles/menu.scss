@@ -21,7 +21,7 @@
     cursor: pointer;
     &.T2{
         background-color: $COLOR_TEAM_2;
-        border: 2px solid $COLOR_TEAM_1;
+        border: 0.12rem solid $COLOR_TEAM_1;
         &:hover {
             background-color: $COLOR_TEAM_2_LIGHTER;
         }
@@ -31,7 +31,7 @@
     }
     &.T1{
         background-color: $COLOR_TEAM_1;
-        border: 2px solid $COLOR_TEAM_2;
+        border: 0.12rem solid $COLOR_TEAM_2;
         &:hover {
             background-color: $COLOR_TEAM_1_LIGHTER;
         }
@@ -53,11 +53,11 @@
     border-radius: 0.1rem;
     &.T2{
         background-color: $COLOR_TEAM_2;
-        border: 2px solid $COLOR_TEAM_1;
+        border: 0.12rem solid $COLOR_TEAM_1;
     }
     &.T1{
         background-color: $COLOR_TEAM_1;
-        border: 2px solid $COLOR_TEAM_2;
+        border: 0.12rem solid $COLOR_TEAM_2;
     }
   }
 
@@ -113,7 +113,7 @@
     height: 1.5rem;
     &.T2{
         background-color: $COLOR_TEAM_2;
-        border: 2px solid $COLOR_TEAM_1;
+        border: 0.12rem solid $COLOR_TEAM_1;
         &:hover {
             background-color: $COLOR_TEAM_2_LIGHTER;
         }
@@ -123,7 +123,7 @@
       }
     &.T1{
         background-color: $COLOR_TEAM_1;
-        border: 2px solid $COLOR_TEAM_2;
+        border: 0.12rem solid $COLOR_TEAM_2;
         &:hover {
             background-color: $COLOR_TEAM_1_LIGHTER;
         }
@@ -140,7 +140,7 @@
 
 .input-container {
     display: grid;
-    margin: 0.05rem 0;
+    margin: 0.075rem 0;
     width: 100%;
     height: 1.5rem;
     grid-template-columns: min-content auto min-content;
@@ -169,22 +169,22 @@
     }
 
     input.menu-input {
-        height: 86%;
+        height: calc(100% - 0.22rem);
         background-color: $COLOR_DARK;
         font-family: $MAIN_FONT;
         color: $COLOR_HIGHLIGHT;
         font-size: 1.2rem;
         padding: 0 0.5rem;
         text-transform: uppercase;
-        margin: 0 0 0 -2px;
+        margin: 0 0 0 -0.12rem;
         border-radius: 0.1rem;
         overflow-x: scroll;
 
         &.T2{
-            border: 2px solid $COLOR_TEAM_1;
+            border: 0.12rem solid $COLOR_TEAM_1;
         }
         &.T1{
-            border: 2px solid $COLOR_TEAM_2;
+            border: 0.12rem solid $COLOR_TEAM_2;
         }
 
         &:focus {
@@ -204,7 +204,7 @@
         font-size: 1.2rem;
         color: $COLOR_HIGHLIGHT;
         border-radius: 0.1rem;
-        margin: 0 0 0 -2px;
+        margin: 0 0 0 -0.12rem;
         cursor: pointer;
         display: block;
         
@@ -243,7 +243,7 @@
     width: 100%;
     height: 1.5rem;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 0.1rem;
+    grid-gap: 0.15rem;
     margin: 0.05rem 0;
 }
 
@@ -283,7 +283,7 @@
 //////////////////////////////////////////////////////////////
 
 .word-nav-bar {
-    margin: 0.05rem 0;
+    margin: 0.075rem 0;
     display: grid;
     width: 100%;
     height: 1.5rem;
@@ -291,7 +291,7 @@
 }
 
     .curr-nav-display {
-        height: 86%;
+        height: calc(100% - 0.2rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -300,16 +300,16 @@
         color: $COLOR_HIGHLIGHT;
         font-size: 1.2rem;
         padding: 0 0.5rem;
-        margin: 0 -2px;
+        margin: 0 -0.12rem;
         text-transform: uppercase;
         border-radius: 0.1rem;
         overflow-x: scroll;
 
         &.T2{
-            border: 2px solid $COLOR_TEAM_1;
+            border: 0.12rem solid $COLOR_TEAM_1;
         }
         &.T1{
-            border: 2px solid $COLOR_TEAM_2;
+            border: 0.12rem solid $COLOR_TEAM_2;
         }
     }
 
@@ -324,7 +324,7 @@
         font-size: 1.2rem;
         color: $COLOR_HIGHLIGHT;
         border-radius: 0.1rem;
-        padding: 0 0.3rem;
+        padding: 0 0.32rem;
         cursor: pointer;
         
 
@@ -352,8 +352,8 @@
 //////////////////////////////////////////////////////////////
 
 .clue-display {
-    width: calc(100% - 0.8rem);
-    margin: 0.05rem 0;
+    width: calc(100% - 0.84rem);
+    margin: 0.075rem 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -367,11 +367,11 @@
     word-wrap: break-word;
 
     &.T2{
-        border: 2px solid $COLOR_TEAM_1;
+        border: 0.12rem solid $COLOR_TEAM_1;
         color: $COLOR_TEAM_2;
     }
     &.T1{
-        border: 2px solid $COLOR_TEAM_2;
+        border: 0.12rem solid $COLOR_TEAM_2;
         color: $COLOR_TEAM_1;
     }
 }

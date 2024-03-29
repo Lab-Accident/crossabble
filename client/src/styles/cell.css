@@ -20,7 +20,6 @@
 
 .cell-container {
   display: grid;
-  outline: 1px solid;
   width: 100%;
   height: 100%;
 }
@@ -46,10 +45,10 @@
   color: hsl(46, 32%, 92%);
 }
 .cell.empty.team1:hover {
-  border: hsl(217, 100%, 56%) 0.1rem solid;
+  border: hsl(217, 100%, 56%) 0.2rem solid;
 }
 .cell.empty.team2:hover {
-  border: hsl(165, 78%, 41%) 0.1rem solid;
+  border: hsl(165, 78%, 41%) 0.2rem solid;
 }
 .cell.unguessed.team1 {
   background-color: hsl(217, 100%, 56%);
@@ -58,7 +57,7 @@
   background-color: hsl(165, 78%, 41%);
 }
 .cell.unguessed:hover {
-  border: #faf9f5 0.1rem solid;
+  border: #faf9f5 0.2rem solid;
 }
 .cell.guessed {
   cursor: default;
