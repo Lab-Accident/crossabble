@@ -1,0 +1,41 @@
+@import 'variables.scss';
+.clue-title {
+    font-family: $MAIN_FONT;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    background-color: $COLOR_DARK;
+    &.T1 {
+        color: $COLOR_TEAM_1;
+    }
+    &.T2 {
+        color: $COLOR_TEAM_2;
+    }
+}
+.cluelist {
+    text-align: center;
+    list-style-position: inside;
+    padding: 0.3rem 0rem 3rem 0rem;
+    margin: 0;
+    width: max(250px, 40vh);
+
+    li {
+        background-color: transparent;
+        font-size: 1rem;
+        font-family: $MAIN_FONT;
+        padding: 0.05rem;
+        color: $COLOR_HIGHLIGHT;
+        
+        &.T1 {
+            &::marker {
+                color: $COLOR_TEAM_1;
+            }
+        }
+        &.T2 {
+            &::marker {
+            color: $COLOR_TEAM_2; 
+            }
+        }
+    }
+}

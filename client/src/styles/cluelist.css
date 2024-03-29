@@ -1,0 +1,55 @@
+:root {
+  --color-dark: hsl(0, 0%, 9%);
+  --color-dark-lighter: #242424;
+  --color-dark-darker: #0a0a0a;
+  --color-neutral: hsl(26, 7%, 42%);
+  --color-neutral-lighter: #80776f;
+  --color-neutral-darker: #655d58;
+  --color-highlight: hsl(46, 32%, 92%);
+  --color-highlight-lighter: #faf9f5;
+  --color-highlight-darker: #e8e4d3;
+  --color-team-1: hsl(217, 100%, 56%);
+  --color-team-1-lighter: #3884ff;
+  --color-team-1-darker: #0565ff;
+  --color-team-2: hsl(165, 78%, 41%);
+  --color-team-2-lighter: #1ad1a3;
+  --color-team-2-darker: #14a380;
+  --main-font: VT323, monospace;
+  --grid-size: 10;
+}
+
+.clue-title {
+  font-family: "VT323", monospace;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  background-color: hsl(0, 0%, 9%);
+}
+.clue-title.T1 {
+  color: hsl(217, 100%, 56%);
+}
+.clue-title.T2 {
+  color: hsl(165, 78%, 41%);
+}
+
+.cluelist {
+  text-align: center;
+  list-style-position: inside;
+  padding: 0.3rem 0rem 3rem 0rem;
+  margin: 0;
+  width: max(250px, 40vh);
+}
+.cluelist li {
+  background-color: transparent;
+  font-size: 1rem;
+  font-family: "VT323", monospace;
+  padding: 0.05rem;
+  color: hsl(46, 32%, 92%);
+}
+.cluelist li.T1::marker {
+  color: hsl(217, 100%, 56%);
+}
+.cluelist li.T2::marker {
+  color: hsl(165, 78%, 41%);
+}

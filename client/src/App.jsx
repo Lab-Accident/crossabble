@@ -13,8 +13,8 @@ export const UsersContext = createContext();
 const App = () => {
 
   const [currentMenu, setCurrentMenu] = useState('play word');
-  const [usersTeam, setUsersTeam] = useState('T2');
-  const [usersPlayer, setUsersPlayer] = useState('P1');
+  const [usersTeam, setUsersTeam] = useState('T1');
+  const [usersPlayer, setUsersPlayer] = useState('P2');
 
   return (
     <>

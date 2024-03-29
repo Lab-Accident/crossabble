@@ -5,11 +5,15 @@ $NORMAL_BORDER: 0.1rem solid;
 
 .cell-container {
     display: grid;
+    outline: 1px solid;
+    width: 100%;
+    height: 100%;
+    // outline: 2px solid red;
 }
 
 .cell {
-    height: 100%;
-    aspect-ratio: 1 / 1;
+    // height: 100%;
+    // aspect-ratio: 1 / 1;
     background-color: $COLOR_DARK;
     border: $COLOR_HIGHLIGHT $NORMAL_BORDER;
     border-radius: 0.1rem;

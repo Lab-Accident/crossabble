@@ -15,16 +15,17 @@
   --color-team-2-lighter: #1ad1a3;
   --color-team-2-darker: #14a380;
   --main-font: VT323, monospace;
-  --grid-size: 5;
+  --grid-size: 10;
 }
 
 .cell-container {
   display: grid;
+  outline: 1px solid;
+  width: 100%;
+  height: 100%;
 }
 
 .cell {
-  height: 100%;
-  aspect-ratio: 1/1;
   background-color: hsl(0, 0%, 9%);
   border: hsl(46, 32%, 92%) 0.1rem solid;
   border-radius: 0.1rem;

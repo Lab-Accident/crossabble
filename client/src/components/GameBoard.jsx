@@ -53,7 +53,7 @@ function GameBoard() {
 
   <div className="gameboard">
     <div className="grid-container">  
-      {/* <Grid /> */}
+      <Grid />
     </div>
 
     <div className="player-card T1 T1-P1"> B1 </div>

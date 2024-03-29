@@ -9,7 +9,7 @@ function Grid() {
     <div className="grid">
         {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => (
             <div className="cell-container" key={index}>
-              <Cell/>
+              {/* <Cell/> */}
             </div>
         ))}
     </div>

@@ -4,6 +4,7 @@
 @import './cell.scss';
 @import './game-board.scss';
 @import './menu.scss';
+@import './cluelist.scss';
 
 :root {
     font-family: $MAIN_FONT;
@@ -16,6 +17,15 @@
 .player-name {
     font-size: 2.7rem;
     margin: 0;
+    background-color: transparent;
+    text-transform: uppercase;
+
+    &.T1 {
+        color: $COLOR_TEAM_1;
+    }
+    &.T2 {
+        color: $COLOR_TEAM_2;
+    }
 }
 
 .game-title {
@@ -32,13 +42,6 @@
     }
 }
 
-.team1 {
-    color: $COLOR_TEAM_1;
-}
-
-.team2 {
-    color: $COLOR_TEAM_2;
-}   
 
 .screen-container {
     display: flex;

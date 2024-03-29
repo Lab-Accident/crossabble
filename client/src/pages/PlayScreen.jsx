@@ -8,10 +8,12 @@ import BuyLetterMenu from '../components/menus/BuyLetterMenu'
 import InactiveMenu from '../components/menus/InactiveMenu'
 import BuyWordMenu from '../components/menus/BuyWordMenu'
 import { CurrentMenuContext } from '../App'
+import { UsersContext } from '../App'
 
 const PlayScreen = () => {
 
   const { currentMenu } = useContext(CurrentMenuContext);
+  const { usersTeam, usersPlayer } = useContext(UsersContext);
 
   const renderMenu = () => {
     switch (currentMenu) {
@@ -37,7 +39,9 @@ const PlayScreen = () => {
           <span className="team1">CROSS</span>
           <span className="team2">ABBLE</span>
         </h1>
-        <h2 className='player-name team2'>PLAYER GREEN 2</h2>
+        <h2 className={`player-name ${usersTeam}`}>
+          player {usersTeam === 'T1' ? 'blue' : 'green'} {usersPlayer === 'P1' ? '1' : '2'}
+        </h2>
         
         <GameBoard />
     
