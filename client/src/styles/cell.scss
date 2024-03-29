@@ -33,10 +33,11 @@ $NORMAL_BORDER: 0.1rem solid;
     }
 
     &.empty {
-        &.team1:hover {
+        background-color: transparent;
+        &.T1:hover {
             border: $COLOR_TEAM_1 $BOLD_BORDER;
         }
-        &.team2:hover {
+        &.T2:hover {
             border: $COLOR_TEAM_2 $BOLD_BORDER;
         }
       }
@@ -48,9 +49,11 @@ $NORMAL_BORDER: 0.1rem solid;
       &.team2 {
         background-color: $COLOR_TEAM_2;
       }
-      &:hover {
-        //change to users team color?
-        border: $COLOR_HIGHLIGHT_LIGHTER $BOLD_BORDER;
+      &.T1:hover {
+        border: $COLOR_TEAM_1_LIGHTER $BOLD_BORDER;
+      }
+      &.T2:hover {
+        border: $COLOR_TEAM_2_LIGHTER $BOLD_BORDER;
       }
     }
   

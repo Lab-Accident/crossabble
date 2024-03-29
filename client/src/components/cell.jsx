@@ -1,13 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react'
 //import { GameContext } from '../game_context'
 import { gridCellSizeContext } from './GameBoard'
+import {UsersContext } from '../App';
 
 function Cell() {
 
   const { cellSize } = useContext(gridCellSizeContext);
+  const { usersTeam } = useContext(UsersContext);
+  const [letter, setLetter] = useState('');
+  const [index, setIndex] = useState('');
+  const [owner, setOwner] = useState('');
+  const [state, setState] = useState('');
 
-  let index = 0;
-  let letter = 'A';
+
+  // let index = 0;
+  // let letter = 'A';
 
   const getIndexTextStyle = (size) => {
     const fontSize = size / 2.7;
@@ -32,9 +39,9 @@ function Cell() {
 
   return (
     <div>
-      <button className='cell team1 guessed' style={getCellSize(cellSize)}> 
-        <span className="index" style={getIndexTextStyle(cellSize)} >{index}</span>
-        <span className="letter" style={getLetterTextStyle(cellSize)}>{letter}</span>
+      <button className={`cell unguessed team2 ${usersTeam}`} style={getCellSize(cellSize)}> 
+        <span className="index" style={getIndexTextStyle(cellSize)} >{}</span>
+        <span className="letter" style={getLetterTextStyle(cellSize)}>{}</span>
       </button>
     </div>
   )

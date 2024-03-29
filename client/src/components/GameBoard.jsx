@@ -8,9 +8,9 @@ function GameBoard() {
 
   const [blueScore, setBlueScore] = useState(0);
   const [greenScore, setGreenScore] = useState(0);
-  const [colHeight, setColHeight] = useState(0);
-  const [cellSize, setCellSize] = useState(0);
-  const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(0);
+  const [colHeight, setColHeight] = useState(200);
+  const [cellSize, setCellSize] = useState(25);
+  const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
 
   useEffect(() => {
     const handleResize = () => {

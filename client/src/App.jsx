@@ -8,7 +8,8 @@ import PlayScreen from './pages/PlayScreen';
 import GameListScreen from './pages/GameListScreen';
 
 export const CurrentMenuContext = React.createContext();
-export const UsersContext = createContext();
+export const UsersContext = React.createContext();
+export const clueContext = React.createContext();
 
 const App = () => {
 

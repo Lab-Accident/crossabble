@@ -15,7 +15,7 @@
 }
 .cluelist {
     text-align: center;
-    list-style-position: inside;
+    list-style: none;
     padding: 0.3rem 0rem 3rem 0rem;
     margin: 0;
     width: max(250px, 40vh);
@@ -26,16 +26,16 @@
         font-family: $MAIN_FONT;
         padding: 0.05rem;
         color: $COLOR_HIGHLIGHT;
-        
-        &.T1 {
-            &::marker {
-                color: $COLOR_TEAM_1;
-            }
+        position: relative;
+
+        &.T1::before {
+            content: attr(num) ". ";
+            color: $COLOR_TEAM_1;
         }
-        &.T2 {
-            &::marker {
+        &.T2::before {
+            content: attr(num) ". ";
             color: $COLOR_TEAM_2; 
-            }
         }
+
     }
 }

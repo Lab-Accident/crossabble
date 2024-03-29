@@ -35,7 +35,7 @@
 
 .cluelist {
   text-align: center;
-  list-style-position: inside;
+  list-style: none;
   padding: 0.3rem 0rem 3rem 0rem;
   margin: 0;
   width: max(250px, 40vh);
@@ -46,10 +46,13 @@
   font-family: "VT323", monospace;
   padding: 0.05rem;
   color: hsl(46, 32%, 92%);
+  position: relative;
 }
-.cluelist li.T1::marker {
+.cluelist li.T1::before {
+  content: attr(num) ". ";
   color: hsl(217, 100%, 56%);
 }
-.cluelist li.T2::marker {
+.cluelist li.T2::before {
+  content: attr(num) ". ";
   color: hsl(165, 78%, 41%);
 }

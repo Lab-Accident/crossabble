@@ -44,10 +44,13 @@
   font-family: "VT323", monospace;
   color: hsl(46, 32%, 92%);
 }
-.cell.empty.team1:hover {
+.cell.empty {
+  background-color: transparent;
+}
+.cell.empty.T1:hover {
   border: hsl(217, 100%, 56%) 0.2rem solid;
 }
-.cell.empty.team2:hover {
+.cell.empty.T2:hover {
   border: hsl(165, 78%, 41%) 0.2rem solid;
 }
 .cell.unguessed.team1 {
@@ -56,8 +59,11 @@
 .cell.unguessed.team2 {
   background-color: hsl(165, 78%, 41%);
 }
-.cell.unguessed:hover {
-  border: #faf9f5 0.2rem solid;
+.cell.unguessed.T1:hover {
+  border: #3884ff 0.2rem solid;
+}
+.cell.unguessed.T2:hover {
+  border: #1ad1a3 0.2rem solid;
 }
 .cell.guessed {
   cursor: default;
