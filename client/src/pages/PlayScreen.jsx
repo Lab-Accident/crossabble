@@ -42,7 +42,7 @@ const PlayScreen = () => {
         <GameBoard />
     
         {renderMenu()}
-        <p>Current Menu: {currentMenu}</p>
+
         <ClueList />
       </div>
     </>

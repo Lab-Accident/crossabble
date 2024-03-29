@@ -1,19 +1,15 @@
 import React, { useState, useContext } from 'react';
 import OptionsMenu from './OptionsMenu'
+import {UsersContext } from '../../App';
 
 function PlayWordMenu() {
-  // const [usersTeam, setUsersTeam] = useState('T1');
-  // const handleTeamChange = () => {
-  //   setUsersTeam(usersTeam === 'T1' ? 'T2' : 'T1');
-  // };
-
 
   const [wordPlayed, setWordPlayed] = useState(false);
   const [cluePlayed, setCluePlayed] = useState(false);
   const [word, setWord] = useState('');
   const [clue, setClue] = useState('');
 
-  let usersTeam = 'T2';
+  const { usersTeam } = useContext(UsersContext);
 
   const handleWordChange = (event) => {
     let input = event.target.value;

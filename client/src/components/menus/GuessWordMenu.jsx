@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import OptionsMenu from './OptionsMenu'
+import {UsersContext } from '../../App';
 
 function GuessWordMenu() {
 
@@ -8,7 +9,7 @@ function GuessWordMenu() {
   const [currWordLoc, setWordLoc] = useState('4 Down');
   const [clue, setClue] = useState('This is an example clue. The clue is a hint to the currently selected word.');
 
-  let usersTeam = 'T2';
+  const { usersTeam } = useContext(UsersContext);
 
   const handleWordChange = (event) => {
     let input = event.target.value;

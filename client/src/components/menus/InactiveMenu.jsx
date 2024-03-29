@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
+import {UsersContext } from '../../App';
 
 function InactiveMenu() {
-  let usersTeam = 'T2';
+  const { usersTeam } = useContext(UsersContext);
   const [message, setMessage] = useState('Default Message For Inactive Menu');
 
   return (

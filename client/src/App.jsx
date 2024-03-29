@@ -8,18 +8,18 @@ import PlayScreen from './pages/PlayScreen';
 import GameListScreen from './pages/GameListScreen';
 
 export const CurrentMenuContext = React.createContext();
-export const CurrentPlayerContext = createContext();
+export const UsersContext = createContext();
 
 const App = () => {
 
   const [currentMenu, setCurrentMenu] = useState('play word');
-  const [currentTeam, setCurrentTeam] = useState('T1');
-  const [currentPlayer, setCurrentPlayer] = useState('P1');
+  const [usersTeam, setUsersTeam] = useState('T2');
+  const [usersPlayer, setUsersPlayer] = useState('P1');
 
   return (
     <>
     <CurrentMenuContext.Provider value={{ currentMenu, setCurrentMenu }}>
-      <CurrentPlayerContext.Provider value={{ currentTeam, setCurrentTeam, currentPlayer, setCurrentPlayer }}>
+      <UsersContext.Provider value={{ usersTeam, setUsersTeam, usersPlayer, setUsersPlayer }}>
         <PlayScreen />
 
         {/* <BrowserRouter>
@@ -30,7 +30,7 @@ const App = () => {
         </Routes>
         </BrowserRouter>     */}
 
-      </CurrentPlayerContext.Provider>
+      </UsersContext.Provider>
     </CurrentMenuContext.Provider>
     </>
   )

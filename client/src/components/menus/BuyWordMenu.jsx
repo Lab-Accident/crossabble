@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'; 
 import OptionsMenu from './OptionsMenu'
+import {UsersContext } from '../../App';
 
 function BuyWordMenu() {
 
-  let usersTeam = 'T2';
+  const { usersTeam } = useContext(UsersContext);
 
   return (
     <div className='menu-container'>
