@@ -37,7 +37,7 @@ function PlayWordMenu() {
   return (
     <>
     <div className='menu-container'>
-      <div className='nav-bar'>
+      <div className='cell-nav-bar'>
         <div className= {`qtr-button ${usersTeam}`} >{'<'}</div>
         <div className=  {`qtr-button ${usersTeam}`} >
           <span style={{ transform: 'rotate(90deg)' }}>{'<'}</span>

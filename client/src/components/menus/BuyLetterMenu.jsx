@@ -1,4 +1,5 @@
 import React from 'react'
+import OptionsMenu from './OptionsMenu'
 
 function BuyLetterMenu() {
 
@@ -6,7 +7,7 @@ function BuyLetterMenu() {
 
   return (
     <div className='menu-container'>
-      <div className='nav-bar'>
+      <div className='cell-nav-bar'>
         <div className= {`qtr-button ${usersTeam}`} >{'<'}</div>
         <div className=  {`qtr-button ${usersTeam}`} >
           <span style={{ transform: 'rotate(90deg)' }}>{'<'}</span>
@@ -17,7 +18,7 @@ function BuyLetterMenu() {
         <div className= {`qtr-button ${usersTeam}`} >{'>'}</div>
       </div>
       
-      <button className={`full-width-button ${usersTeam}`}>buy letter for two points</button>
+      <button className={`default-button ${usersTeam}`} style={{margin: '0.1rem'}} >buy letter for two points</button>
 
       <OptionsMenu currentScreenLabel={"buy letter"}/>
     </div>
