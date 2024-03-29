@@ -40,9 +40,9 @@ const PlayScreen = () => {
         <h2 className='player-name team2'>PLAYER GREEN 2</h2>
         
         <GameBoard />
-
+    
         {renderMenu()}
-
+        <p>Current Menu: {currentMenu}</p>
         <ClueList />
       </div>
     </>

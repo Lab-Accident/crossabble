@@ -29,7 +29,7 @@ const App = () => {
           <Route path="/games" element={GameListScreen} />
         </Routes>
         </BrowserRouter>     */}
-        
+
       </CurrentPlayerContext.Provider>
     </CurrentMenuContext.Provider>
     </>
