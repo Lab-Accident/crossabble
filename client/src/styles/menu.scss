@@ -1,3 +1,5 @@
+$BUTTON_GAP: 0.075rem;
+
 .menu-container {
   display: flex;
   flex-direction: column;
@@ -9,7 +11,7 @@
 }
   .default-button {
     width: 100%;
-    // height: 1.5rem;
+    margin: $BUTTON_GAP 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,6 +53,7 @@
     font-size: 1.2rem;
     text-transform: uppercase;
     border-radius: 0.1rem;
+    margin: $BUTTON_GAP 0;
     &.T2{
         background-color: $COLOR_TEAM_2;
         border: 0.12rem solid $COLOR_TEAM_1;
@@ -69,7 +72,7 @@
     display: grid;
     width: 100%;
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 0.15rem;
+    grid-gap: 2*$BUTTON_GAP;
   }
 
   .half-button, .full-width-button {
@@ -140,7 +143,7 @@
 
 .input-container {
     display: grid;
-    margin: 0.075rem 0;
+    margin: $BUTTON_GAP 0;
     width: 100%;
     height: 1.5rem;
     grid-template-columns: min-content auto min-content;
@@ -169,7 +172,7 @@
     }
 
     input.menu-input {
-        height: calc(100% - 0.22rem);
+        height: 100%;
         background-color: $COLOR_DARK;
         font-family: $MAIN_FONT;
         color: $COLOR_HIGHLIGHT;
@@ -193,6 +196,7 @@
             }
         &.inactive {
             pointer-events: none;
+            overflow-x: scroll;
             cursor: not-allowed;
         }
     }
@@ -243,8 +247,9 @@
     width: 100%;
     height: 1.5rem;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 0.15rem;
-    margin: 0.05rem 0;
+    column-gap: 2*$BUTTON_GAP;
+    row-gap: 0;
+    margin: $BUTTON_GAP 0;
 }
 
     .qtr-button {
@@ -283,7 +288,7 @@
 //////////////////////////////////////////////////////////////
 
 .word-nav-bar {
-    margin: 0.075rem 0;
+    margin: $BUTTON_GAP 0;
     display: grid;
     width: 100%;
     height: 1.5rem;
@@ -291,7 +296,7 @@
 }
 
     .curr-nav-display {
-        height: calc(100% - 0.2rem);
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -352,8 +357,8 @@
 //////////////////////////////////////////////////////////////
 
 .clue-display {
-    width: calc(100% - 0.84rem);
-    margin: 0.075rem 0;
+    width: 100%;
+    margin: $BUTTON_GAP 0;
     display: flex;
     align-items: center;
     justify-content: center;

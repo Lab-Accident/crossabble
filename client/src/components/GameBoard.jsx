@@ -1,22 +1,28 @@
 import React, { useState, useEffect, createContext } from 'react';
 import Grid from './Grid'
 
-export const gridCellSizeContext = React.createContext();
-const GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--grid-size');
 
 function GameBoard() {
 
   const [blueScore, setBlueScore] = useState(0);
   const [greenScore, setGreenScore] = useState(0);
-  const [colHeight, setColHeight] = useState(200);
-  const [cellSize, setCellSize] = useState(25);
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
+
+  const [gridContainerSize, setGridContainerSize] = useState(() => {
+    const initialContainerSize = document.documentElement.clientHeight * 0.4;
+    return initialContainerSize;
+  });
+
+  const [colHeight, setColHeight] = useState(() => {
+    return gridContainerSize - 140;
+  });
+  
 
   useEffect(() => {
     const handleResize = () => {
       updateColHeights();
       updateTeamLabelTextWidth();
-      updateCellSize();
+      updateGridContainerSize();
     };
     handleResize();
 
@@ -42,12 +48,11 @@ function GameBoard() {
     }
   };
 
-  const updateCellSize = () => {
-    const cell = document.querySelector('.grid-container');
-    if (cell) {
-      setCellSize(Math.round(cell.offsetWidth / GRID_SIZE));
-    }
-  };
+  const updateGridContainerSize = () => {
+    console.log('updateGridLength', gridContainerSize);
+    const viewportHeight = document.documentElement.clientHeight;
+    setGridContainerSize(Math.max(250, viewportHeight*0.4));
+  }
 
   const getTeamLabelStyle = (height, width, left) => {
     const scaleY = Math.min(2.5, (230 / width));
@@ -61,12 +66,11 @@ function GameBoard() {
   
 
   return ( 
+  <>
 
   <div className="gameboard">
-    <div className="grid-container">  
-      <gridCellSizeContext.Provider value={{ cellSize }}>
+    <div className="grid-container" style={{height: gridContainerSize, width: gridContainerSize}}>  
         <Grid />
-      </gridCellSizeContext.Provider>
     </div>
 
     <div className="player-card T1 T1-P1"> B1 </div>
@@ -75,13 +79,15 @@ function GameBoard() {
     <div className="player-card T2 T2-P2"> G2 </div>
 
     <div className="col -left">
-      <span className="team-label team-label-green" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}>BLUE: {blueScore}</span>
+      <span className="team-label team-label-green" style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}}>BLUE: {blueScore}</span>
     </div>
     <div className="col -right">
-      <span className="team-label team-label-blue" style={getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}>GREEN: {greenScore}</span>
+      <span className="team-label team-label-blue" style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}}>GREEN: {greenScore}</span>
     </div>
 
   </div>
+
+  </>
   )
 }
 

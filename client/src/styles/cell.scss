@@ -1,33 +1,48 @@
 @import 'variables.scss';
 
-$BOLD_BORDER: 0.2rem solid;
-$NORMAL_BORDER: 0.1rem solid;
+$CELL_BOLD_BORDER: 0.15em solid;
+$CELL_NORMAL_BORDER: 0.05rem solid;
 
 .cell-container {
-    display: grid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     width: 100%;
     height: 100%;
-    // outline: 2px solid red;
+    //outline: 1px solid $COLOR_HIGHLIGHT;
+    border-radius: 0.1rem;
 }
 
 .cell {
     background-color: $COLOR_DARK;
-    border: $COLOR_HIGHLIGHT $NORMAL_BORDER;
+    border: $COLOR_HIGHLIGHT $CELL_NORMAL_BORDER;
     border-radius: 0.1rem;
+    display: flex;
+    box-sizing: border-box;
     position: relative;
+    margin: 0;
+    align-items: center;
     cursor: pointer;
 
     .index {
         position: absolute;
-        top: 0.2em;
-        left: 0.3em;
-        font-size: 25px;
+        width: 20%;
+        margin: 0;
+        top: 5%;
+        left: 10%;
+        // outline: 1px solid red;
         font-family: $MAIN_FONT;
         color: $COLOR_HIGHLIGHT;
       }
 
     .letter {
-        font-size: 60px;
+        width: 100%;
+        text-align: center;
+        left: 0;
+        margin: 0;
+        // outline: 1px solid red;
+        position: absolute;
         font-family: $MAIN_FONT;
         color: $COLOR_HIGHLIGHT;
     }
@@ -35,10 +50,10 @@ $NORMAL_BORDER: 0.1rem solid;
     &.empty {
         background-color: transparent;
         &.T1:hover {
-            border: $COLOR_TEAM_1 $BOLD_BORDER;
+            border: $COLOR_TEAM_1 $CELL_BOLD_BORDER;
         }
         &.T2:hover {
-            border: $COLOR_TEAM_2 $BOLD_BORDER;
+            border: $COLOR_TEAM_2 $CELL_BOLD_BORDER;
         }
       }
   
@@ -50,10 +65,10 @@ $NORMAL_BORDER: 0.1rem solid;
         background-color: $COLOR_TEAM_2;
       }
       &.T1:hover {
-        border: $COLOR_TEAM_1_LIGHTER $BOLD_BORDER;
+        border: $COLOR_TEAM_1_LIGHTER $CELL_BOLD_BORDER;
       }
       &.T2:hover {
-        border: $COLOR_TEAM_2_LIGHTER $BOLD_BORDER;
+        border: $COLOR_TEAM_2_LIGHTER $CELL_BOLD_BORDER;
       }
     }
   
@@ -66,7 +81,7 @@ $NORMAL_BORDER: 0.1rem solid;
         border-color: $COLOR_TEAM_2;
       }
       &:hover {
-        border-width: $COLOR_HIGHLIGHT $NORMAL_BORDER;
+        border-width: $COLOR_HIGHLIGHT $CELL_NORMAL_BORDER;
       }
     }
   
@@ -79,7 +94,7 @@ $NORMAL_BORDER: 0.1rem solid;
         background-color: $COLOR_HIGHLIGHT;
       }
       &:hover {
-        border: $COLOR_HIGHLIGHT $NORMAL_BORDER;
+        border: $COLOR_HIGHLIGHT $CELL_NORMAL_BORDER;
       }
     }
   }

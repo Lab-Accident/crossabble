@@ -15,12 +15,13 @@
   --color-team-2-lighter: #1ad1a3;
   --color-team-2-darker: #14a380;
   --main-font: VT323, monospace;
-  --grid-size: 10;
+  --num-grid-cells: 15;
 }
 
 .grid {
-  aspect-ratio: 1/1;
+  height: 100%;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
 }

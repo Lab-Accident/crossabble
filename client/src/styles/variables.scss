@@ -34,8 +34,7 @@ $COLOR_TEAM_2_DARKER: darken($COLOR_TEAM_2, 5%);
 $MAIN_FONT: 'VT323', monospace;
 
 // GRID-VARS
-$GRID_SIZE: 10;
-
+$NUM_GRID_CELLS: 15; // constrained to [5, 15]
 
 @mixin generate-css-variables($variable-map) {
     :root {
@@ -67,5 +66,5 @@ $GRID_SIZE: 10;
     main-font: $MAIN_FONT,
 
     //GRID-VARS
-    grid-size: $GRID_SIZE
+    num-grid-cells: $NUM_GRID_CELLS
 ));

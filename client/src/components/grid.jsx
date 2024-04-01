@@ -3,11 +3,11 @@ import Cell from './Cell'
 
 function Grid() {
 
-  const GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--grid-size');
+  const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 
   return (
     <div className="grid">
-        {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => (
+        {Array.from({ length: NUM_GRID_CELLS * NUM_GRID_CELLS }).map((_, index) => (
             <div className="cell-container" key={index}>
               <Cell />
             </div>

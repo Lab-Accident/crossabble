@@ -11,7 +11,10 @@
     aspect-ratio: 1 / 1;
     width: max(250px, 40vh);
     margin: 0 0.7rem;
-    // outline: 3px solid green;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .player-card {
