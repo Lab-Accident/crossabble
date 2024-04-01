@@ -182,6 +182,7 @@ $BUTTON_GAP: 0.075rem;
         margin: 0 0 0 -0.12rem;
         border-radius: 0.1rem;
         overflow-x: scroll;
+        z-index: 1;
 
         &.T2{
             border: 0.12rem solid $COLOR_TEAM_1;

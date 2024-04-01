@@ -4,11 +4,15 @@ import Grid from './Grid'
 
 function GameBoard() {
 
+  //////////////////////////////////////////////////////////////
+  /* Styling */
+  //////////////////////////////////////////////////////////////
+
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');;
 
+  const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
   const [blueScore, setBlueScore] = useState(0);
   const [greenScore, setGreenScore] = useState(0);
-  const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
 
   const [gridContainerSize, setGridContainerSize] = useState(() => {
     const initialContainerSize = document.documentElement.clientHeight * 0.4;
@@ -66,6 +70,16 @@ function GameBoard() {
     };
   };
   
+
+  //////////////////////////////////////////////////////////////
+  /* Game Logic */
+  //////////////////////////////////////////////////////////////
+
+
+
+  //////////////////////////////////////////////////////////////
+  /* HTML */
+  //////////////////////////////////////////////////////////////
 
   return ( 
   <>
