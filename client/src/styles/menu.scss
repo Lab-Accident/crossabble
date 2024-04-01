@@ -5,7 +5,7 @@ $BUTTON_GAP: 0.075rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: max(250px, 40vh);
+  width: max($MIN_GRID_SIZE, 40vh);
   margin: 1rem 0 0.5rem 0rem;
   // outline: 1px solid red;
 }

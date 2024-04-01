@@ -16,4 +16,5 @@
   --color-team-2-darker: #14a380;
   --main-font: VT323, monospace;
   --num-grid-cells: 15;
+  --min-grid-size: 240px;
 }

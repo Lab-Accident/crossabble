@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {UsersContext } from '../App';
 
-function Cell() {
+function Cell({ row, col }) {
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
+  const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');
 
   const { usersTeam } = useContext(UsersContext);
 
@@ -13,14 +14,14 @@ function Cell() {
   const [state, setState] = useState('');
 
   const [cellSize, setCellSize] = useState(() => {
-    const gridContainerSize = Math.max(250, document.documentElement.clientHeight * 0.4);
+    const gridContainerSize = Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4);
     return (gridContainerSize / NUM_GRID_CELLS);
   });
 
 
   useEffect(() => {  
     const handleResize = () => {
-        const gridContainerSize = Math.max(250, document.documentElement.clientHeight * 0.4);
+        const gridContainerSize = Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4);
         let size = Math.floor(gridContainerSize / NUM_GRID_CELLS);
         setCellSize(size);
     };
@@ -66,69 +67,3 @@ function Cell() {
 }
 
 export default Cell
-
-
-
-  // const [letter, setLetter] = useState('')
-  // const [index, setIndex] = useState('')
-  // const [owner, setOwner] = useState('')
-  // const [block, setBlock] = useState(False)
-  // const [selected, setSelected] = useState(False)
-
-  // let game_state = useContext(GameContext)
-
-  // function handleSelect(player) {
-  //   setSelected(!selected)
-  //   // change outline color of cell to players color and increase width
-  // }
-
-  // function handleletterChange(event) {
-  //   setLetter(event.target.value)
-  //   // this will be more complicated cause we will just get one letter from the input box
-  // }
-
-  // function handleAddIndex() {
-
-  // }
-
-  // function handleRemoveIndex() {
-
-  // }
-
-  // function handleAddTemporaryBlock() {
-
-  // }
-
-  // function handleRemoveTemporaryBlock() {
-
-  // }
-
-  // function handleAddPermanantBlock() {
-
-  // }
-
-
-        // const cellBorderWidth = parseInt(getComputedStyle(document.querySelector('.cell')).getPropertyValue('border-width').replace('px', ''));
-        // const cellElement = document.querySelector('.cell');
-        // const cellWidth = cellElement.clientWidth;
-        // const cellHeight = cellElement.clientHeight;
-        // const gridElement = document.querySelector('.grid');
-        // const gridWidth = gridElement.clientWidth;
-        // const gridHeight = gridElement.clientHeight;
-        // const gridContainer = document.querySelector('.grid-container');
-        // const gridContainerWidth = gridContainer.clientWidth;
-        // const gridContainerHeight = gridContainer.clientHeight;
-        // const cellContainer = document.querySelector('.cell-container');
-        // // const cellContainerWidth = cellContainer.clientWidth;
-        // // const cellContainerHeight = cellContainer.clientHeight;
-
-        // cellElement.style.width = `${size}px`;
-        // cellElement.style.height = `${size}px`;
-        // if (cellWidth !== cellHeight) {
-        //   console.warn(`Cell width (${cellWidth}px) is not equal to cell height (${cellHeight}px).`);
-        // }
-        // console.log('cellWidth', cellWidth, 'cellHeight', cellHeight);
-        // console.log('gridWidth', gridWidth, 'gridHeight', gridHeight);
-        // console.log('gridContainerWidth', gridContainerWidth, 'gridContainerHeight', gridContainerHeight);
-        // // console.log('cellContainerWidth', cellContainerWidth, 'cellContainerHeight', cellContainerHeight);
-        // console.log('cellSize', size);

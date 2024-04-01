@@ -9,7 +9,7 @@
   .grid-container { 
     grid-area: 1 / 2 / 4 / 3; 
     aspect-ratio: 1 / 1;
-    width: max(250px, 40vh);
+    width: max($MIN_GRID_SIZE, 40vh);
     margin: 0 0.7rem;
     padding: 0;
     display: flex;

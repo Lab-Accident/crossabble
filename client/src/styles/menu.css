@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: max(250px, 40vh);
+  width: max(300px, 40vh);
   margin-top: 1rem;
   outline: 3px solid red;
 }

@@ -4,6 +4,8 @@ import Grid from './Grid'
 
 function GameBoard() {
 
+  const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');;
+
   const [blueScore, setBlueScore] = useState(0);
   const [greenScore, setGreenScore] = useState(0);
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
@@ -51,7 +53,7 @@ function GameBoard() {
   const updateGridContainerSize = () => {
     console.log('updateGridLength', gridContainerSize);
     const viewportHeight = document.documentElement.clientHeight;
-    setGridContainerSize(Math.max(250, viewportHeight*0.4));
+    setGridContainerSize(Math.max(MIN_GRID_SIZE, viewportHeight*0.4));
   }
 
   const getTeamLabelStyle = (height, width, left) => {
