@@ -46,9 +46,6 @@ class GridData {
     setUnguessed(row, col, owningTeam) {
         this.GridData[row][col].owningTeam = owningTeam;
         this.GridData[row][col].state = 'unguessed';
-        if (num !== undefined) {
-            this.GridData[row][col].num = num;
-        }
     }
 
     setNum(row, col, num) {
