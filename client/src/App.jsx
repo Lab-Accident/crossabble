@@ -42,7 +42,7 @@ const App = () => {
 
 
 
-  const [currentMenu, setCurrentMenu] = useState('play word');
+  const [currentMenu, setCurrentMenu] = useState('play-word');
   const [usersTeam, setUsersTeam] = useState('T2');
   const [usersPlayer, setUsersPlayer] = useState('P2');
 

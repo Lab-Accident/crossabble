@@ -3,6 +3,7 @@ import { UsersContext } from '../App';
 import { WordData, PublicWord } from './Word';
 import { GridData } from './GridData';
 import { publicGridContext } from '../App';
+import { CurrentMenuContext } from '../App';
 
 function Cell({ row, col }) {
 
@@ -11,6 +12,7 @@ function Cell({ row, col }) {
   //////////////////////////////////////////////////////////////
 
   const { publicGrid } = useContext(publicGridContext);
+  const { currentMenu } = useContext(CurrentMenuContext);
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');
@@ -93,7 +95,7 @@ function Cell({ row, col }) {
   return (
     <div>
       {publicGrid.logGridStatePretty()}
-      <button className={`cell ${owningTeam} ${state} ${selectedByTeam}`} style={getCellSize(cellSize)}> 
+      <button className={`cell ${currentMenu} ${owningTeam} ${state} ${selectedByTeam}`} style={getCellSize(cellSize)}> 
         {num !== 0 && <span className="num" style={{ ...getNumTextStyle(cellSize)}}>{num}</span>}
         <span className="letter" style={{ ...getLetterTextStyle(cellSize)}}>{letter}</span>
       </button>

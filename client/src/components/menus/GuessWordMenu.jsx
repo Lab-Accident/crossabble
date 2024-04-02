@@ -40,7 +40,7 @@ function GuessWordMenu() {
       </div>
 
 
-      <OptionsMenu currentScreenLabel={"guess word"}/>
+      <OptionsMenu currentScreenLabel={"guess-word"}/>
     </div>
   )
 }

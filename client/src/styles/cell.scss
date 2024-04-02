@@ -48,27 +48,35 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
     }
 
     &.empty {
-        background-color: transparent;
+      cursor: default;
+      background-color: transparent;
+      &.play-word {
+        cursor: pointer;
         &.T1:hover {
-            border: $COLOR_TEAM_1 $CELL_BOLD_BORDER;
+          border: $COLOR_TEAM_1 $CELL_BOLD_BORDER;
         }
         &.T2:hover {
             border: $COLOR_TEAM_2 $CELL_BOLD_BORDER;
         }
       }
+    }
   
     &.unguessed {
+      cursor: default;
       &.team1 {
         background-color: $COLOR_TEAM_1;
       }
       &.team2 {
         background-color: $COLOR_TEAM_2;
       }
-      &.T1:hover {
-        border: $COLOR_TEAM_1_LIGHTER $CELL_BOLD_BORDER;
-      }
-      &.T2:hover {
-        border: $COLOR_TEAM_2_LIGHTER $CELL_BOLD_BORDER;
+      &.guess-word, &.buy-letter {
+        cursor: pointer;
+        &.T1:hover {
+          border: $COLOR_TEAM_1_LIGHTER $CELL_BOLD_BORDER;
+        }
+        &.T2:hover {
+          border: $COLOR_TEAM_2_LIGHTER $CELL_BOLD_BORDER;
+        }
       }
     }
   
@@ -82,7 +90,7 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
         border-color: $COLOR_TEAM_2;
       }
       &:hover {
-        border-width: $CELL_BOLD_BORDER;
+        border-width: $CELL_NORMAL_BORDER;
       }
     }
   

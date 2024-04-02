@@ -18,15 +18,15 @@ const PlayScreen = () => {
 
   const renderMenu = () => {
     switch (currentMenu) {
-      case 'play word':
+      case 'play-word':
         return <PlayWordMenu />;
-      case 'guess word':
+      case 'guess-word':
         return <GuessWordMenu />;
       case 'inactive':
         return <InactiveMenu />;
-      case 'buy letter':
+      case 'buy-letter':
         return <BuyLetterMenu />;
-      case 'buy word':
+      case 'buy-word':
         return <BuyWordMenu />;
       default:
         return null;

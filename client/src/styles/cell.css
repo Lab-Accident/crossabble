@@ -59,13 +59,20 @@
   color: hsl(46, 32%, 92%);
 }
 .cell.empty {
+  cursor: default;
   background-color: transparent;
 }
-.cell.empty.T1:hover {
+.cell.empty.play-word {
+  cursor: pointer;
+}
+.cell.empty.play-word.T1:hover {
   border: hsl(217, 100%, 56%) 0.15em solid;
 }
-.cell.empty.T2:hover {
+.cell.empty.play-word.T2:hover {
   border: hsl(165, 78%, 41%) 0.15em solid;
+}
+.cell.unguessed {
+  cursor: default;
 }
 .cell.unguessed.team1 {
   background-color: hsl(217, 100%, 56%);
@@ -73,10 +80,13 @@
 .cell.unguessed.team2 {
   background-color: hsl(165, 78%, 41%);
 }
-.cell.unguessed.T1:hover {
+.cell.unguessed.guess-word, .cell.unguessed.buy-letter {
+  cursor: pointer;
+}
+.cell.unguessed.guess-word.T1:hover, .cell.unguessed.buy-letter.T1:hover {
   border: #3884ff 0.15em solid;
 }
-.cell.unguessed.T2:hover {
+.cell.unguessed.guess-word.T2:hover, .cell.unguessed.buy-letter.T2:hover {
   border: #1ad1a3 0.15em solid;
 }
 .cell.guessed {
@@ -90,7 +100,7 @@
   border-color: hsl(165, 78%, 41%);
 }
 .cell.guessed:hover {
-  border-width: 0.15em solid;
+  border-width: 0.05rem solid;
 }
 .cell.temp-block, .cell.block {
   cursor: default;

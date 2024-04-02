@@ -21,7 +21,7 @@ function BuyLetterMenu() {
       
       <button className={`default-button ${usersTeam}`} style={{margin: '0.1rem'}} >buy letter for two points</button>
 
-      <OptionsMenu currentScreenLabel={"buy letter"}/>
+      <OptionsMenu currentScreenLabel={"buy-letter"}/>
     </div>
   )
 }

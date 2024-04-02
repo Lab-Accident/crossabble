@@ -8,7 +8,7 @@ function OptionsMenu({ currentScreenLabel }) {
   const { setCurrentMenu } = useContext(CurrentMenuContext);
   
   const guessWordFunction = () => {
-    setCurrentMenu('guess word');
+    setCurrentMenu('guess-word');
   }
   
   const skipFunction = () => {
@@ -16,23 +16,23 @@ function OptionsMenu({ currentScreenLabel }) {
   }
   
   const buyNewWordFunction = () => {
-    setCurrentMenu('buy word');
+    setCurrentMenu('buy-word');
   }
   
   const buyLetterFunction = () => {
-    setCurrentMenu('buy letter');
+    setCurrentMenu('buy-letter');
   }
   
   const playWordFunction = () => {
-    setCurrentMenu('play word');
+    setCurrentMenu('play-word');
   }
 
   const allOptions = [
-    {label: 'play word', operation: playWordFunction},
-    {label: 'guess word', operation: guessWordFunction},
+    {label: 'play-word', operation: playWordFunction},
+    {label: 'guess-word', operation: guessWordFunction},
     {label: 'skip', operation: skipFunction},
-    {label: 'buy word', operation: buyNewWordFunction},
-    {label: 'buy letter', operation: buyLetterFunction},
+    {label: 'buy-word', operation: buyNewWordFunction},
+    {label: 'buy-letter', operation: buyLetterFunction},
   ];
   
   return (

@@ -72,7 +72,7 @@ function PlayWordMenu() {
       </div> */}
 
 
-      <OptionsMenu currentScreenLabel={"play word"}/>
+      <OptionsMenu currentScreenLabel={"play-word"}/>
 
     </div>
     </>

@@ -9,7 +9,7 @@ function BuyWordMenu() {
   return (
     <div className='menu-container'>
       <button className={`default-button ${usersTeam}`} >Auto play new word for six points</button>
-      <OptionsMenu currentScreenLabel={"buy word"}/>
+      <OptionsMenu currentScreenLabel={"buy-word"}/>
     </div>
   )
 
