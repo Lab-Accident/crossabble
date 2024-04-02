@@ -4,37 +4,56 @@ class WordData {
     constructor({ clue, team, row, col, num, down, length }) {
         //clue
         this.clue = clue; //string
-        this.num = num; //int, 1-indexed
+        this.num = num; //int, 1-indexed, 0 for no number
 
         //owner
-        this.team = team; // 'T1' or 'T2'
+        if (team === 'T1') {
+            this.team = 'team1';
+        }
+        else if (team === 'T2') {
+            this.team = 'team2';
+        }
+        else {
+            this.team = team; // 'team1' or 'team2'
+        }
 
         //position
         this.row = row; //int, 0-indexed
         this.col = col; //int, 0-indexed
-        this.down = down; //bool
+        this.down = down; //bool (true if down, false if across)
 
         //length
         this.length = length; //int
 
         if (this.length + this.row > NUM_GRID_CELLS - 1 || this.length + this.col > NUM_GRID_CELLS - 1) {
-            throw new Error('Word length exceeds grid dimensions.');
+            console.warn(`Word length exceeds grid dimensions.`);
+            this.logWordData();
         }
-        if (this.team !== 'T1' && this.team !== 'T2') {
-            throw new Error('Invalid team name.');
+
+        if (this.team !== 'team1' && this.team !== 'team2') {
+            console.warn(`Invalid team name.`);
+            this.logWordData();
         }
         if (this.row < 0 || this.col < 0 || this.row >= NUM_GRID_CELLS || this.col >= NUM_GRID_CELLS) {
-            throw new Error('Invalid position.');
+            console.warn(`Invalid position.`);
+            this.logWordData();
         }
         if (this.num < 1) {
-            throw new Error('Invalid number.');
+            console.warn(`Invalid number.`);
+            this.logWordData();
         }
         if (this.down !== true && this.down !== false) {
-            throw new Error('Invalid direction.');
+            console.warn(`Invalid direction. WordData: clue=${this.clue}, team=${this.team}, row=${this.row}, col=${this.col}, num=${this.num}, down=${this.down}, length=${this.length}`);
+            this.logWordData();
         }
         if (this.clue == '') {
-            throw new Error('Clue cannot be empty.');
+            console.warn(`Clue cannot be empty. WordData: clue=${this.clue}, team=${this.team}, row=${this.row}, col=${this.col}, num=${this.num}, down=${this.down}, length=${this.length}`);
+            this.logWordData();
         }
+    }
+    
+    logWordData() {
+        console.log(`WordData: clue=${this.clue}, team=${this.team}, row=${this.row}, col=${this.col}, num=${this.num}, down=${this.down}, length=${this.length}`);
     }
 }
 
@@ -45,15 +64,21 @@ class PublicWord extends WordData {
         this.length = length;
 
         if (this.word.length !== this.length) {
-            throw new Error('Word length does not match the provided length.');
+            console.log(`Word length does not match the provided length.`);
+            this.logPublicWord();
         }
         if (this.word == '') {
-            throw new Error('Word cannot be empty.');
+            console.log(`Word cannot be empty.`);
+            this.logPublicWord();
         }
     }
 
     getWordData() {
         return new WordData(this);
+    }
+
+    logPublicWord() {
+        console.log(`PublicWord: word=${this.word}, clue=${this.clue}, team=${this.team}, row=${this.row}, col=${this.col}, num=${this.num}, down=${this.down}, length=${this.length}`);
     }
 }
 

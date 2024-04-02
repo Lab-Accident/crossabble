@@ -81,6 +81,7 @@
 }
 .cell.guessed {
   cursor: default;
+  background-color: transparent;
 }
 .cell.guessed.team1 {
   border-color: hsl(217, 100%, 56%);
@@ -89,7 +90,7 @@
   border-color: hsl(165, 78%, 41%);
 }
 .cell.guessed:hover {
-  border-width: hsl(46, 32%, 92%) 0.05rem solid;
+  border-width: 0.15em solid;
 }
 .cell.temp-block, .cell.block {
   cursor: default;

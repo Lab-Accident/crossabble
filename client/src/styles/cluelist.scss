@@ -28,11 +28,11 @@
         color: $COLOR_HIGHLIGHT;
         position: relative;
 
-        &.T1::before {
+        &.team1::before {
             content: attr(num) ". ";
             color: $COLOR_TEAM_1;
         }
-        &.T2::before {
+        &.team2::before {
             content: attr(num) ". ";
             color: $COLOR_TEAM_2; 
         }

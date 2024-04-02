@@ -15,7 +15,8 @@
   --color-team-2-lighter: #1ad1a3;
   --color-team-2-darker: #14a380;
   --main-font: VT323, monospace;
-  --grid-size: 10;
+  --num-grid-cells: 15;
+  --min-grid-size: 240px;
 }
 
 .clue-title {
@@ -38,7 +39,7 @@
   list-style: none;
   padding: 0.3rem 0rem 3rem 0rem;
   margin: 0;
-  width: max(250px, 40vh);
+  width: max(240px, 40vh);
 }
 .cluelist li {
   background-color: transparent;
@@ -48,11 +49,11 @@
   color: hsl(46, 32%, 92%);
   position: relative;
 }
-.cluelist li.T1::before {
+.cluelist li.team1::before {
   content: attr(num) ". ";
   color: hsl(217, 100%, 56%);
 }
-.cluelist li.T2::before {
+.cluelist li.team2::before {
   content: attr(num) ". ";
   color: hsl(165, 78%, 41%);
 }

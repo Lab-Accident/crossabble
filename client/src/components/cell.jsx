@@ -1,11 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import {UsersContext } from '../App';
+import { UsersContext } from '../App';
+import { WordData, PublicWord } from './Word';
+import { GridData } from './GridData';
+import { publicGridContext } from '../App';
 
 function Cell({ row, col }) {
 
   //////////////////////////////////////////////////////////////
   /* Styling */
   //////////////////////////////////////////////////////////////
+
+  const { publicGrid } = useContext(publicGridContext);
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');
@@ -14,9 +19,9 @@ function Cell({ row, col }) {
   // alias to distinguish between owning and selecting team
   const selectedByTeam = usersTeam; 
 
-  const [letter, setLetter] = useState('');
-  const [num, setNum] = useState('');
-  const [owningTeam, setOwningTeam] = useState(''); // team1, team2 (relevant for guessed/unguesed state)
+  const [letter, setLetter] = useState(''); // string of length 1 or ''
+  const [num, setNum] = useState(0); // 0 for no number
+  const [owningTeam, setOwningTeam] = useState(''); // 'team1', 'team2', or ''
   const [state, setState] = useState('empty'); // empty, guessed, unguessed, temp-block, block
 
   const [cellSize, setCellSize] = useState(() => {
@@ -66,6 +71,19 @@ function Cell({ row, col }) {
   /* Game Logic */
   //////////////////////////////////////////////////////////////
 
+  useEffect(() => {
+    const handleUpdate = () => {
+      setLetter(publicGrid.getLetter(row, col));
+      setNum(publicGrid.getNum(row, col));
+      setOwningTeam(publicGrid.getOwningTeam(row, col));
+      setState(publicGrid.getState(row, col));
+    };
+
+    handleUpdate();
+
+    return () => {
+    };
+  }, [publicGrid[row]?.[col]]);
 
 
   //////////////////////////////////////////////////////////////
@@ -74,8 +92,9 @@ function Cell({ row, col }) {
 
   return (
     <div>
+      {publicGrid.logGridStatePretty()}
       <button className={`cell ${owningTeam} ${state} ${selectedByTeam}`} style={getCellSize(cellSize)}> 
-        <span className="num" style={{ ...getNumTextStyle(cellSize)}}>{num}</span>
+        {num !== 0 && <span className="num" style={{ ...getNumTextStyle(cellSize)}}>{num}</span>}
         <span className="letter" style={{ ...getLetterTextStyle(cellSize)}}>{letter}</span>
       </button>
     </div>

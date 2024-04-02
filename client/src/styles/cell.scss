@@ -74,6 +74,7 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
   
     &.guessed {
         cursor: default;
+        background-color: transparent;
       &.team1 {
         border-color: $COLOR_TEAM_1;
       }
@@ -81,7 +82,7 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
         border-color: $COLOR_TEAM_2;
       }
       &:hover {
-        border-width: $COLOR_HIGHLIGHT $CELL_NORMAL_BORDER;
+        border-width: $CELL_BOLD_BORDER;
       }
     }
   
