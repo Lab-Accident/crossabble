@@ -62,8 +62,8 @@ const App = () => {
     } else {
       console.warn(`Failed to make word public. Word with clue number ${num} not found.`);
     }
-    console.log(publicWords);
-    console.log(unguessedWords);
+    // console.log(publicWords);
+    // console.log(unguessedWords);
   }
 
   const publicGrid = new GridData();
