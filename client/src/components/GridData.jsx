@@ -2,12 +2,12 @@ const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyVal
 
 class CellData {
     constructor({ row, col, down, letter='', num=0, owningTeam='', state='empty' }) {
-        this.row = row; //int, 0-indexed
-        this.col = col; //int, 0-indexed
-        this.letter =  ''; //string of length 1 or '
-        this.num = 0; //int, 1-indexed, 0 for no number
-        this.owningTeam = owningTeam; // 'team1', 'team2', or ''
-        this.state = state; // 'empty', 'guessed', 'unguessed', 'temp-block', 'block'
+        this.row = row;                 //int, 0-indexed
+        this.col = col;                 //int, 0-indexed
+        this.letter =  '';              //string of length 1 or ''
+        this.num = 0;                   //int, 1-indexed, 0 for no number
+        this.owningTeam = owningTeam;   // 'team1', 'team2', or '', only for unguessed/guessed
+        this.state = state;             // 'empty', 'guessed', 'unguessed', 'temp-block', 'block'
     
         if (typeof letter === 'string' && (letter.length === 1 || letter.length === 0) && (/^[a-zA-Z]*$/).test(letter.toUpperCase())) {
             this.letter = letter.toUpperCase();
@@ -263,19 +263,16 @@ class GridData {
     removeTempBlock(row, col) {
         // check all adjacent CellDatas for unguessed CellDatas
         if (row > 0) {
-            console.log('     -1', row-1, col)
             if (this.GridData[row - 1][col].state === 'unguessed') {
                 return;
             }
         }
         if (row + 1 < NUM_GRID_CELLS) {
-            console.log('    -2', row+1, col)
             if (this.GridData[row + 1][col].state === 'unguessed') {
                 return;
             }
         }
         if (col > 0) {
-            console.log('     -3', row, col-1)
             if (this.GridData[row][col - 1].state === 'unguessed') {
                 return;
             }

@@ -40,6 +40,9 @@
   align-items: center;
   cursor: pointer;
 }
+.cell :focus {
+  outline: none;
+}
 .cell .num {
   position: absolute;
   width: 20%;
@@ -65,10 +68,10 @@
 .cell.empty.play-word {
   cursor: pointer;
 }
-.cell.empty.play-word.T1:hover {
+.cell.empty.play-word.T1:hover, .cell.empty.play-word.T1.selected {
   border: hsl(217, 100%, 56%) 0.15em solid;
 }
-.cell.empty.play-word.T2:hover {
+.cell.empty.play-word.T2:hover, .cell.empty.play-word.T2.selected {
   border: hsl(165, 78%, 41%) 0.15em solid;
 }
 .cell.unguessed {
@@ -83,10 +86,10 @@
 .cell.unguessed.guess-word, .cell.unguessed.buy-letter {
   cursor: pointer;
 }
-.cell.unguessed.guess-word.T1:hover, .cell.unguessed.buy-letter.T1:hover {
+.cell.unguessed.guess-word.T1:hover, .cell.unguessed.guess-word.T1.selected, .cell.unguessed.buy-letter.T1:hover, .cell.unguessed.buy-letter.T1.selected {
   border: #3884ff 0.15em solid;
 }
-.cell.unguessed.guess-word.T2:hover, .cell.unguessed.buy-letter.T2:hover {
+.cell.unguessed.guess-word.T2:hover, .cell.unguessed.guess-word.T2.selected, .cell.unguessed.buy-letter.T2:hover, .cell.unguessed.buy-letter.T2.selected {
   border: #1ad1a3 0.15em solid;
 }
 .cell.guessed {

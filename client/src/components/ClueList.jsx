@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'; 
 import {UsersContext } from '../App';
 import { WordData, PublicWord } from './Word';
-import { publicGridContext } from '../App';
+import { PublicGridContext } from '../App';
 
 function ClueList() {
   const { usersTeam } = useContext(UsersContext);
-  const { unguessedWords } = useContext(publicGridContext);
+  const { unguessedWords } = useContext(PublicGridContext);
 
   return (
     <>

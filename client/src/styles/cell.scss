@@ -25,6 +25,10 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
     align-items: center;
     cursor: pointer;
 
+    :focus {
+      outline: none;
+    }
+
     .num {
         position: absolute;
         width: 20%;
@@ -52,10 +56,10 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
       background-color: transparent;
       &.play-word {
         cursor: pointer;
-        &.T1:hover {
+        &.T1:hover, &.T1.selected {
           border: $COLOR_TEAM_1 $CELL_BOLD_BORDER;
         }
-        &.T2:hover {
+        &.T2:hover, &.T2.selected {
             border: $COLOR_TEAM_2 $CELL_BOLD_BORDER;
         }
       }
@@ -71,10 +75,10 @@ $CELL_NORMAL_BORDER: 0.05rem solid;
       }
       &.guess-word, &.buy-letter {
         cursor: pointer;
-        &.T1:hover {
+        &.T1:hover, &.T1.selected {
           border: $COLOR_TEAM_1_LIGHTER $CELL_BOLD_BORDER;
         }
-        &.T2:hover {
+        &.T2:hover, &.T2.selected {
           border: $COLOR_TEAM_2_LIGHTER $CELL_BOLD_BORDER;
         }
       }

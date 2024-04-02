@@ -12,8 +12,9 @@ import GameListScreen from './pages/GameListScreen';
 
 export const CurrentMenuContext = React.createContext();
 export const UsersContext = React.createContext();
-export const clueContext = React.createContext();
-export const publicGridContext = React.createContext();
+export const PublicGridContext = React.createContext();
+export const CurrentSelectionContext = React.createContext();
+
 
 const App = () => {
 
@@ -28,8 +29,8 @@ const App = () => {
   unguessedWords.sort((a, b) => a.num - b.num);
 
   let publicWords = [
-    getPublicWordByClueNum(9, 'QUALITY'),
-    getPublicWordByClueNum(3, 'KEY'),
+    // getPublicWordByClueNum(9, 'QUALITY'),
+    // getPublicWordByClueNum(3, 'KEY'),
     getPublicWordByClueNum(4, 'CASKET'),
     getPublicWordByClueNum(5, 'CART'),
     getPublicWordByClueNum(1, 'BEE'),
@@ -81,23 +82,25 @@ const App = () => {
   const [currentMenu, setCurrentMenu] = useState('play-word');
   const [usersTeam, setUsersTeam] = useState('T2');
   const [usersPlayer, setUsersPlayer] = useState('P2');
+  const [currentSelection, setCurrentSelection] = useState([]);
 
   return (
     <>
     <CurrentMenuContext.Provider value={{ currentMenu, setCurrentMenu }}>
       <UsersContext.Provider value={{ usersTeam, setUsersTeam, usersPlayer, setUsersPlayer }}>
-        <publicGridContext.Provider value={{ publicGrid, unguessedWords, publicWords }}>
-          <PlayScreen />
+        <PublicGridContext.Provider value={{ publicGrid, unguessedWords, publicWords }}>
+          <CurrentSelectionContext.Provider value={{ currentSelection, setCurrentSelection }}>
+            <PlayScreen />
 
-          {/* <BrowserRouter>
-          <Routes>
-            <Route path="/" element={HomeScreen} />
-            <Route path="/play" element={PlayScreen} />
-            <Route path="/games" element={GameListScreen} />
-          </Routes>
-          </BrowserRouter>     */}
-
-        </publicGridContext.Provider>
+            {/* <BrowserRouter>
+            <Routes>
+              <Route path="/" element={HomeScreen} />
+              <Route path="/play" element={PlayScreen} />
+              <Route path="/games" element={GameListScreen} />
+            </Routes>
+            </BrowserRouter>     */}
+          </CurrentSelectionContext.Provider>
+        </PublicGridContext.Provider>
       </UsersContext.Provider>
     </CurrentMenuContext.Provider>
     </>

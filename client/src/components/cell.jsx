@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import { UsersContext } from '../App';
 import { WordData, PublicWord } from './Word';
 import { GridData } from './GridData';
-import { publicGridContext } from '../App';
+import { PublicGridContext } from '../App';
 import { CurrentMenuContext } from '../App';
+import { CurrentSelectionContext } from '../App';
 
 function Cell({ row, col }) {
 
@@ -17,7 +18,7 @@ function Cell({ row, col }) {
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');
 
   const { usersTeam } = useContext(UsersContext);
-  const selectedByTeam = usersTeam; // alias to distinguish between owning and selecting team
+  const teamSelectedBy = usersTeam; // alias to distinguish between owning and selecting team
 
   const [cellSize, setCellSize] = useState(() => {
     const gridContainerSize = Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4);
@@ -66,12 +67,14 @@ function Cell({ row, col }) {
   /* Game Logic */
   //////////////////////////////////////////////////////////////
 
-  const { publicGrid } = useContext(publicGridContext);
+  const { publicGrid } = useContext(PublicGridContext);
+  const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
 
   const [letter, setLetter] = useState(''); // string of length 1 or ''
   const [num, setNum] = useState(0); // 0 for no number
   const [owningTeam, setOwningTeam] = useState(''); // 'team1', 'team2', or ''
   const [state, setState] = useState('empty'); // empty, guessed, unguessed, temp-block, block
+  const [selected, setSelected] = useState(''); // selected or ''
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -87,6 +90,78 @@ function Cell({ row, col }) {
     };
   }, [publicGrid[row]?.[col]]);
 
+  useEffect(() => {
+    setCurrentSelection(currentSelection);
+    if (currentSelection.length === 0) {
+      setSelected('');
+    } else {
+      const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
+      setSelected(selected ? 'selected' : '');
+    }
+  }, [currentSelection]);
+
+  // const toggleSelection = () => {
+  //   setSelected((selected === '' ? 'selected' : ''));
+  // };
+
+  const addToSelectedOnClick = () => {
+    const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
+    if (selected) {
+      setCurrentSelection(currentSelection.filter(cell => cell.row !== row || cell.col !== col));
+    } else {
+      setCurrentSelection([...currentSelection, { row: row, col: col }]);
+    }
+  }
+
+  const changeSelectedOnClick = () => {
+    const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
+    if (selected) {
+      setCurrentSelection([]);
+    } else {
+      setCurrentSelection([{ row: row, col: col }]);
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const ARROW_UP = 38;
+      const ARROW_DOWN = 40;
+      const ARROW_LEFT = 37;
+      const ARROW_RIGHT = 39;
+
+      let { row, col } = currentSelection[0];
+
+      switch (event.keyCode) {
+        case ARROW_UP:
+          row = Math.max(0, row - 1);
+          event.preventDefault();
+          break;
+        case ARROW_DOWN:
+          row = Math.min(NUM_GRID_CELLS - 1, row + 1);
+          event.preventDefault();
+          break;
+        case ARROW_LEFT:
+          col = Math.max(0, col - 1);
+          event.preventDefault();
+          break;
+        case ARROW_RIGHT:
+          col = Math.min(NUM_GRID_CELLS - 1, col + 1);
+          event.preventDefault();
+          break;
+        default:
+          return; 
+      }
+
+      setCurrentSelection([{ row, col }]);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentSelection]);
+
 
   //////////////////////////////////////////////////////////////
   /* HTML */
@@ -94,8 +169,7 @@ function Cell({ row, col }) {
 
   return (
     <div>
-      {publicGrid.logGridStatePretty()}
-      <button className={`cell ${currentMenu} ${owningTeam} ${state} ${selectedByTeam}`} style={getCellSize(cellSize)}> 
+      <button className={`cell ${selected} ${currentMenu} ${owningTeam} ${state} ${teamSelectedBy}`} style={getCellSize(cellSize)} onClick={changeSelectedOnClick} > 
         {num !== 0 && <span className="num" style={{ ...getNumTextStyle(cellSize)}}>{num}</span>}
         <span className="letter" style={{ ...getLetterTextStyle(cellSize)}}>{letter}</span>
       </button>
