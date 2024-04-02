@@ -11,20 +11,13 @@ function Cell({ row, col }) {
   /* Styling */
   //////////////////////////////////////////////////////////////
 
-  const { publicGrid } = useContext(publicGridContext);
   const { currentMenu } = useContext(CurrentMenuContext);
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');
 
   const { usersTeam } = useContext(UsersContext);
-  // alias to distinguish between owning and selecting team
-  const selectedByTeam = usersTeam; 
-
-  const [letter, setLetter] = useState(''); // string of length 1 or ''
-  const [num, setNum] = useState(0); // 0 for no number
-  const [owningTeam, setOwningTeam] = useState(''); // 'team1', 'team2', or ''
-  const [state, setState] = useState('empty'); // empty, guessed, unguessed, temp-block, block
+  const selectedByTeam = usersTeam; // alias to distinguish between owning and selecting team
 
   const [cellSize, setCellSize] = useState(() => {
     const gridContainerSize = Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4);
@@ -45,7 +38,7 @@ function Cell({ row, col }) {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [letter, num, owningTeam, state]);
+  },);
 
   const getNumTextStyle = (size) => {
     const fontSize = size / 2;
@@ -72,6 +65,13 @@ function Cell({ row, col }) {
   //////////////////////////////////////////////////////////////
   /* Game Logic */
   //////////////////////////////////////////////////////////////
+
+  const { publicGrid } = useContext(publicGridContext);
+
+  const [letter, setLetter] = useState(''); // string of length 1 or ''
+  const [num, setNum] = useState(0); // 0 for no number
+  const [owningTeam, setOwningTeam] = useState(''); // 'team1', 'team2', or ''
+  const [state, setState] = useState('empty'); // empty, guessed, unguessed, temp-block, block
 
   useEffect(() => {
     const handleUpdate = () => {

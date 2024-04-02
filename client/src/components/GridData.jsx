@@ -207,18 +207,20 @@ class GridData {
                 this.setTempBlockAdjacentCells(row, col + i, down)
             }
         }
-        // temporarily block CellData before word
+        // block CellData before word 
+        // maybe changed to temp-block later?
         if (down) {
             if (row > 0) {
-                this.setTempBlock(row - 1, col);
+                this.setBlock(row - 1, col);
             }
         } else {
             if (col > 0) {
-                this.setTempBlock(row, col - 1);
+                this.setBlock(row, col - 1);
             }
         }
 
         // permanently block CellData after word
+        // maybe changed to temp-block later?
         if (down) {
             if (row + length < NUM_GRID_CELLS) {
                 this.setBlock(row + length, col);
@@ -246,31 +248,34 @@ class GridData {
             // this.logGridStatePretty();
         }
 
-        // remove temp block CellData before word
-        if (down) {
-            if (row > 0) {
-                this.removeTempBlock(row - 1, col);
-            }
-        } else {
-            if (col > 0) {
-                this.removeTempBlock(row, col - 1);
-            }
-        }
+        // // remove temp block CellData before word
+        // if (down) {
+        //     if (row > 0) {
+        //         this.removeTempBlock(row - 1, col);
+        //     }
+        // } else {
+        //     if (col > 0) {
+        //         this.removeTempBlock(row, col - 1);
+        //     }
+        // }
     }
 
     removeTempBlock(row, col) {
         // check all adjacent CellDatas for unguessed CellDatas
         if (row > 0) {
+            console.log('     -1', row-1, col)
             if (this.GridData[row - 1][col].state === 'unguessed') {
                 return;
             }
         }
         if (row + 1 < NUM_GRID_CELLS) {
+            console.log('    -2', row+1, col)
             if (this.GridData[row + 1][col].state === 'unguessed') {
                 return;
             }
         }
         if (col > 0) {
+            console.log('     -3', row, col-1)
             if (this.GridData[row][col - 1].state === 'unguessed') {
                 return;
             }
@@ -287,18 +292,18 @@ class GridData {
 
     removeAdjacentTempBlocks(row, col, down) {
         if (down) {
-            if (row > 0) {
-                this.removeTempBlock(row - 1, col);
-            }
-            if (row + 1 < NUM_GRID_CELLS) {
-                this.removeTempBlock(row + 1, col);
-            }
-        } else {
             if (col > 0) {
                 this.removeTempBlock(row, col - 1);
             }
-            if (col + 1 < NUM_GRID_CELLS) {
+            if (row + 1 < NUM_GRID_CELLS) {
                 this.removeTempBlock(row, col + 1);
+            }
+        } else {
+            if (row > 0) {
+                this.removeTempBlock(row - 1, col);
+            }
+            if (col + 1 < NUM_GRID_CELLS) {
+                this.removeTempBlock(row + 1, col);
             }
         }
     }

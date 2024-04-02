@@ -11,8 +11,6 @@ function GameBoard() {
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');;
 
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
-  const [blueScore, setBlueScore] = useState(0);
-  const [greenScore, setGreenScore] = useState(0);
 
   const [gridContainerSize, setGridContainerSize] = useState(() => {
     const initialContainerSize = document.documentElement.clientHeight * 0.4;
@@ -23,7 +21,6 @@ function GameBoard() {
     return gridContainerSize - 140;
   });
   
-
   useEffect(() => {
     const handleResize = () => {
       updateColHeights();
@@ -37,8 +34,7 @@ function GameBoard() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [blueScore, greenScore]);
-
+  },);
 
   const updateColHeights = () => {
     const col = document.querySelector('.-left');
@@ -69,13 +65,13 @@ function GameBoard() {
       fontSize: `${fontSize}px`,
     };
   };
-  
 
   //////////////////////////////////////////////////////////////
   /* Game Logic */
   //////////////////////////////////////////////////////////////
 
-
+  const [blueScore, setBlueScore] = useState(0);
+  const [greenScore, setGreenScore] = useState(0);
 
   //////////////////////////////////////////////////////////////
   /* HTML */

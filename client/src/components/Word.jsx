@@ -55,6 +55,19 @@ class WordData {
     logWordData() {
         console.log(`WordData: clue=${this.clue}, team=${this.team}, row=${this.row}, col=${this.col}, num=${this.num}, down=${this.down}, length=${this.length}`);
     }
+
+    getPublicWord(word) {
+        return new PublicWord({
+            word: word,
+            length: this.length,
+            clue: this.clue,
+            team: this.team,
+            row: this.row,
+            col: this.col,
+            num: this.num,
+            down: this.down
+        });
+    }
 }
 
 class PublicWord extends WordData {
