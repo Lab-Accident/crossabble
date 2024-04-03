@@ -31,9 +31,9 @@ const App = () => {
   let publicWords = [
     // getPublicWordByClueNum(9, 'QUALITY'),
     // getPublicWordByClueNum(3, 'KEY'),
-    getPublicWordByClueNum(4, 'CASKET'),
-    getPublicWordByClueNum(5, 'CART'),
-    getPublicWordByClueNum(1, 'BEE'),
+    // getPublicWordByClueNum(4, 'CASKET'),
+    // getPublicWordByClueNum(5, 'CART'),
+    // getPublicWordByClueNum(1, 'BEE'),
     // getPublicWordByClueNum(5, 'PATH'),
   ];
   // makeWordPublic(5, 'PATH');

@@ -122,46 +122,6 @@ function Cell({ row, col }) {
     }
   }
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const ARROW_UP = 38;
-      const ARROW_DOWN = 40;
-      const ARROW_LEFT = 37;
-      const ARROW_RIGHT = 39;
-
-      let { row, col } = currentSelection[0];
-
-      switch (event.keyCode) {
-        case ARROW_UP:
-          row = Math.max(0, row - 1);
-          event.preventDefault();
-          break;
-        case ARROW_DOWN:
-          row = Math.min(NUM_GRID_CELLS - 1, row + 1);
-          event.preventDefault();
-          break;
-        case ARROW_LEFT:
-          col = Math.max(0, col - 1);
-          event.preventDefault();
-          break;
-        case ARROW_RIGHT:
-          col = Math.min(NUM_GRID_CELLS - 1, col + 1);
-          event.preventDefault();
-          break;
-        default:
-          return; 
-      }
-
-      setCurrentSelection([{ row, col }]);
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [currentSelection]);
-
 
   //////////////////////////////////////////////////////////////
   /* HTML */
