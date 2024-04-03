@@ -53,14 +53,11 @@ function GuessWordMenu() {
   }, [selectedWord]);
 
   const handleSelectionChangeLeft = () => {
-    console.log('test', selectedWord)
     if (selectedWord === 0) {
       setSelectedWord(unguessedWords[0])
       return;
     }
-    const index = unguessedWords.findIndex(word => word === selectedWord);
-    console.log(unguessedWords)
-    console.log(index)
+    const index = unguessedWords.findIndex(word => word.num === selectedWord.num);
     if (index === -1) {
       setSelectedWord(unguessedWords[0]);
       return;
@@ -74,12 +71,12 @@ function GuessWordMenu() {
       setSelectedWord(unguessedWords[0])
       return;
     }
-    const index = unguessedWords.findIndex(word => word === selectedWord);
+    const index = unguessedWords.findIndex(word => word.num === selectedWord.num);
     if (index === -1) {
       setSelectedWord(unguessedWords[0]);
       return;
     }
-    const next = index + 1 % unguessedWords.length;
+    const next = (index + 1) % unguessedWords.length;
     setSelectedWord(unguessedWords[next]);
   }
 
