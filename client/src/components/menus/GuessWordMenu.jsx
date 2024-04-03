@@ -81,6 +81,31 @@ function GuessWordMenu() {
   }
 
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const ARROW_LEFT = 37;
+      const ARROW_RIGHT = 39;
+
+      switch (event.keyCode) {
+        case ARROW_LEFT:
+          handleSelectionChangeLeft();
+          event.preventDefault();
+          break;
+        case ARROW_RIGHT:
+          handleSelectionChangeRight();
+          break;
+        default:
+          return; 
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedWord]);
+
   return (
     <div className='menu-container'>
 
