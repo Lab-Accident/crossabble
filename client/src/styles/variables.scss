@@ -3,32 +3,32 @@
 // Dark - for background, empty cells
 // Black
 $COLOR_DARK: hsl(0, 0%, 9%);
-$COLOR_DARK_LIGHTER: lighten($COLOR_DARK, 5%);
-$COLOR_DARK_DARKER: darken($COLOR_DARK, 5%);
+$COLOR_DARK_LIGHTER: lighten($COLOR_DARK, 6%);
+$COLOR_DARK_DARKER: darken($COLOR_DARK, 6%);
 
 // Neutral - for temporary blocked cells
 // Gray
 $COLOR_NEUTRAL: hsl(26, 7%, 42%);
-$COLOR_NEUTRAL_LIGHTER: lighten($COLOR_NEUTRAL, 5%);
-$COLOR_NEUTRAL_DARKER: darken($COLOR_NEUTRAL, 5%);
+$COLOR_NEUTRAL_LIGHTER: lighten($COLOR_NEUTRAL, 6%);
+$COLOR_NEUTRAL_DARKER: darken($COLOR_NEUTRAL, 6%);
 
 // Highlight - for text, grid outlines, permanently blocked cells, active player outline
 // White
 $COLOR_HIGHLIGHT: hsl(46, 32%, 92%);
-$COLOR_HIGHLIGHT_LIGHTER: lighten($COLOR_HIGHLIGHT, 5%);
-$COLOR_HIGHLIGHT_DARKER: darken($COLOR_HIGHLIGHT, 5%);
+$COLOR_HIGHLIGHT_LIGHTER: lighten($COLOR_HIGHLIGHT, 6%);
+$COLOR_HIGHLIGHT_DARKER: darken($COLOR_HIGHLIGHT, 6%);
 
 // Team 1 - for team 1's cells, team 1's text, some buttons
 // Blue
 $COLOR_TEAM_1: hsl(217, 100%, 56%);
-$COLOR_TEAM_1_LIGHTER: lighten($COLOR_TEAM_1, 5%);
-$COLOR_TEAM_1_DARKER: darken($COLOR_TEAM_1, 5%);
+$COLOR_TEAM_1_LIGHTER: lighten($COLOR_TEAM_1, 6%);
+$COLOR_TEAM_1_DARKER: darken($COLOR_TEAM_1, 6%);
 
 // Team 2 - for team 2's cells, team 2's text, some buttons
 // Green
 $COLOR_TEAM_2: hsl(165, 78%, 41%);
-$COLOR_TEAM_2_LIGHTER: lighten($COLOR_TEAM_2, 5%);
-$COLOR_TEAM_2_DARKER: darken($COLOR_TEAM_2, 5%);
+$COLOR_TEAM_2_LIGHTER: lighten($COLOR_TEAM_2, 6%);
+$COLOR_TEAM_2_DARKER: darken($COLOR_TEAM_2, 6%);
 
 // FONTS
 $MAIN_FONT: 'VT323', monospace;

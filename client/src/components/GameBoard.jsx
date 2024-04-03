@@ -51,7 +51,6 @@ function GameBoard() {
   };
 
   const updateGridContainerSize = () => {
-    console.log('updateGridLength', gridContainerSize);
     const viewportHeight = document.documentElement.clientHeight;
     setGridContainerSize(Math.max(MIN_GRID_SIZE, viewportHeight*0.4));
   }

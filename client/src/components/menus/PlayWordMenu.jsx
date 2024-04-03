@@ -150,6 +150,8 @@ function PlayWordMenu() {
     };
   }, [currentSelection]);
 
+  // TODO add handling for when selection is empty
+
   return (
     <>
     <div className='menu-container'>

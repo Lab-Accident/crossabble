@@ -82,7 +82,7 @@ const App = () => {
   const [currentMenu, setCurrentMenu] = useState('play-word');
   const [usersTeam, setUsersTeam] = useState('T2');
   const [usersPlayer, setUsersPlayer] = useState('P2');
-  const [currentSelection, setCurrentSelection] = useState([]);
+  const [currentSelection, setCurrentSelection] = useState([{ row: 0, col: 0}]);
 
   return (
     <>
