@@ -113,7 +113,68 @@ function Cell({ row, col }) {
     }
   }
 
+  const selectFullUnguessedWord = (row, col) => {
+    let start = {row: row, col: col};
+    let prefixUp = findAdjacentUnguessedCellsUp(row, col);
+    let suffixDown = findAdjacentUnguessedCellsDown(row, col);
+    let prefixLeft = findAdjacentUnguessedCellsLeft(row, col);
+    let suffixRight = findAdjacentUnguessedCellsRight(row, col);
+
+    if (prefixUp.length === 0 && suffixDown.length === 0 && prefixLeft.length === 0 && suffixRight.length === 0) {
+      setCurrentSelection([]);
+      return;
+    }
+    if (prefixUp.length === 0 && suffixDown.length === 0) {
+      setCurrentSelection([...prefixLeft, start, ...suffixRight]);
+      return;
+    }
+    if (prefixLeft.length === 0 && suffixRight.length === 0) {
+      setCurrentSelection([...prefixUp, start, ...suffixDown]);
+      return;
+    }
+  }
+
+
+  const findAdjacentUnguessedCellsUp = (row, col) => {
+    let prefixUp = [];
+    while (row > 0 && publicGrid.getState(row - 1, col) === 'unguessed') {
+      prefixUp = [{row: row - 1, col: col}, ...prefixUp];
+      row--;
+    }
+    return prefixUp;
+  }
+  const findAdjacentUnguessedCellsDown = (row, col) => {
+    let suffixDown = [];
+    while (row + 1 < NUM_GRID_CELLS && publicGrid.getState(row + 1, col) === 'unguessed') {
+      suffixDown = [...suffixDown, {row: row + 1, col: col}];
+      row++;
+    }
+    return suffixDown;
+  }
+  const findAdjacentUnguessedCellsLeft = (row, col) => {
+    let prefixLeft = [];
+    while (col > 0 && publicGrid.getState(row, col - 1) === 'unguessed') {
+      prefixLeft = ([{row: row, col: col - 1}, ...prefixLeft]);
+      col--;
+    }
+    return prefixLeft;
+  }
+  const findAdjacentUnguessedCellsRight = (row, col) => {
+    let suffixRight = [];
+    while (col + 1 < NUM_GRID_CELLS && publicGrid.getState(row, col + 1) === 'unguessed') {
+      suffixRight = [...suffixRight, {row: row, col: col + 1}];
+      col++;
+    }
+    return suffixRight;
+  }
+
+
   const changeSelectedOnClick = () => {
+    if (currentMenu === 'guess-word') {
+      selectFullUnguessedWord(row, col);
+      return;
+    }
+    
     const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
     if (selected) {
       setCurrentSelection([]);

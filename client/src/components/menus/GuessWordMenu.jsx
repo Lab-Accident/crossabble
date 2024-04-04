@@ -11,9 +11,9 @@ function GuessWordMenu() {
   const [wordLocText, setWordLocText] = useState('');
   const [selectedWord, setSelectedWord] = useState(0);
 
-  const { setCurrentSelection } = useContext(CurrentSelectionContext);
+  const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
   const { usersTeam } = useContext(UsersContext);
-  const { unguessedWords } = useContext(PublicGridContext);
+  const { publicGrid, unguessedWords } = useContext(PublicGridContext);
 
   const handleWordChange = (event) => {
     let input = event.target.value;
@@ -41,43 +41,60 @@ function GuessWordMenu() {
         return cells;
   }
 
-  useEffect(() => {
-    if (selectedWord === 0) {
-        setWordLocText('');
-        setCurrentSelection([]);
-    } else {
-        const direction = selectedWord.down ? 'Down' : 'Across';
-        setWordLocText(`${selectedWord.num} ${direction} `);
-        setCurrentSelection(getCellsFromWord(selectedWord));
+
+  function findWordByClueNum(num) {
+    const word = unguessedWords.find(word => word.num === num);
+    if (!word) {
+      console.warn(`WordData with clue number ${num} not found.`);
+      return 0;
     }
-  }, [selectedWord]);
+    return word;
+  }
+
+  useEffect(() => {
+    if (currentSelection.length === 0) {
+      setSelectedWord(0);
+      return;
+    }
+    const { row, col } = currentSelection[0];
+    let wordNum = publicGrid.getNum(row, col);
+    let word = findWordByClueNum(wordNum);
+    setSelectedWord(word);
+  }, [currentSelection]);
+
 
   const handleSelectionChangeLeft = () => {
     if (selectedWord === 0) {
       setSelectedWord(unguessedWords[0])
+      setCurrentSelection(getCellsFromWord(unguessedWords[0]));
       return;
     }
     const index = unguessedWords.findIndex(word => word.num === selectedWord.num);
     if (index === -1) {
       setSelectedWord(unguessedWords[0]);
+      setCurrentSelection(getCellsFromWord(unguessedWords[0]));
       return;
     }
     const next = (index - 1 + unguessedWords.length) % unguessedWords.length;
     setSelectedWord(unguessedWords[next]);
+    setCurrentSelection(getCellsFromWord(unguessedWords[next]));
   }
 
   const handleSelectionChangeRight = () => {
     if (selectedWord === 0) {
-      setSelectedWord(unguessedWords[0])
+      setSelectedWord(unguessedWords[0]);
+      setCurrentSelection(unguessedWords[0]);
       return;
     }
     const index = unguessedWords.findIndex(word => word.num === selectedWord.num);
     if (index === -1) {
       setSelectedWord(unguessedWords[0]);
+      setCurrentSelection(getCellsFromWord(unguessedWords[0]));
       return;
     }
     const next = (index + 1) % unguessedWords.length;
     setSelectedWord(unguessedWords[next]);
+    setCurrentSelection(getCellsFromWord(unguessedWords[next]));
   }
 
 
@@ -93,6 +110,7 @@ function GuessWordMenu() {
           break;
         case ARROW_RIGHT:
           handleSelectionChangeRight();
+          event.preventDefault();
           break;
         default:
           return; 
@@ -115,7 +133,9 @@ function GuessWordMenu() {
 
       <div className='word-nav-bar'>
         <div className= {`side-button ${usersTeam}`} onClick={handleSelectionChangeLeft} >{'<'}</div>
-        <div className= {`curr-nav-display ${usersTeam}`} >{wordLocText}</div>
+        <div className={`curr-nav-display ${usersTeam}`}>
+          {selectedWord !== 0 && `${selectedWord.num} ${selectedWord.down ? 'Down' : 'Across'}`}
+        </div>
         <div className= {`side-button ${usersTeam}`} onClick={handleSelectionChangeRight} >{'>'}</div>
       </div>
 

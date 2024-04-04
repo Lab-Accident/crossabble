@@ -133,8 +133,8 @@ function BuyLetterMenu() {
         <div className=  {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeUp} >
           <span style={{ transform: 'rotate(90deg)' }}>{'<'}</span>
         </div>
-        <div className= {`qtr-button ${usersTeam}`} >
-          <span style={{ transform: 'rotate(-90deg)' }} onClick={handleSelectionChangeDown} >{'<'}</span>
+        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeDown}>
+          <span style={{ transform: 'rotate(-90deg)' }} >{'<'}</span>
         </div>
         <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeRight} >{'>'}</div>
       </div>
