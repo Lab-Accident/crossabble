@@ -68,12 +68,12 @@ const App = () => {
     // console.log(unguessedWords);
   }
 
-  const publicGrid = new GridData();
+  const grid = new GridData();
   for (let i = 0; i < unguessedWords.length; i++) {
-    publicGrid.setUnguessedCellsFromWord(unguessedWords[i]);
+    grid.setUnguessedCellsFromWord(unguessedWords[i]);
   }
   for (let i = 0; i < publicWords.length; i++) {
-    publicGrid.setGuessedCellsFromWord(publicWords[i]);
+    grid.setGuessedCellsFromWord(publicWords[i]);
   }
 
   // publicGrid.logGridStatePretty();
@@ -84,12 +84,17 @@ const App = () => {
   const [usersTeam, setUsersTeam] = useState('T2');
   const [usersPlayer, setUsersPlayer] = useState('P2');
   const [currentSelection, setCurrentSelection] = useState([{ row: 0, col: 0}]);
+  const [publicGrid, setPublicGrid] = useState(grid);
+
+  const setLetter = (row, col, letter) => {
+    publicGrid.setLetter(row, col, letter);
+  }
 
   return (
     <>
     <CurrentMenuContext.Provider value={{ currentMenu, setCurrentMenu }}>
       <UsersContext.Provider value={{ usersTeam, setUsersTeam, usersPlayer, setUsersPlayer }}>
-        <PublicGridContext.Provider value={{ publicGrid, unguessedWords, publicWords }}>
+        <PublicGridContext.Provider value={{ publicGrid, setPublicGrid, unguessedWords, publicWords }}>
           <CurrentSelectionContext.Provider value={{ currentSelection, setCurrentSelection }}>
             <PlayScreen />
 

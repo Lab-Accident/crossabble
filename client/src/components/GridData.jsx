@@ -143,12 +143,15 @@ class GridData {
         this.GridData[row][col].num = num;
     }
 
-    setGuessed(row, col, letter) {
+    setGuessed(row, col, letter, team) {
         this.GridData[row][col].letter = letter;
         this.GridData[row][col].state = 'guessed';
+        this.GridData[row][col].owningTeam = team;
     }
 
     setLetter(row, col, letter) {
+        console.log(row, col, letter);
+        this.logGridLettersPretty();
         this.GridData[row][col].letter = letter;
     }
     
@@ -235,14 +238,14 @@ class GridData {
 
     setGuessedCellsFromWord(publicWord) {
         // publicWord.logPublicWord();
-        const { word, row, col, down, length} = publicWord;
+        const { word, row, col, down, team, length} = publicWord;
         this.setNum(row, col, 0);
         for (let i = 0; i < length; i++) {
             if (down) {
-                this.setGuessed(row + i, col, word[i])
+                this.setGuessed(row + i, col, word[i], team)
                 this.removeAdjacentTempBlocks(row + i, col, down)
             } else {
-                this.setGuessed(row, col + i, word[i])
+                this.setGuessed(row, col + i, word[i], team)
                 this.removeAdjacentTempBlocks(row, col + i, down)
             }
             // this.logGridStatePretty();
@@ -305,9 +308,9 @@ class GridData {
         }
     }
 
-    static deepCopy(sourceGridData) {
+    deepCopy() {
         let newGridData = new GridData();
-        newGridData.GridData = sourceGridData.map(row => row.map(CellData => new CellData(CellData)));
+        newGridData.GridData = this.map(row => row.map(CellData => new CellData(CellData)));
         return newGridData;
     }
 

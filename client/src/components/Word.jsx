@@ -65,7 +65,25 @@ class WordData {
             down: this.down
         });
     }
+
+   getCellsFromWord() {
+    return getCells(this.down, this.length, this.row, this.col);
+    }
+    
 }
+
+const getCells = (down, length, row, col) => {
+    let cells = [];
+    for (let i = 0; i < length; i++) {
+        if (down) {
+            cells.push({row: row + i, col: col});
+        } else {
+            cells.push({row: row, col: col + i});
+        }
+    }
+    return cells;
+}
+
 
 class PublicWord extends WordData {
     constructor({ word, length = word.length, ...rest }) {
