@@ -77,7 +77,6 @@ function Cell({ row, col, accessKey}) {
   const [selected, setSelected] = useState(''); // selected or ''
 
   useEffect(() => {
-    console.log('Cell update', row, col)
     const handleUpdate = () => {
       setLetter(publicGrid.getLetter(row, col));
       setNum(publicGrid.getNum(row, col));

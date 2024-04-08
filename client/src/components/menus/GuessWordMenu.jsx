@@ -1,4 +1,4 @@
-import React, { useEffect,useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import OptionsMenu from './OptionsMenu'
 import { UsersContext } from '../../App';
 import { PublicGridContext } from '../../App';
@@ -12,29 +12,27 @@ function GuessWordMenu() {
 
   const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
   const { usersTeam } = useContext(UsersContext);
-  const { publicGrid, setPublicGrid, unguessedWords } = useContext(PublicGridContext);
+  const { publicGrid, unguessedWords } = useContext(PublicGridContext);
 
-  const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
+  const inputRef = useRef(null);
 
   function getCellElement(row, col) {
     const accessKey = `row${row}-col${col}`; 
     const cellComponent = document.querySelector(`.cell[accessKey="${accessKey}"]`);
     if (!cellComponent) {
-        console.error('Cell component not found for access key', accessKey);
+        console.warn('Cell component not found for access key', accessKey);
         return null;
     }
-    console.log('cellComponent', cellComponent);
-    console.log(accessKey);
     return cellComponent;
 }
 
   function getCellLetter(cellElement) {
-    if (!cellElement.querySelector('.letter')) {
+    if (!cellElement) {
+      console.warn('Cell element not found');
       return null;
     }
     return cellElement.querySelector('.letter');
   }
-
 
   const handleWordChange = (event) => {
     if (selectedWord === 0) {
@@ -43,69 +41,73 @@ function GuessWordMenu() {
     let input = event.target.value;
     input = input.replace(/[^A-Za-z]/ig, '');
     input = input.toUpperCase();
-    if (input.length > selectedWord.length) {
-      input = input.slice(0, selectedWord.length);
-    }
+    input = input.slice(0, selectedWord.length);
 
-    console.log('selectedWord', selectedWord);
-    console.log('selectedWord.row', selectedWord.row, 'selectedWord.col', selectedWord.col);
-    console.log('selectedWord.down', selectedWord.down);
-
-    for (let i = input.length; i < selectedWord.length; i++) {
+    for (let i = 0; i < input.length; i++) {
       if (selectedWord.down) {
         const cellElement = getCellElement(selectedWord.row + i, selectedWord.col);
-        console.log('down', selectedWord.row + i, selectedWord.col);
-        console.log(cellElement);
-        let letterElement = getCellLetter(cellElement);
-        if (letterElement) {
-          letterElement.textContent = input[i];
-        }
-        
+        const letterElement = getCellLetter(cellElement);
+        letterElement.textContent = input[i];
       } else {
-        const cellElement = getCellElement(selectedWord.row, selectedWord.col + 1);
-        console.log('down', selectedWord.row, selectedWord.col + 1);
-        console.log(cellElement);
-        let letterElement = getCellLetter(cellElement);
-
-        if (letterElement) {
-          letterElement.textContent = input[i];
-        }
+        const cellElement = getCellElement(selectedWord.row, selectedWord.col + i);
+        const letterElement = getCellLetter(cellElement);
+        letterElement.textContent = input[i];
       }
     }
     for (let i = input.length; i < selectedWord.length; i++) {
       if (selectedWord.down) {
-        const letterElement = getCellLetter(selectedWord.row + i, selectedWord.col);
+        const cellElement = getCellElement(selectedWord.row + i, selectedWord.col);
+        const letterElement = getCellLetter(cellElement);
         letterElement.textContent = '';
       } else {
-        const letterElement = getCellLetter(selectedWord.col + i, selectedWord.col);
+        const cellElement = getCellElement(selectedWord.row, selectedWord.col + i);
+        const letterElement = getCellLetter(cellElement);
         letterElement.textContent = '';
       }
   }
   setWord(input);
   };
-  //clear cells, when  selection is changed
-
-
-  useEffect(() => {
-    console.log('selectedWord', selectedWord);
-  }, [selectedWord]);
 
   const handleWordEnter = () => {
     setWordGuessed(true);
   };
+
+
+  function switchSelectedWord(newWord) {
+    const oldWord = selectedWord;
+    setSelectedWord(newWord);
+    if (oldWord !== 0 && oldWord.num !== newWord.num) {
+      for (let i = 0; i < oldWord.length; i++) {
+        if (oldWord.down) {
+          console.log(oldWord.row + i, oldWord.col);
+          const cellElement = getCellElement(oldWord.row + i, oldWord.col);
+          const letterElement = getCellLetter(cellElement);
+          letterElement.textContent = '';
+        } else {
+          console.log(oldWord.row, oldWord.col + i);
+          const cellElement = getCellElement(oldWord.row, oldWord.col + i);
+          const letterElement = getCellLetter(cellElement);
+          letterElement.textContent = '';
+        }
+      }
+      setWord('');
+    }
+  }
+
 
   useEffect(() => {
     if (currentSelection.length === 0) {
       setSelectedWord(0);
       return;
     }
+    inputRef.current.focus();
     const { row, col } = currentSelection[0];
-    let num = publicGrid.getNum(row, col);
-    let word = findWord(num, unguessedWords);
-    setSelectedWord(word);
-    // if different selection rather than added remove cell from previous selection
-    // setWord('');
+    const num = publicGrid.getNum(row, col);
+    const word = findWord(num, unguessedWords);
+    switchSelectedWord(word);
   }, [currentSelection]);
+
+
 
   function findWord(num, list) {
     const word = list.find(word => word.num === num);
@@ -127,42 +129,36 @@ function GuessWordMenu() {
 
   const handleSelectionChangeLeft = () => {
     if (selectedWord === 0) {
-      setSelectedWord(unguessedWords[0])
       setCurrentSelection(unguessedWords[0].getCellsFromWord());
-      setWord('');
+      switchSelectedWord(unguessedWords[0]);
       return;
     }
     const index = findWordIndex(selectedWord.num, unguessedWords);
     if (index === -1) {
-      setSelectedWord(unguessedWords[0]);
       setCurrentSelection(unguessedWords[0].getCellsFromWord());
-      setWord('');
+      switchSelectedWord(unguessedWords[0]);
       return;
     }
     const next = (index - 1 + unguessedWords.length) % unguessedWords.length;
-    setSelectedWord(unguessedWords[next]);
     setCurrentSelection(unguessedWords[next].getCellsFromWord());
-    setWord('');
+    switchSelectedWord(unguessedWords[next]);
   }
 
   const handleSelectionChangeRight = () => {
     if (selectedWord === 0) {
-      setSelectedWord(unguessedWords[0]);
       setCurrentSelection(unguessedWords[0]);
-      setWord('');
+      switchSelectedWord(unguessedWords[0]);
       return;
     }
     const index = findWordIndex(selectedWord.num, unguessedWords);
     if (index === -1) {
-      setSelectedWord(unguessedWords[0]);
       setCurrentSelection(unguessedWords[0].getCellsFromWord());
-      setWord('');
+      switchSelectedWord(unguessedWords[0]);
       return;
     }
     const next = (index + 1) % unguessedWords.length;
-    setSelectedWord(unguessedWords[next]);
     setCurrentSelection(unguessedWords[next].getCellsFromWord());
-    setWord('');
+    switchSelectedWord(unguessedWords[next]);
   }
 
   useEffect(() => {
@@ -190,8 +186,6 @@ function GuessWordMenu() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedWord]);
-
-
 
 
   return (
@@ -224,7 +218,11 @@ function GuessWordMenu() {
         </label>
         <input 
           className= {`menu-input ${usersTeam} ${wordGuessed ? 'inactive' : ''}`} 
-          type="text" id="guessWordInputField" 
+          type="text" 
+          id="guessWordInputField"
+          ref={inputRef}
+          autoFocus
+          autoComplete="off"
           value={word} 
           onChange={handleWordChange}
         />
