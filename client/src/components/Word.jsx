@@ -75,11 +75,10 @@ class WordData {
 const getCells = (down, length, row, col) => {
     let cells = [];
     for (let i = 0; i < length; i++) {
-        if (down) {
-            cells.push({row: row + i, col: col});
-        } else {
-            cells.push({row: row, col: col + i});
-        }
+        let curr = down 
+            ? { row: row + i, col: col } 
+            : { row: row, col: col + i };
+        cells.push(curr);
     }
     return cells;
 }

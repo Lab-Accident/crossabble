@@ -55,6 +55,7 @@ class GridData {
     }
 
     getState(row, col) {
+        //console.log(row, col);
         return this.GridData[row][col].state;
     }
     getLetter(row, col) {
