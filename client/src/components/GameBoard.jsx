@@ -5,7 +5,7 @@ import Grid from './Grid'
 function GameBoard() {
 
   //////////////////////////////////////////////////////////////
-  /* Styling */
+  /* Window Resizing Styling */
   //////////////////////////////////////////////////////////////
 
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');;
@@ -80,8 +80,13 @@ function GameBoard() {
   <>
 
   <div className="gameboard">
-    <div className="grid-container" style={{height: gridContainerSize, width: gridContainerSize}}>  
-        <Grid />
+    <div 
+      className="grid-container" 
+      style={{
+          height: gridContainerSize, 
+          width: gridContainerSize
+        }}>  
+          <Grid />
     </div>
 
     <div className="player-card T1 T1-P1"> B1 </div>
@@ -90,10 +95,18 @@ function GameBoard() {
     <div className="player-card T2 T2-P2"> G2 </div>
 
     <div className="col -left">
-      <span className="team-label team-label-green" style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}}>BLUE: {blueScore}</span>
+      <span 
+        className="team-label team-label-green" 
+        style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}}>
+            BLUE: {blueScore}
+      </span>
     </div>
     <div className="col -right">
-      <span className="team-label team-label-blue" style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}}>GREEN: {greenScore}</span>
+      <span 
+        className="team-label team-label-blue" 
+        style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}}>
+          GREEN: {greenScore}
+      </span>
     </div>
 
   </div>

@@ -6,10 +6,10 @@ import { PublicGridContext } from '../App';
 import { CurrentMenuContext } from '../App';
 import { CurrentSelectionContext } from '../App';
 
-function Cell({ row, col }) {
+function Cell({ row, col, accessKey}) {
 
   //////////////////////////////////////////////////////////////
-  /* Styling */
+  /*  Window Resizing Styling */
   //////////////////////////////////////////////////////////////
 
   const { currentMenu } = useContext(CurrentMenuContext);
@@ -190,9 +190,23 @@ function Cell({ row, col }) {
 
   return (
     <div>
-      <button className={`cell ${selected} ${currentMenu} ${owningTeam} ${state} ${teamSelectedBy}`} style={getCellSize(cellSize)} onClick={changeSelectedOnClick} > 
-        {num !== 0 && <span className="num" style={{ ...getNumTextStyle(cellSize)}}>{num}</span>}
-        <span className="letter" style={{ ...getLetterTextStyle(cellSize)}}>{letter}</span>
+      <button 
+        className={`cell ${selected} ${currentMenu} ${owningTeam} ${state} ${teamSelectedBy}`} 
+        accessKey={accessKey} 
+        style={getCellSize(cellSize)} 
+        onClick={changeSelectedOnClick} > 
+          {num !== 0 && 
+            <span 
+              className="num" 
+              style={{ ...getNumTextStyle(cellSize)}}>
+                {num}
+            </span>
+          }
+          <span 
+            className="letter" 
+            style={{ ...getLetterTextStyle(cellSize)}}>
+              {letter}
+          </span>
       </button>
     </div>
   )

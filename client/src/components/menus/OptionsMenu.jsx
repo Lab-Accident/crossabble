@@ -48,7 +48,10 @@ function OptionsMenu({ currentScreenLabel }) {
                   {option.label}
               </button>
           ))}
-        <button className={`full-width-button ${usersTeam}`}>back</button>
+        <button 
+          className={`full-width-button ${usersTeam}`}>
+            back
+        </button>
       </div>
     </div>
   )

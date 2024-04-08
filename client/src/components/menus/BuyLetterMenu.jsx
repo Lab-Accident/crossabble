@@ -128,18 +128,39 @@ function BuyLetterMenu() {
 
   return (
     <div className='menu-container'>
+
       <div className='cell-nav-bar'>
-        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeLeft} >{'<'}</div>
-        <div className=  {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeUp} >
-          <span style={{ transform: 'rotate(90deg)' }}>{'<'}</span>
+        <div 
+          className= {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeLeft} >
+            {'<'}
         </div>
-        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeDown}>
-          <span style={{ transform: 'rotate(-90deg)' }} >{'<'}</span>
+        <div 
+          className=  {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeUp} >
+            <span style={{ transform: 'rotate(90deg)' }}>
+                {'<'}
+            </span>
         </div>
-        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeRight} >{'>'}</div>
+        <div 
+          className= {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeDown}>
+            <span style={{ transform: 'rotate(-90deg)' }} >
+                {'<'}
+            </span>
+        </div>
+        <div 
+          className= {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeRight} >
+            {'>'}
+        </div>
       </div>
       
-      <button className={`default-button ${usersTeam}`} style={{margin: '0.1rem'}} >buy letter for two points</button>
+      <button 
+        className={`default-button ${usersTeam}`} 
+        style={{margin: '0.1rem'}} >
+          buy letter for two points
+      </button>
 
       <OptionsMenu currentScreenLabel={"buy-letter"}/>
     </div>

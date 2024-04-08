@@ -36,10 +36,16 @@ const PlayScreen = () => {
   return (
     <>
       <div className="screen-container">
+        
         <h1 className='game-title'>
-          <span className="team1">CROSS</span>
-          <span className="team2">ABBLE</span>
+          <span className="team1">
+            CROSS
+          </span>
+          <span className="team2">
+            ABBLE
+          </span>
         </h1>
+
         <h2 className={`player-name ${usersTeam}`}>
           player {usersTeam === 'T1' ? 'blue' : 'green'} {usersPlayer === 'P1' ? '1' : '2'}
         </h2>

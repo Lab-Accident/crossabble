@@ -7,7 +7,10 @@ function InactiveMenu() {
 
   return (
     <div className='menu-container'>
-      <button className={`menu-message ${usersTeam}`} > {message} </button>
+      <button 
+        className={`menu-message ${usersTeam}`} > 
+          {message}
+      </button>
     </div>
   )
 }

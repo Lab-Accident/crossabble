@@ -16,29 +16,20 @@ function GuessWordMenu() {
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 
-  const cellToIndex = (row, col) => {
-    return row * NUM_GRID_CELLS + col;
-  }
-
   function getCellElement(row, col) {
-    const n = cellToIndex(row, col);
-    const cellContainer = document.documentElement.querySelector(`.cell-container:nth-child(${n + 1})`);
-    if (!cellContainer) {
-      console.error('Cell container not found at index', n);
-      return null;
-    }
-
-    const cellComponent = cellContainer.querySelector('.cell');
+    const accessKey = `row${row}-col${col}`; 
+    const cellComponent = document.querySelector(`.cell[accessKey="${accessKey}"]`);
     if (!cellComponent) {
-      console.error('Cell component not found inside the cell container.');
-      return null;
+        console.error('Cell component not found for access key', accessKey);
+        return null;
     }
+    console.log('cellComponent', cellComponent);
+    console.log(accessKey);
     return cellComponent;
-  }
+}
 
-  function getCellLetter(row, col) {
-    const cellElement = getCellElement(row, col);
-    if (!cellElement) {
+  function getCellLetter(cellElement) {
+    if (!cellElement.querySelector('.letter')) {
       return null;
     }
     return cellElement.querySelector('.letter');
@@ -55,23 +46,30 @@ function GuessWordMenu() {
     if (input.length > selectedWord.length) {
       input = input.slice(0, selectedWord.length);
     }
-  
-    for (let i = 0; i < input.length; i++) {
-      console.log('selectedWord', selectedWord);
-      console.log('selectedWord.row', selectedWord.row, 'selectedWord.col', selectedWord.col);
-      console.log('selectedWord.down', selectedWord.down);
-      console.log('test', cellToIndex(2,0));
-      console.log('index', cellToIndex(selectedWord.row, selectedWord.col));
+
+    console.log('selectedWord', selectedWord);
+    console.log('selectedWord.row', selectedWord.row, 'selectedWord.col', selectedWord.col);
+    console.log('selectedWord.down', selectedWord.down);
+
+    for (let i = input.length; i < selectedWord.length; i++) {
       if (selectedWord.down) {
-        const letterElement = getCellLetter(selectedWord.row + i, selectedWord.col);
+        const cellElement = getCellElement(selectedWord.row + i, selectedWord.col);
         console.log('down', selectedWord.row + i, selectedWord.col);
-        console.log('index', cellToIndex(selectedWord.row + i, selectedWord.col));
-        letterElement.textContent = input[i];
+        console.log(cellElement);
+        let letterElement = getCellLetter(cellElement);
+        if (letterElement) {
+          letterElement.textContent = input[i];
+        }
+        
       } else {
-        const letterElement = getCellLetter(selectedWord.col + i, selectedWord.col);
-        console.log('across', selectedWord.row, selectedWord.col + i);
-        console.log('index', cellToIndex(selectedWord.row, selectedWord.col + 1));
-        letterElement.textContent = input[i];
+        const cellElement = getCellElement(selectedWord.row, selectedWord.col + 1);
+        console.log('down', selectedWord.row, selectedWord.col + 1);
+        console.log(cellElement);
+        let letterElement = getCellLetter(cellElement);
+
+        if (letterElement) {
+          letterElement.textContent = input[i];
+        }
       }
     }
     for (let i = input.length; i < selectedWord.length; i++) {
@@ -82,8 +80,8 @@ function GuessWordMenu() {
         const letterElement = getCellLetter(selectedWord.col + i, selectedWord.col);
         letterElement.textContent = '';
       }
-    }
-    setWord(input);
+  }
+  setWord(input);
   };
   //clear cells, when  selection is changed
 
@@ -204,17 +202,37 @@ function GuessWordMenu() {
     </div>
 
       <div className='word-nav-bar'>
-        <div className= {`side-button ${usersTeam}`} onClick={handleSelectionChangeLeft} >{'<'}</div>
-        <div className={`curr-nav-display ${usersTeam}`}>
-          {selectedWord !== 0 && `${selectedWord.num} ${selectedWord.down ? 'Down' : 'Across'}`}
+        <div 
+          className= {`side-button ${usersTeam}`} 
+          onClick={handleSelectionChangeLeft} >
+            {'<'}
         </div>
-        <div className= {`side-button ${usersTeam}`} onClick={handleSelectionChangeRight} >{'>'}</div>
+        <div 
+          className={`curr-nav-display ${usersTeam}`}>
+            {selectedWord !== 0 && `${selectedWord.num} ${selectedWord.down ? 'Down' : 'Across'}`}
+        </div>
+        <div 
+          className= {`side-button ${usersTeam}`} 
+          onClick={handleSelectionChangeRight} >
+            {'>'}
+        </div>
       </div>
 
       <div className="input-container">
-        <label className= {`menu-input ${usersTeam}`} htmlFor="guessWordInputField">guess word:</label>
-        <input className= {`menu-input ${usersTeam} ${wordGuessed ? 'inactive' : ''}`} type="text" id="guessWordInputField" value={word} onChange={handleWordChange}/>
-        <button className= {`enter-button ${usersTeam} ${wordGuessed ? 'hide' : ''}`} onClick={handleWordEnter} >{'>'}</button>
+        <label className= {`menu-input ${usersTeam}`} htmlFor="guessWordInputField">
+          guess word:
+        </label>
+        <input 
+          className= {`menu-input ${usersTeam} ${wordGuessed ? 'inactive' : ''}`} 
+          type="text" id="guessWordInputField" 
+          value={word} 
+          onChange={handleWordChange}
+        />
+        <button 
+          className= {`enter-button ${usersTeam} ${wordGuessed ? 'hide' : ''}`} 
+          onClick={handleWordEnter} >
+            {'>'}
+        </button>
       </div>
 
 

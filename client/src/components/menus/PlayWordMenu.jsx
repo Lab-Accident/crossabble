@@ -156,26 +156,70 @@ function PlayWordMenu() {
     <>
     <div className='menu-container'>
       <div className='cell-nav-bar'>
-        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeLeft} >{'<'}</div>
-        <div className=  {`qtr-button ${usersTeam}`}  onClick={handleSelectionChangeUp} >
-          <span style={{ transform: 'rotate(90deg)' }}>{'<'}</span>
+        <div 
+          className= {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeLeft} >
+            {'<'}
         </div>
-        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeDown} >
-          <span style={{ transform: 'rotate(-90deg)' }}>{'<'}</span>
+        <div 
+          className=  {`qtr-button ${usersTeam}`}  
+          onClick={handleSelectionChangeUp} >
+            <span style={{ transform: 'rotate(90deg)' }}>
+              {'<'}
+            </span>
         </div>
-        <div className= {`qtr-button ${usersTeam}`} onClick={handleSelectionChangeRight} >{'>'}</div>
+        <div 
+          className= {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeDown} >
+            <span style={{ transform: 'rotate(-90deg)' }}>
+              {'<'}
+            </span>
+        </div>
+        <div 
+          className= {`qtr-button ${usersTeam}`} 
+          onClick={handleSelectionChangeRight} >
+            {'>'}
+        </div>
       </div>
 
       <div className="input-container">
-        <label className= {`menu-input ${usersTeam}`} htmlFor="playWordInputField">play word:</label>
-        <input className= {`menu-input ${usersTeam} ${wordPlayed ? 'inactive' : ''}`} type="text" id="playWordInputField" value={word} onChange={handleWordChange}/>
-        <button className= {`enter-button ${usersTeam} ${wordPlayed ? 'hide' : ''}`} onClick={handleWordEnter} >{'>'}</button>
+        <label 
+          className= {`menu-input ${usersTeam}`} 
+          htmlFor="playWordInputField">
+            play word:
+        </label>
+        <input 
+          className= {`menu-input ${usersTeam} ${wordPlayed ? 'inactive' : ''}`} 
+          type="text" 
+          id="playWordInputField" 
+          onChange={handleWordChange}
+          value={word} 
+        />
+        <button 
+          className= {`enter-button ${usersTeam} ${wordPlayed ? 'hide' : ''}`} 
+          onClick={handleWordEnter} >
+            {'>'}
+        </button>
       </div>
 
       <div className="input-container">
-        <label className= {`menu-input ${usersTeam}`} htmlFor="playClueInputField">play clue:</label>
-        <input className= {`menu-input ${usersTeam} ${cluePlayed ? 'inactive' : ''}`} type="text" id="playClueInputField" value={clue} onChange={handleClueChange}/>
-        <button className= {`enter-button ${usersTeam} ${cluePlayed ? 'hide' : ''}`} onClick={handleClueEnter} >{'>'}</button>
+        <label 
+          className= {`menu-input ${usersTeam}`} 
+          htmlFor="playClueInputField">
+            play clue:
+        </label>
+        <input 
+          className= {`menu-input ${usersTeam} ${cluePlayed ? 'inactive' : ''}`} 
+          type="text" 
+          id="playClueInputField" 
+          onChange={handleClueChange}
+          value={clue} 
+        />
+        <button 
+          className= {`enter-button ${usersTeam} ${cluePlayed ? 'hide' : ''}`} 
+          onClick={handleClueEnter} >
+            {'>'}
+        </button>
       </div>
 
       {/* 
