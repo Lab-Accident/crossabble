@@ -1,12 +1,12 @@
-import React, { useState, createContext, useContext } from 'react';
-import ClueList from '../components/ClueList'
-import GameBoard from '../components/GameBoard'
+import { useContext } from 'react';
+import ClueList from '../components/ClueList.tsx'
+import GameBoard from '../components/GameBoard.tsx'
 
-import PlayWordMenu from '../components/menus/PlayWordMenu'
-import GuessWordMenu from '../components/menus/GuessWordMenu'
-import BuyLetterMenu from '../components/menus/BuyLetterMenu'
-import InactiveMenu from '../components/menus/InactiveMenu'
-import BuyWordMenu from '../components/menus/BuyWordMenu'
+import PlayWordMenu from '../components/menus/PlayWordMenu.tsx'
+import GuessWordMenu from '../components/menus/GuessWordMenu.tsx'
+import BuyLetterMenu from '../components/menus/BuyLetterMenu.tsx'
+import InactiveMenu from '../components/menus/InactiveMenu.tsx'
+import BuyWordMenu from '../components/menus/BuyWordMenu.tsx'
 
 import { CurrentMenuContext } from '../App'
 import { UsersContext } from '../App'

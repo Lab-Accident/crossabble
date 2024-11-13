@@ -1,7 +1,7 @@
 const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 
 class CellData {
-    constructor({ row, col, down, letter='', num=0, owningTeam='', state='empty' }) {
+    constructor({ row, col, letter='', num=0, owningTeam='', state='empty' }) {
         this.row = row;                 //int, 0-indexed
         this.col = col;                 //int, 0-indexed
         this.letter =  '';              //string of length 1 or ''
@@ -55,7 +55,7 @@ class GridData {
     }
 
     getState(row, col) {
-        //console.log(row, col);
+        // console.log(row, col);
         return this.GridData[row][col].state;
     }
     getLetter(row, col) {

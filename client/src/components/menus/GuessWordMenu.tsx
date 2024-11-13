@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import OptionsMenu from './OptionsMenu'
-import { UsersContext } from '../../App';
-import { PublicGridContext } from '../../App';
-import { CurrentSelectionContext } from '../../App';
+import { UsersContext } from '../../App.tsx';
+import { PublicGridContext } from '../../App.tsx';
+import { CurrentSelectionContext } from '../../App.tsx';
 
 function GuessWordMenu() {
 

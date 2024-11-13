@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { UsersContext } from '../App';
-import { WordData, PublicWord } from './Word';
-import { GridData } from './GridData';
-import { PublicGridContext } from '../App';
-import { CurrentMenuContext } from '../App';
-import { CurrentSelectionContext } from '../App';
+import { useContext, useEffect, useState } from 'react'
+import { UsersContext } from '../App.tsx';
+import { WordData, PublicWord } from './Word.ts';
+import { GridData } from './GridData.ts';
+import { PublicGridContext } from '../App.tsx';
+import { CurrentMenuContext } from '../App.tsx';
+import { CurrentSelectionContext } from '../App.tsx';
 
 function Cell({ row, col, accessKey}) {
 

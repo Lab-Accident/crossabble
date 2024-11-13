@@ -1,8 +1,8 @@
-import React, { useEffect, useContext } from 'react'; 
-import OptionsMenu from './OptionsMenu'
-import { UsersContext } from '../../App';
-import { CurrentSelectionContext } from '../../App';
-import { PublicGridContext } from '../../App';
+import { useEffect, useContext } from 'react'; 
+import OptionsMenu from './OptionsMenu.tsx'
+import { UsersContext } from '../../App.tsx';
+import { CurrentSelectionContext } from '../../App.tsx';
+import { PublicGridContext } from '../../App.tsx';
 
 function BuyLetterMenu() {
   const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);

@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'; 
-import OptionsMenu from './OptionsMenu'
-import {UsersContext } from '../../App';
+import { useContext } from 'react'; 
+import OptionsMenu from './OptionsMenu.tsx'
+import {UsersContext } from '../../App.tsx';
 
 function BuyWordMenu() {
 

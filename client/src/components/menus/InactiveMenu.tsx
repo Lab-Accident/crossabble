@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import {UsersContext } from '../../App';
+import { useState, useContext } from 'react';
+import {UsersContext } from '../../App.tsx';
 
 function InactiveMenu() {
   const { usersTeam } = useContext(UsersContext);

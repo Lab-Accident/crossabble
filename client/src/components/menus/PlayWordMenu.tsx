@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
-import OptionsMenu from './OptionsMenu'
-import { UsersContext } from '../../App';
-import { CurrentSelectionContext } from '../../App';
-import { PublicGridContext } from '../../App';
+import { useRef, useEffect, useState, useContext } from 'react';
+import OptionsMenu from './OptionsMenu.tsx'
+import { UsersContext } from '../../App.tsx';
+import { CurrentSelectionContext } from '../../App.tsx';
+import { PublicGridContext } from '../../App.tsx';
 
 function PlayWordMenu() {
   const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
@@ -14,6 +14,7 @@ function PlayWordMenu() {
   const [wordPlayed, setWordPlayed] = useState(false);
   const [cluePlayed, setCluePlayed] = useState(false);
   const [currentlyDown, setCurrentlyDown] = useState(true);
+  const [emptySlotLength, setEmptySlotLength] = useState(0);
   const [word, setWord] = useState('');
   const [clue, setClue] = useState('');
 
@@ -37,61 +38,72 @@ function PlayWordMenu() {
     return cellElement.querySelector('.letter');
   }
 
+  const updateEmptySlotLength = () => {
+    let { row, col } = currentSelection[0];
+    let emptySlotLength = currentlyDown
+      ? NUM_GRID_CELLS - row
+      : NUM_GRID_CELLS - col;
+    for (let i = 0; i < emptySlotLength - 1; i++) {
+      let curr = currentlyDown 
+        ? { row: row + i, col: col} 
+        : { row: row, col: col + i};
+      if (publicGrid.getState(curr.row, curr.col) !== 'empty') { 
+        emptySlotLength = i;
+        break; 
+      }
+    }
+    setEmptySlotLength(emptySlotLength);
+  }
+
+  useEffect(() => {
+    if (currentSelection.length === 0) {
+      return;
+    }
+    updateEmptySlotLength();
+  }, [currentSelection, currentlyDown]);
+
 
   const handleWordChange = (event) => {
     let input = event.target.value;
     input = input.replace(/[^A-Za-z]/ig, '');
     input = input.toUpperCase();
-    let { row, col } = currentSelection[0];
 
-    input = currentlyDown
-      ? input.slice(0, NUM_GRID_CELLS - row)
-      : input.slice(0, NUM_GRID_CELLS - col);
-    
+    input = input.slice(0, emptySlotLength);
     setWord(input);
-    console.log(input.length);
+    let { row, col } = currentSelection[0];
 
     for (let i = 0; i < input.length; i++) {
       let curr = currentlyDown 
         ? { row: row + i, col: col} 
         : { row: row, col: col + i};
 
-      if (publicGrid.getState(curr.row, curr.col) !== 'empty') { break; }
-
       const cellElement = getCellElement(curr.row, curr.col);
-      cellElement.classList.add('selected');
       const letterElement = getCellLetter(cellElement);
+      cellElement.classList.add('selected');
       letterElement.textContent = input[i];
-
-      setCurrentSelection(...currentSelection, curr);
-      console.log(currentSelection);
     }
 
-    console.log('clearing')
-    for (let i = input.length; i < NUM_GRID_CELLS; i++) {
+    for (let i = input.length; i < emptySlotLength; i++) {
       let curr = currentlyDown
         ? { row: row + i, col: col}
         : { row: row, col: col + i};
 
-      if (publicGrid.getState(curr.row, curr.col) !== 'empty') { break; }
-
       const cellElement = getCellElement(curr.row, curr.col);
-      cellElement.classList.remove('selected');
       const letterElement = getCellLetter(cellElement);
+      cellElement.classList.remove('selected');
       letterElement.textContent = '';
-
-      setCurrentSelection(currentSelection.filter(cell => 
-        !(cell.row === curr.row && cell.col === curr.col)));
-      console.log(currentSelection);
     }
 
   };
 
   function removeOldSelection(oldSelection, oldCurrentlyDown) {
+    if (wordPlayed) {
+      return;
+    }
     const oldStart = oldSelection[0];
     setWord('');
 
-    for (let i = 0; i < oldSelection.length; i++) {
+    for (let i = 0; i < emptySlotLength; i++) {
       let curr = oldCurrentlyDown
         ? { row: oldStart.row + i, col: oldStart.col }
         : { row: oldStart.row, col: oldStart.col + i };
@@ -196,6 +208,10 @@ function PlayWordMenu() {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
+      if (wordPlayed) {
+        return;
+      }
+
       const ARROW_UP = 38;
       const ARROW_DOWN = 40;
       const ARROW_LEFT = 37;
@@ -204,6 +220,7 @@ function PlayWordMenu() {
       let { row, col } = currentSelection[0];
 
       switch (event.keyCode) {
+
         case ARROW_UP:
           do {
             row--;
@@ -257,26 +274,26 @@ function PlayWordMenu() {
       <div className='cell-nav-bar'>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeLeft} >
+          onClick={!wordPlayed && handleSelectionChangeLeft} >
             {'<'}
         </div>
         <div 
           className=  {`qtr-button ${usersTeam}`}  
-          onClick={handleSelectionChangeUp} >
+          onClick={!wordPlayed && handleSelectionChangeUp} >
             <span style={{ transform: 'rotate(90deg)' }}>
               {'<'}
             </span>
         </div>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeDown} >
+          onClick={!wordPlayed && handleSelectionChangeDown} >
             <span style={{ transform: 'rotate(-90deg)' }}>
               {'<'}
             </span>
         </div>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeRight} >
+          onClick={!wordPlayed && handleSelectionChangeRight} >
             {'>'}
         </div>
       </div>
@@ -295,7 +312,7 @@ function PlayWordMenu() {
           ref={playWordRef}
           autoComplete='off'
           autoFocus
-          onChange={handleWordChange}
+          onChange={!wordPlayed && handleWordChange}
           value={word} 
         />
         <button 
@@ -326,6 +343,13 @@ function PlayWordMenu() {
             {'>'}
         </button>
       </div>
+
+      <button 
+        className={`default-button ${usersTeam}`} 
+        style={{margin: '0.1rem'}} 
+        onClick={() => !wordPlayed && setCurrentlyDown(!currentlyDown)} >
+          {currentlyDown ? 'Down' : 'Across'}
+      </button>
 
       {/* 
       add clue inputs for all intersecting words created

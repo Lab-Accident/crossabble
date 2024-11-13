@@ -1,5 +1,5 @@
-import React, { useState, useEffect, createContext } from 'react';
-import Grid from './Grid'
+import { useState, useEffect } from 'react';
+import Grid from './Grid.tsx'
 
 
 function GameBoard() {

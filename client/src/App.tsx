@@ -1,14 +1,14 @@
-import React, { useState, createContext } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import './styles/main.scss';
 
-import { PublicWord, WordData } from './components/Word';
-import { GridData } from './components/GridData';
+import { PublicWord, WordData } from './components/Word.ts';
+import { GridData } from './components/GridData.ts';
 
-import HomeScreen from './pages/HomeScreen';
-import PlayScreen from './pages/PlayScreen';
-import GameListScreen from './pages/GameListScreen';
+import HomeScreen from './pages/HomeScreen.tsx';
+import PlayScreen from './pages/PlayScreen.tsx';
+import GameListScreen from './pages/GameListScreen.tsx';
 
 export const CurrentMenuContext = React.createContext();
 export const UsersContext = React.createContext();

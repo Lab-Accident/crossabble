@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'; 
-import { CurrentMenuContext } from '../../App';
-import {UsersContext } from '../../App';
+import { useContext } from 'react'; 
+import { CurrentMenuContext } from '../../App.tsx';
+import {UsersContext } from '../../App.tsx';
 
 function OptionsMenu({ currentScreenLabel }) {
 

@@ -1,5 +1,4 @@
-import React from 'react'
-import Cell from './Cell'
+import Cell from './Cell.tsx'
 
 function Grid() {
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');

@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'; 
+import { useContext } from 'react'; 
 import {UsersContext } from '../App';
-import { WordData, PublicWord } from './Word';
-import { PublicGridContext } from '../App';
+import { WordData, PublicWord } from './Word.ts';
+import { PublicGridContext } from '../App.tsx';
 
 function ClueList() {
   const { usersTeam } = useContext(UsersContext);
@@ -13,7 +13,7 @@ function ClueList() {
       Clues:
     </h1>
     <ol className='cluelist'>
-      {unguessedWords.map((clue, index) => (
+      {unguessedWords.map((clue) => (
         <li 
           num={clue.num} 
           key={clue.num} 
