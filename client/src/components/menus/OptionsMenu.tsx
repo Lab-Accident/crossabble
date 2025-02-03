@@ -1,45 +1,25 @@
 import { useContext } from 'react'; 
-import { CurrentMenuContext } from '../../App.tsx';
 import {UsersContext } from '../../App.tsx';
+import useGameStore from '../../stores/GamePlayStore.ts';
 
-function OptionsMenu({ currentScreenLabel }) {
+function OptionsMenu({  currentMenu }: { currentMenu: string }) {
 
   const { usersTeam } = useContext(UsersContext);
-  const { setCurrentMenu } = useContext(CurrentMenuContext);
-  
-  const guessWordFunction = () => {
-    setCurrentMenu('guess-word');
-  }
-  
-  const skipFunction = () => {
-    setCurrentMenu('inactive');
-  }
-  
-  const buyNewWordFunction = () => {
-    setCurrentMenu('buy-word');
-  }
-  
-  const buyLetterFunction = () => {
-    setCurrentMenu('buy-letter');
-  }
-  
-  const playWordFunction = () => {
-    setCurrentMenu('play-word');
-  }
+  const setMenu = useGameStore((state) => state.setMenu);
 
   const allOptions = [
-    {label: 'play-word', operation: playWordFunction},
-    {label: 'guess-word', operation: guessWordFunction},
-    {label: 'skip', operation: skipFunction},
-    {label: 'buy-word', operation: buyNewWordFunction},
-    {label: 'buy-letter', operation: buyLetterFunction},
+    {label: 'play-word', operation: () => { setMenu('play-word'); }},
+    {label: 'guess-word', operation: () => { setMenu('guess-word'); }},
+    {label: 'skip', operation: () => { setMenu('inactive'); }},
+    {label: 'buy-word', operation: () => { setMenu('buy-word'); }},
+    {label: 'buy-letter', operation: () => { setMenu('buy-letter'); }},
   ];
   
   return (
     <div className='menu-container'>
       <div className="options-menu">
       {allOptions
-            .filter(option => option.label !== currentScreenLabel)
+            .filter(option => option.label !== currentMenu)
             .map((option, index) => (
               <button 
                 key={index} 

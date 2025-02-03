@@ -8,12 +8,11 @@ import BuyLetterMenu from '../components/menus/BuyLetterMenu.tsx'
 import InactiveMenu from '../components/menus/InactiveMenu.tsx'
 import BuyWordMenu from '../components/menus/BuyWordMenu.tsx'
 
-import { CurrentMenuContext } from '../App'
 import { UsersContext } from '../App'
+import useGameStore from '../stores/GamePlayStore.ts';
 
 const PlayScreen = () => {
-
-  const { currentMenu } = useContext(CurrentMenuContext);
+  const currentMenu = useGameStore((state) => state.currentMenu);
   const { usersTeam, usersPlayer } = useContext(UsersContext);
 
   const renderMenu = () => {
@@ -54,7 +53,7 @@ const PlayScreen = () => {
     
         {renderMenu()}
 
-        <ClueList />
+        {/* <ClueList /> */}
       </div>
     </>
   )

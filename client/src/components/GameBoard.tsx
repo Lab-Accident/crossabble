@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import Grid from './Grid.tsx'
+import useGameStore from '../stores/GamePlayStore.ts';
 
 
 function GameBoard() {
 
-  //////////////////////////////////////////////////////////////
-  /* Window Resizing Styling */
-  //////////////////////////////////////////////////////////////
+  const gameStore = useGameStore();
 
   const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');;
 
@@ -65,16 +64,8 @@ function GameBoard() {
     };
   };
 
-  //////////////////////////////////////////////////////////////
-  /* Game Logic */
-  //////////////////////////////////////////////////////////////
-
   const [blueScore, setBlueScore] = useState(0);
   const [greenScore, setGreenScore] = useState(0);
-
-  //////////////////////////////////////////////////////////////
-  /* HTML */
-  //////////////////////////////////////////////////////////////
 
   return ( 
   <>
@@ -98,14 +89,14 @@ function GameBoard() {
       <span 
         className="team-label team-label-green" 
         style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, true)}}>
-            BLUE: {blueScore}
+            BLUE: {gameStore.team1Score}
       </span>
     </div>
     <div className="col -right">
       <span 
         className="team-label team-label-blue" 
         style={{...getTeamLabelStyle(colHeight, teamLabelTextWidth, false)}}>
-          GREEN: {greenScore}
+          GREEN: {gameStore.team2Score}
       </span>
     </div>
 

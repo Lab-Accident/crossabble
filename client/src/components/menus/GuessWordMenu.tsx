@@ -1,45 +1,26 @@
 import { useEffect, useState, useContext, useRef } from 'react';
 import OptionsMenu from './OptionsMenu'
 import { UsersContext } from '../../App.tsx';
-import { PublicGridContext } from '../../App.tsx';
-import { CurrentSelectionContext } from '../../App.tsx';
+
+import useUserGridStore from '../../stores/UserGridStore';
+import useUserWordsStore from '../../stores/UserWordStore';
 
 function GuessWordMenu() {
 
   const [wordGuessed, setWordGuessed] = useState(false);
-  const [word, setWord] = useState('');
-  const [selectedWord, setSelectedWord] = useState(0);
+  const [guess, setGuess] = useState('');
 
-  const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
   const { usersTeam } = useContext(UsersContext);
-  const { publicGrid, unguessedWords } = useContext(PublicGridContext);
 
+  const userGrid = useUserGridStore();
+  const userWords = useUserWordsStore();
+
+  const selectedWord = userWords.currSelectedWord;
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    setCurrentSelection([]);
-  }, []);
 
-  function getCellElement(row, col) {
-    const accessKey = `row${row}-col${col}`; 
-    const cellComponent = document.querySelector(`.cell[accessKey="${accessKey}"]`);
-    if (!cellComponent) {
-        console.warn('Cell component not found for access key', accessKey);
-        return null;
-    }
-    return cellComponent;
-}
-
-  function getCellLetter(cellElement) {
-    if (!cellElement) {
-      console.warn('Cell element not found');
-      return null;
-    }
-    return cellElement.querySelector('.letter');
-  }
-
-  const handleWordChange = (event) => {
-    if (selectedWord === 0) {
+  const handleGuessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedWord) {
       return;
     }
     let input = event.target.value;
@@ -49,24 +30,20 @@ function GuessWordMenu() {
 
     for (let i = 0; i < input.length; i++) {
       let curr = selectedWord.down 
-      ? { row: selectedWord.row + i, col: selectedWord.col} 
-      : { row: selectedWord.row, col: selectedWord.col + i};
+      ? { row: selectedWord.position.row + i, col: selectedWord.position.col} 
+      : { row: selectedWord.position.row, col: selectedWord.position.col + i};
 
-      const cellElement = getCellElement(curr.row, curr.col);
-      const letterElement = getCellLetter(cellElement);
-      letterElement.textContent = input[i];
+      userGrid.setLetter(curr.row, curr.col, input[i]);
     }
     
     for (let i = input.length; i < selectedWord.length; i++) {
       let curr = selectedWord.down 
-      ? { row: selectedWord.row + i, col: selectedWord.col} 
-      : { row: selectedWord.row, col: selectedWord.col + i};
+      ? { row: selectedWord.position.row + i, col: selectedWord.position.col} 
+      : { row: selectedWord.position.row, col: selectedWord.position.col + i};
 
-      const cellElement = getCellElement(curr.row, curr.col);
-      const letterElement = getCellLetter(cellElement);
-      letterElement.textContent = '';
+      userGrid.setLetter(curr.row, curr.col, '');
   }
-  setWord(input);
+  setGuess(input);
   };
 
   const handleWordEnter = () => {
@@ -74,105 +51,15 @@ function GuessWordMenu() {
   };
 
 
-  function switchSelectedWord(newWord) {
-    const oldWord = selectedWord;
-    setSelectedWord(newWord);
-    if (oldWord === 0 || oldWord.num === newWord.num) {
-      return;
-    }
-    for (let i = 0; i < oldWord.length; i++) {
-      let curr = oldWord.down
-        ? { row: oldWord.row + i, col: oldWord.col }
-        : { row: oldWord.row, col: oldWord.col + i };
-
-      const cellElement = getCellElement(curr.row, curr.col);
-      const letterElement = getCellLetter(cellElement);
-      letterElement.textContent = '';
-    }
-    setWord('');
-  }
-
-
   useEffect(() => {
-    if (currentSelection.length === 0) {
-      setSelectedWord(0);
-      return;
-    }
-    if (!wordGuessed) {
-      inputRef.current.focus();
-    }
-    const { row, col } = currentSelection[0];
-    const num = publicGrid.getNum(row, col);
-    const word = findWord(num, unguessedWords);
-    switchSelectedWord(word);
-  }, [currentSelection]);
-
-
-
-  function findWord(num, list) {
-    const word = list.find(word => word.num === num);
-    if (!word) {
-    console.warn(`WordData with clue number ${num} not found.`);
-    return 0;
-    }
-    return word;
-  }
-
-  function findWordIndex(num, list) {
-      const index = list.findIndex(word => word.num === num);
-      if (!index) {
-      console.warn(`WordData with clue number ${num} not found.`);
-      return 0;
-      }
-      return index;
-  }
-
-  const handleSelectionChangeLeft = () => {
-    if (selectedWord === 0) {
-      setCurrentSelection(unguessedWords[0].getCellsFromWord());
-      switchSelectedWord(unguessedWords[0]);
-      return;
-    }
-    const index = findWordIndex(selectedWord.num, unguessedWords);
-    if (index === -1) {
-      setCurrentSelection(unguessedWords[0].getCellsFromWord());
-      switchSelectedWord(unguessedWords[0]);
-      return;
-    }
-    const next = (index - 1 + unguessedWords.length) % unguessedWords.length;
-    setCurrentSelection(unguessedWords[next].getCellsFromWord());
-    switchSelectedWord(unguessedWords[next]);
-  }
-
-  const handleSelectionChangeRight = () => {
-    if (selectedWord === 0) {
-      setCurrentSelection(unguessedWords[0]);
-      switchSelectedWord(unguessedWords[0]);
-      return;
-    }
-    const index = findWordIndex(selectedWord.num, unguessedWords);
-    if (index === -1) {
-      setCurrentSelection(unguessedWords[0].getCellsFromWord());
-      switchSelectedWord(unguessedWords[0]);
-      return;
-    }
-    const next = (index + 1) % unguessedWords.length;
-    setCurrentSelection(unguessedWords[next].getCellsFromWord());
-    switchSelectedWord(unguessedWords[next]);
-  }
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const ARROW_LEFT = 37;
-      const ARROW_RIGHT = 39;
-
-      switch (event.keyCode) {
-        case ARROW_LEFT:
-          handleSelectionChangeLeft();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowLeft':
+          userWords.selectPrevUnguessedWord();
           event.preventDefault();
           break;
-        case ARROW_RIGHT:
-          handleSelectionChangeRight();
+        case 'ArrowRight':
+          userWords.selectNextUnguessedWord();
           event.preventDefault();
           break;
         default:
@@ -188,26 +75,27 @@ function GuessWordMenu() {
   }, [selectedWord]);
 
 
+
   return (
     <div className='menu-container'>
 
     <div className={`clue-display  ${usersTeam}`}> 
-      {selectedWord !== 0 ? selectedWord.clue : 'No word selected, please select a word!'}
+      {selectedWord ? selectedWord.clue : 'No word selected, please select a word!'}
     </div>
 
       <div className='word-nav-bar'>
         <div 
           className= {`side-button ${usersTeam}`} 
-          onClick={handleSelectionChangeLeft} >
+          onClick={userWords.selectNextUnguessedWord} >
             {'<'}
         </div>
         <div 
           className={`curr-nav-display ${usersTeam}`}>
-            {selectedWord !== 0 && `${selectedWord.num} ${selectedWord.down ? 'Down' : 'Across'}`}
+            {selectedWord && `${selectedWord.number} ${selectedWord.down ? 'Down' : 'Across'}`}
         </div>
         <div 
           className= {`side-button ${usersTeam}`} 
-          onClick={handleSelectionChangeRight} >
+          onClick={userWords.selectPrevUnguessedWord} >
             {'>'}
         </div>
       </div>
@@ -223,8 +111,8 @@ function GuessWordMenu() {
           ref={inputRef}
           autoFocus
           autoComplete="off"
-          value={word} 
-          onChange={handleWordChange}
+          value={guess} 
+          onChange={handleGuessChange}
         />
         <button 
           className= {`enter-button ${usersTeam} ${wordGuessed ? 'hide' : ''}`} 
@@ -234,7 +122,7 @@ function GuessWordMenu() {
       </div>
 
 
-      <OptionsMenu currentScreenLabel={"guess-word"}/>
+      <OptionsMenu currentMenu={"guess-word"}/>
     </div>
   )
 }

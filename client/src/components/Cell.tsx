@@ -1,27 +1,27 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { UsersContext } from '../App.tsx';
-import { WordData, PublicWord } from './Word.ts';
-import { GridData } from './GridData.ts';
-import { PublicGridContext } from '../App.tsx';
-import { CurrentMenuContext } from '../App.tsx';
-import { CurrentSelectionContext } from '../App.tsx';
+import useUserGridStore from '../stores/UserGridStore'
+import useGameStore from '../stores/GamePlayStore.ts';
+import { useContext } from 'react';
 
-function Cell({ row, col, accessKey}) {
+interface CellProps {
+  row: number;
+  col: number;
+  accessKey: string;
+}
 
-  //////////////////////////////////////////////////////////////
-  /*  Window Resizing Styling */
-  //////////////////////////////////////////////////////////////
+function Cell({ row, col, accessKey }: CellProps) {
 
-  const { currentMenu } = useContext(CurrentMenuContext);
-
-  const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
-  const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');
+  const NUM_GRID_CELLS =  Number(getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells'));
+  const MIN_GRID_SIZE =  Number(getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', ''));
 
   const { usersTeam } = useContext(UsersContext);
-  const teamSelectedBy = usersTeam; // alias to distinguish between owning and selecting team
+  const gameStore = useGameStore();
+  const userGrid = useUserGridStore();
+  const cell = userGrid.grid[row]?.[col];
 
   const [cellSize, setCellSize] = useState(() => {
-    const gridContainerSize = Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4);
+    const gridContainerSize = Number(Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4));
     return (gridContainerSize / NUM_GRID_CELLS);
   });
 
@@ -33,182 +33,141 @@ function Cell({ row, col, accessKey}) {
     };
   
     handleResize();
-  
     window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const getNumTextStyle = (size: number) => ({
+    fontSize: `${size / 2}px`,
+  });
   
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  },);
+  const getLetterTextStyle = (size: number) => ({
+    fontSize: `${size / 1.2}px`,
+  });
 
-  const getNumTextStyle = (size) => {
-    const fontSize = size / 2;
-    return {
-      fontSize: `${fontSize}px`,
-    };
+  const getCellSize = (size: number) => ({
+    height: `${size}px`,
+    width: `${size}px`,
+  });
+
+  const findAdjacentUnguessedCells = (
+    startRow: number, 
+    startCol: number, 
+    direction: 'up' | 'down' | 'left' | 'right'
+  ): Array<{row: number; col: number}> => {
+    const cells: Array<{row: number; col: number}> = [];
+    let currentRow = startRow;
+    let currentCol = startCol;
+
+    while (true) {
+      let nextRow = currentRow;
+      let nextCol = currentCol;
+
+      switch (direction) {
+        case 'up':
+          nextRow--;
+          break;
+        case 'down':
+          nextRow++;
+          break;
+        case 'left':
+          nextCol--;
+          break;
+        case 'right':
+          nextCol++;
+          break;
+      }
+
+      if (nextRow < 0 || nextRow >= NUM_GRID_CELLS || 
+          nextCol < 0 || nextCol >= NUM_GRID_CELLS) {
+        break;
+      }
+
+      if (userGrid.grid[nextRow][nextCol].state !== 'unguessed') {
+        break;
+      }
+
+      cells.push({ row: nextRow, col: nextCol });
+      currentRow = nextRow;
+      currentCol = nextCol;
+    }
+
+    return direction === 'up' || direction === 'left' ? cells.reverse() : cells;
   };
-  
-  const getLetterTextStyle = (size) => {
-    const fontSize = size / 1.2;
-    return {
-      fontSize: `${fontSize}px`,
-    };
-  };
 
-  const getCellSize = (size) => {
-    return {
-      height: `${size}px`,
-      width: `${size}px`,
-    };
-  };
+  const selectFullUnguessedWord = (row: number, col: number) => {
+    const prefixUp = findAdjacentUnguessedCells(row, col, 'up');
+    const suffixDown = findAdjacentUnguessedCells(row, col, 'down');
+    const prefixLeft = findAdjacentUnguessedCells(row, col, 'left');
+    const suffixRight = findAdjacentUnguessedCells(row, col, 'right');
 
+    if (prefixUp.length === 0 && suffixDown.length === 0 && 
+        prefixLeft.length === 0 && suffixRight.length === 0) {
+      userGrid.clearSelection();
+      return;
+    }
 
-  //////////////////////////////////////////////////////////////
-  /* Game Logic */
-  //////////////////////////////////////////////////////////////
+    const vertical = prefixUp.length + suffixDown.length;
+    const horizontal = prefixLeft.length + suffixRight.length;
 
-  const { publicGrid } = useContext(PublicGridContext);
-  const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
+    // Clear any existing selection
+    userGrid.clearSelection();
 
-  const [letter, setLetter] = useState(''); // string of length 1 or ''
-  const [num, setNum] = useState(0); // 0 for no number
-  const [owningTeam, setOwningTeam] = useState(''); // 'team1', 'team2', or ''
-  const [state, setState] = useState('empty'); // empty, guessed, unguessed, temp-block, block
-  const [selected, setSelected] = useState(''); // selected or ''
-
-  useEffect(() => {
-    const handleUpdate = () => {
-      setLetter(publicGrid.getLetter(row, col));
-      setNum(publicGrid.getNum(row, col));
-      setOwningTeam(publicGrid.getOwningTeam(row, col));
-      setState(publicGrid.getState(row, col));
-    };
-
-    handleUpdate();
-
-    return () => {
-    };
-  }, [publicGrid[row]?.[col]]);
-
-  useEffect(() => {
-    setCurrentSelection(currentSelection);
-    if (currentSelection.length === 0) {
-      setSelected('');
+    // Select the longer direction
+    if (vertical > horizontal) {
+      [...prefixUp, { row, col }, ...suffixDown].forEach(pos => {
+        userGrid.setSelected(pos.row, pos.col, true);
+      });
     } else {
-      const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
-      setSelected(selected ? 'selected' : '');
+      [...prefixLeft, { row, col }, ...suffixRight].forEach(pos => {
+        userGrid.setSelected(pos.row, pos.col, true);
+      });
     }
-  }, [currentSelection]);
+  };
 
-  // const toggleSelection = () => {
-  //   setSelected((selected === '' ? 'selected' : ''));
-  // };
-
-  const addToSelectedOnClick = () => {
-    const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
-    if (selected) {
-      setCurrentSelection(currentSelection.filter(cell => cell.row !== row || cell.col !== col));
-    } else {
-      setCurrentSelection([...currentSelection, { row: row, col: col }]);
-    }
-  }
-
-  const selectFullUnguessedWord = (row, col) => {
-    let start = {row: row, col: col};
-    let prefixUp = findAdjacentUnguessedCellsUp(row, col);
-    let suffixDown = findAdjacentUnguessedCellsDown(row, col);
-    let prefixLeft = findAdjacentUnguessedCellsLeft(row, col);
-    let suffixRight = findAdjacentUnguessedCellsRight(row, col);
-
-    if (prefixUp.length === 0 && suffixDown.length === 0 && prefixLeft.length === 0 && suffixRight.length === 0) {
-      setCurrentSelection([]);
-      return;
-    }
-    if (prefixUp.length === 0 && suffixDown.length === 0) {
-      setCurrentSelection([...prefixLeft, start, ...suffixRight]);
-      return;
-    }
-    if (prefixLeft.length === 0 && suffixRight.length === 0) {
-      setCurrentSelection([...prefixUp, start, ...suffixDown]);
-      return;
-    }
-  }
-
-
-  const findAdjacentUnguessedCellsUp = (row, col) => {
-    let prefixUp = [];
-    while (row > 0 && publicGrid.getState(row - 1, col) === 'unguessed') {
-      prefixUp = [{row: row - 1, col: col}, ...prefixUp];
-      row--;
-    }
-    return prefixUp;
-  }
-  const findAdjacentUnguessedCellsDown = (row, col) => {
-    let suffixDown = [];
-    while (row + 1 < NUM_GRID_CELLS && publicGrid.getState(row + 1, col) === 'unguessed') {
-      suffixDown = [...suffixDown, {row: row + 1, col: col}];
-      row++;
-    }
-    return suffixDown;
-  }
-  const findAdjacentUnguessedCellsLeft = (row, col) => {
-    let prefixLeft = [];
-    while (col > 0 && publicGrid.getState(row, col - 1) === 'unguessed') {
-      prefixLeft = ([{row: row, col: col - 1}, ...prefixLeft]);
-      col--;
-    }
-    return prefixLeft;
-  }
-  const findAdjacentUnguessedCellsRight = (row, col) => {
-    let suffixRight = [];
-    while (col + 1 < NUM_GRID_CELLS && publicGrid.getState(row, col + 1) === 'unguessed') {
-      suffixRight = [...suffixRight, {row: row, col: col + 1}];
-      col++;
-    }
-    return suffixRight;
-  }
-
-
-  const changeSelectedOnClick = () => {
-    if (currentMenu === 'guess-word') {
+  const handleCellClick = () => {
+    if (gameStore.currentMenu === 'guess-word') {
       selectFullUnguessedWord(row, col);
       return;
     }
-    
-    const selected = currentSelection.some(cell => cell.row === row && cell.col === col);
-    if (selected) {
-      setCurrentSelection([]);
-    } else {
-      setCurrentSelection([{ row: row, col: col }]);
-    }
-  }
 
-  //////////////////////////////////////////////////////////////
-  /* HTML */
-  //////////////////////////////////////////////////////////////
+    // For other menus, toggle single cell selection
+    userGrid.clearSelection();
+    userGrid.setSelected(row, col, !cell.isSelected);
+  };
+
+  if (!cell) return null;
 
   return (
     <div>
       <button 
-        className={`cell ${selected} ${currentMenu} ${owningTeam} ${state} ${teamSelectedBy}`} 
+        className={`cell 
+          ${cell.isSelected ? 'selected' : ''} 
+          ${gameStore.currentMenu} 
+          ${cell.owningTeam} 
+          ${cell.state} 
+          ${gameStore.currentTeam}`}
         accessKey={accessKey} 
         style={getCellSize(cellSize)} 
-        onClick={changeSelectedOnClick} > 
-          {num !== 0 && 
-            <span 
-              className="num" 
-              style={{ ...getNumTextStyle(cellSize)}}>
-                {num}
-            </span>
-          }
+        onClick={handleCellClick}
+      > 
+        {cell.number !== 0 && (
           <span 
-            className="letter" 
-            style={{ ...getLetterTextStyle(cellSize)}}>
-              {letter}
+            className="num" 
+            style={getNumTextStyle(cellSize)}
+          >
+            {cell.number}
           </span>
+        )}
+        <span 
+          className="letter" 
+          style={getLetterTextStyle(cellSize)}
+        >
+          {cell.letter}
+        </span>
       </button>
     </div>
-  )
+  );
 }
 
-export default Cell
+export default Cell;

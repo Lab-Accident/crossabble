@@ -1,13 +1,11 @@
 import { useRef, useEffect, useState, useContext } from 'react';
 import OptionsMenu from './OptionsMenu.tsx'
 import { UsersContext } from '../../App.tsx';
-import { CurrentSelectionContext } from '../../App.tsx';
-import { PublicGridContext } from '../../App.tsx';
+import useUserGridStore from '../../stores/UserGridStore';
 
 function PlayWordMenu() {
-  const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
   const { usersTeam } = useContext(UsersContext);
-  const { publicGrid } = useContext(PublicGridContext);
+  const userGrid = useUserGridStore();
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 
@@ -18,107 +16,90 @@ function PlayWordMenu() {
   const [word, setWord] = useState('');
   const [clue, setClue] = useState('');
 
-  const playWordRef = useRef(null);
-
-  function getCellElement(row, col) {
-    const accessKey = `row${row}-col${col}`; 
-    const cellComponent = document.querySelector(`.cell[accessKey="${accessKey}"]`);
-    if (!cellComponent) {
-        console.warn('Cell component not found for access key', accessKey);
-        return null;
-    }
-    return cellComponent;
-}
-
-  function getCellLetter(cellElement) {
-    if (!cellElement) {
-      console.warn('Cell element not found');
-      return null;
-    }
-    return cellElement.querySelector('.letter');
-  }
+  const playWordRef = useRef<HTMLInputElement>(null);
 
   const updateEmptySlotLength = () => {
-    let { row, col } = currentSelection[0];
-    let emptySlotLength = currentlyDown
-      ? NUM_GRID_CELLS - row
-      : NUM_GRID_CELLS - col;
-    for (let i = 0; i < emptySlotLength - 1; i++) {
-      let curr = currentlyDown 
-        ? { row: row + i, col: col} 
-        : { row: row, col: col + i};
-      if (publicGrid.getState(curr.row, curr.col) !== 'empty') { 
-        emptySlotLength = i;
-        break; 
+    const selection = getCurrentSelection();
+    if (!selection) return;
+
+    const { row, col } = selection;
+    let maxLength = currentlyDown ? 
+      parseInt(NUM_GRID_CELLS) - row : 
+      parseInt(NUM_GRID_CELLS) - col;
+
+    for (let i = 0; i < maxLength; i++) {
+      const curr = currentlyDown 
+        ? { row: row + i, col } 
+        : { row, col: col + i };
+      
+      if (userGrid.grid[curr.row][curr.col].state !== 'empty') {
+        maxLength = i;
+        break;
       }
     }
-    setEmptySlotLength(emptySlotLength);
-  }
+    setEmptySlotLength(maxLength);
+  };
 
-  useEffect(() => {
-    if (currentSelection.length === 0) {
-      return;
-    }
-    updateEmptySlotLength();
-  }, [currentSelection, currentlyDown]);
+  const getCurrentSelection = () => {
+    const selectedCell = userGrid.grid.flat().find(cell => cell.isSelected);
+    if (!selectedCell) return null;
 
+    const row = userGrid.grid.findIndex(r => r.includes(selectedCell));
+    const col = userGrid.grid[row].indexOf(selectedCell);
+    return { row, col };
+  };
 
-  const handleWordChange = (event) => {
-    let input = event.target.value;
-    input = input.replace(/[^A-Za-z]/ig, '');
-    input = input.toUpperCase();
+  const handleWordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (wordPlayed) return;
 
-    input = input.slice(0, emptySlotLength);
+    const selection = getCurrentSelection();
+    if (!selection) return;
+
+    let input = event.target.value
+      .replace(/[^A-Za-z]/ig, '')
+      .toUpperCase()
+      .slice(0, emptySlotLength);
+
     setWord(input);
-    let { row, col } = currentSelection[0];
+
+    let { row, col } = selection;
 
     for (let i = 0; i < input.length; i++) {
       let curr = currentlyDown 
-        ? { row: row + i, col: col} 
-        : { row: row, col: col + i};
+        ? { row: row + i, col} 
+        : { row, col: col + i};
 
-      const cellElement = getCellElement(curr.row, curr.col);
-      const letterElement = getCellLetter(cellElement);
-      cellElement.classList.add('selected');
-      letterElement.textContent = input[i];
+      userGrid.setLetter(curr.row, curr.col, input[i]);
     }
 
     for (let i = input.length; i < emptySlotLength; i++) {
       let curr = currentlyDown
-        ? { row: row + i, col: col}
-        : { row: row, col: col + i};
+        ? { row: row + i, col}
+        : { row, col: col + i};
 
-      const cellElement = getCellElement(curr.row, curr.col);
-      const letterElement = getCellLetter(cellElement);
-      cellElement.classList.remove('selected');
-      letterElement.textContent = '';
+        userGrid.setLetter(curr.row, curr.col, '');
     }
-
   };
 
-  function removeOldSelection(oldSelection, oldCurrentlyDown) {
-    if (wordPlayed) {
-      return;
-    }
-    const oldStart = oldSelection[0];
+  const removeCurrentWord = () => {
+    if (wordPlayed) return;
+
+    const selection = getCurrentSelection();
+    if (!selection) return;
+
+    const { row, col } = selection;
     setWord('');
 
     for (let i = 0; i < emptySlotLength; i++) {
-      let curr = oldCurrentlyDown
-        ? { row: oldStart.row + i, col: oldStart.col }
-        : { row: oldStart.row, col: oldStart.col + i };
-
-        const cellElement = getCellElement(curr.row, curr.col);
-        cellElement.classList.remove('selected');
-        const letterElement = getCellLetter(cellElement);
-        letterElement.textContent = '';
+      const curr = currentlyDown
+        ? { row: row + i, col }
+        : { row, col: col + i };
+      userGrid.setLetter(curr.row, curr.col, '');
     }
-    
-    //setCurrentSelection([ { row: newWord.row, col: newWord.col } ]);
-  }
+  };
 
 
-  const handleClueChange = (event) => {
+  const handleClueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClue(event.target.value);
   };
 
@@ -130,141 +111,90 @@ function PlayWordMenu() {
     setCluePlayed(true);
   };
 
-  const wrapRow = (row) => {
-    const numGridCells = parseInt(NUM_GRID_CELLS);
-    let wrappedRow = row;
 
-    if (row < 0) {
-      wrappedRow = numGridCells - 1;
-    } else if (row >= numGridCells) {
-      wrappedRow = 0;
-    }
-    return wrappedRow;
+  const findNextEmptyPosition = (
+    startRow: number, 
+    startCol: number, 
+    direction: 'up' | 'down' | 'left' | 'right'
+  ): { row: number; col: number } => {
+    let row = startRow;
+    let col = startCol;
+
+    const wrapPosition = (pos: number): number => {
+      const size = parseInt(NUM_GRID_CELLS);
+      if (pos < 0) return size - 1;
+      if (pos >= size) return 0;
+      return pos;
+    };
+
+    do {
+      switch (direction) {
+        case 'up':
+          row = wrapPosition(row - 1);
+          break;
+        case 'down':
+          row = wrapPosition(row + 1);
+          break;
+        case 'left':
+          col = wrapPosition(col - 1);
+          break;
+        case 'right':
+          col = wrapPosition(col + 1);
+          break;
+      }
+    } while (userGrid.grid[row][col].state !== 'empty');
+
+    return { row, col };
   };
 
-  const wrapCol = (col) => {
-    const numGridCells = parseInt(NUM_GRID_CELLS);
-    let wrappedCol = col;
-    if (col < 0) {
-      wrappedCol = numGridCells - 1;
-    } else if (col >= numGridCells) {
-      wrappedCol = 0;
-    }
-    return wrappedCol;
-  }
+  const handleSelectionChange = (direction: 'up' | 'down' | 'left' | 'right') => {
+    if (wordPlayed) return;
 
-  const handleSelectionChangeLeft = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        col--;
-        col = wrapCol(col);
-    } while (publicGrid.getState(row, col) !== 'empty');
-    
-    removeOldSelection(currentSelection, currentlyDown);
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
+    const selection = getCurrentSelection();
+    if (!selection) return;
 
-  const handleSelectionChangeRight = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        col++;
-        col = wrapCol(col);
-    } while (publicGrid.getState(row, col) !== 'empty');
+    removeCurrentWord();
     
-    removeOldSelection(currentSelection, currentlyDown);
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
-  
-  const handleSelectionChangeUp = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        row--;
-        row = wrapRow(row);
-    } while (publicGrid.getState(row, col) !== 'empty');
+    const { row, col } = findNextEmptyPosition(selection.row, selection.col, direction);
     
-    removeOldSelection(currentSelection, currentlyDown);
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
-
-  const handleSelectionChangeDown = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        row++;
-        row = wrapRow(row);
-    } while (publicGrid.getState(row, col) !== 'empty');
-    
-    removeOldSelection(currentSelection, currentlyDown);
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
+    userGrid.clearSelection();
+    userGrid.setSelected(row, col, true);
+  };
 
   useEffect(() => {
-    if (currentSelection.length === 0) {
-      return;
-    }
-    if (!wordPlayed) {
+    const selection = getCurrentSelection();
+    if (!selection) return;
+    
+    updateEmptySlotLength();
+    
+    if (!wordPlayed && playWordRef.current) {
       playWordRef.current.focus();
     }
-  }, [currentSelection]);
+  }, [userGrid.grid]);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (wordPlayed) {
-        return;
-      }
+    if (wordPlayed) return;
 
-      const ARROW_UP = 38;
-      const ARROW_DOWN = 40;
-      const ARROW_LEFT = 37;
-      const ARROW_RIGHT = 39;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const keyMap: Record<string, 'up' | 'down' | 'left' | 'right'> = {
+        ArrowUp: 'up',
+        ArrowDown: 'down',
+        ArrowLeft: 'left',
+        ArrowRight: 'right'
+      };
 
-      let { row, col } = currentSelection[0];
+      const direction = keyMap[event.key];
+      if (!direction) return;
 
-      switch (event.keyCode) {
-
-        case ARROW_UP:
-          do {
-            row--;
-            row = wrapRow(row);
-          } while (publicGrid.getState(row, col) !== 'empty');
-          event.preventDefault();
-          break;
-        case ARROW_DOWN:
-          do {
-            row++;
-            row = wrapRow(row);
-          } while (publicGrid.getState(row, col) !== 'empty');
-          event.preventDefault();
-          break;
-        case ARROW_LEFT:
-          do {
-            col--;
-            col = wrapCol(col);
-          } while (publicGrid.getState(row, col) !== 'empty');
-          event.preventDefault();
-          break;
-        case ARROW_RIGHT:
-          do {
-            col++;
-            col = wrapCol(col);
-          } while (publicGrid.getState(row, col) !== 'empty');
-          event.preventDefault();
-          break;
-        default:
-          return; 
-      }
-
-      removeOldSelection(currentSelection, currentlyDown);
-      setCurrentSelection([ { row: row, col: col }]);
+      event.preventDefault();
+      handleSelectionChange(direction);
     };
 
     window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [wordPlayed, userGrid.grid]);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [currentSelection]);
 
-  // TODO add handling for when selection is empty
 
   return (
     <>
@@ -274,26 +204,26 @@ function PlayWordMenu() {
       <div className='cell-nav-bar'>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={!wordPlayed && handleSelectionChangeLeft} >
+          onClick={() => !wordPlayed && handleSelectionChange('left')}>
             {'<'}
         </div>
         <div 
           className=  {`qtr-button ${usersTeam}`}  
-          onClick={!wordPlayed && handleSelectionChangeUp} >
+          onClick={() => !wordPlayed && handleSelectionChange('up')}>
             <span style={{ transform: 'rotate(90deg)' }}>
               {'<'}
             </span>
         </div>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={!wordPlayed && handleSelectionChangeDown} >
+          onClick={() => !wordPlayed && handleSelectionChange('down')}>
             <span style={{ transform: 'rotate(-90deg)' }}>
               {'<'}
             </span>
         </div>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={!wordPlayed && handleSelectionChangeRight} >
+          onClick={() => !wordPlayed && handleSelectionChange('right')}>
             {'>'}
         </div>
       </div>
@@ -312,7 +242,7 @@ function PlayWordMenu() {
           ref={playWordRef}
           autoComplete='off'
           autoFocus
-          onChange={!wordPlayed && handleWordChange}
+          onChange={handleWordChange}
           value={word} 
         />
         <button 
@@ -351,23 +281,7 @@ function PlayWordMenu() {
           {currentlyDown ? 'Down' : 'Across'}
       </button>
 
-      {/* 
-      add clue inputs for all intersecting words created
-
-      <div className="input-container">
-        <label className= {`menu-input ${usersTeam}`} htmlFor="playWordInputField">bonus word:</label>
-        <input className= {`menu-input ${usersTeam} inactive`} type="text" id="secondWord" value={word} onChange={handleWordChange}/>
-        <button className= {`enter-button ${usersTeam} hide`} onClick={handleWordEnter} >{'>'}</button>
-      </div>
-
-      <div className="input-container">
-        <label className= {`menu-input ${usersTeam}`} htmlFor="playClueInputField">play clue:</label>
-        <input className= {`menu-input ${usersTeam} ${cluePlayed ? 'inactive' : ''}`} type="text" id="playClueInputField" value={clue} onChange={handleClueChange}/>
-        <button className= {`enter-button ${usersTeam} ${cluePlayed ? 'hide' : ''}`} onClick={handleClueEnter} >{'>'}</button>
-      </div> */}
-
-
-      <OptionsMenu currentScreenLabel={"play-word"}/>
+      <OptionsMenu currentMenu={"play-word"}/>
 
     </div>
     </>

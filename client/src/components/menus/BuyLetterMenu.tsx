@@ -1,130 +1,98 @@
 import { useEffect, useContext } from 'react'; 
 import OptionsMenu from './OptionsMenu.tsx'
 import { UsersContext } from '../../App.tsx';
-import { CurrentSelectionContext } from '../../App.tsx';
-import { PublicGridContext } from '../../App.tsx';
+import useUserGridStore from '../../stores/UserGridStore';
 
 function BuyLetterMenu() {
-  const { currentSelection, setCurrentSelection } = useContext(CurrentSelectionContext);
-  const { publicGrid } = useContext(PublicGridContext);
+  const userGrid = useUserGridStore();
   const { usersTeam } = useContext(UsersContext);
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 
-  const wrapRow = (row) => {
+  const wrapRow = (row: number): number => {
     const numGridCells = parseInt(NUM_GRID_CELLS);
-    let wrappedRow = row;
-
-    if (row < 0) {
-      wrappedRow = numGridCells - 1;
-    } else if (row >= numGridCells) {
-      wrappedRow = 0;
-    }
-    return wrappedRow;
+    if (row < 0) return numGridCells - 1;
+    if (row >= numGridCells) return 0;
+    return row;
   };
 
-  const wrapCol = (col) => {
+  const wrapCol = (col: number): number => {
     const numGridCells = parseInt(NUM_GRID_CELLS);
-    let wrappedCol = col;
-    if (col < 0) {
-      wrappedCol = numGridCells - 1;
-    } else if (col >= numGridCells) {
-      wrappedCol = 0;
-    }
-    return wrappedCol;
-  }
+    if (col < 0) return numGridCells - 1;
+    if (col >= numGridCells) return 0;
+    return col;
+  };
 
-  const handleSelectionChangeLeft = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        col--;
-        col = wrapCol(col);
-    } while (publicGrid.getState(row, col) !== 'unguessed');
-    
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
+  const findNextUnguessedPosition = (
+    startRow: number, 
+    startCol: number, 
+    direction: 'up' | 'down' | 'left' | 'right'
+  ): { row: number; col: number } => {
+    let row = startRow;
+    let col = startCol;
 
-  const handleSelectionChangeRight = () => {
-    let { row, col } = currentSelection[0];    
     do {
-        col++;
-        col = wrapCol(col);
-    } while (publicGrid.getState(row, col) !== 'unguessed');
-    
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
-  
-  const handleSelectionChangeUp = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        row--;
-        row = wrapRow(row);
-    } while (publicGrid.getState(row, col) !== 'unguessed');
-    
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
+      switch (direction) {
+        case 'up':
+          row = wrapRow(row - 1);
+          break;
+        case 'down':
+          row = wrapRow(row + 1);
+          break;
+        case 'left':
+          col = wrapCol(col - 1);
+          break;
+        case 'right':
+          col = wrapCol(col + 1);
+          break;
+      }
+    } while (userGrid.grid[row][col].state !== 'unguessed');
 
-  const handleSelectionChangeDown = () => {
-    let { row, col } = currentSelection[0];    
-    do {
-        row++;
-        row = wrapRow(row);
-    } while (publicGrid.getState(row, col) !== 'unguessed');
+    return { row, col };
+  };
+
+  const handleSelectionChange = (direction: 'up' | 'down' | 'left' | 'right') => {
+    userGrid.clearSelection();
     
-    setCurrentSelection(currentSelection.map(() => ({ row, col })));
-  }
+    const currentCell = userGrid.grid.flat().find(cell => cell.isSelected);
+    if (!currentCell) return;
+    
+    const currentRow = userGrid.grid.findIndex(row => row.includes(currentCell));
+    const currentCol = userGrid.grid[currentRow].indexOf(currentCell);
+    
+    const { row, col } = findNextUnguessedPosition(currentRow, currentCol, direction);
+    
+    userGrid.setSelected(row, col, true);
+  };
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      const ARROW_UP = 38;
-      const ARROW_DOWN = 40;
-      const ARROW_LEFT = 37;
-      const ARROW_RIGHT = 39;
-
-      let { row, col } = currentSelection[0];
-
-      switch (event.keyCode) {
-        case ARROW_UP:
-          do {
-            row--;
-            row = wrapRow(row);
-          } while (publicGrid.getState(row, col) !== 'unguessed');
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowUp':
+          handleSelectionChange('up');
           event.preventDefault();
           break;
-        case ARROW_DOWN:
-          do {
-            row++;
-            row = wrapRow(row);
-          } while (publicGrid.getState(row, col) !== 'unguessed');
+        case 'ArrowDown':
+          handleSelectionChange('down');
           event.preventDefault();
           break;
-        case ARROW_LEFT:
-          do {
-            col--;
-            col = wrapCol(col);
-          } while (publicGrid.getState(row, col) !== 'unguessed');
+        case 'ArrowLeft':
+          handleSelectionChange('left');
           event.preventDefault();
           break;
-        case ARROW_RIGHT:
-          do {
-            col++;
-            col = wrapCol(col);
-          } while (publicGrid.getState(row, col) !== 'unguessed');
+        case 'ArrowRight':
+          handleSelectionChange('right');
           event.preventDefault();
           break;
         default:
-          return; 
+          return;
       }
-
-      setCurrentSelection([ { row: row, col: col }]);
     };
 
     window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [currentSelection]);
 
   return (
     <div className='menu-container'>
@@ -132,26 +100,26 @@ function BuyLetterMenu() {
       <div className='cell-nav-bar'>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeLeft} >
+          onClick={() => handleSelectionChange('left')}>
             {'<'}
         </div>
         <div 
           className=  {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeUp} >
+          onClick={() => handleSelectionChange('up')}>
             <span style={{ transform: 'rotate(90deg)' }}>
                 {'<'}
             </span>
         </div>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeDown}>
+          onClick={() => handleSelectionChange('down')}>
             <span style={{ transform: 'rotate(-90deg)' }} >
                 {'<'}
             </span>
         </div>
         <div 
           className= {`qtr-button ${usersTeam}`} 
-          onClick={handleSelectionChangeRight} >
+          onClick={() => handleSelectionChange('right')}>
             {'>'}
         </div>
       </div>
@@ -162,7 +130,7 @@ function BuyLetterMenu() {
           buy letter for two points
       </button>
 
-      <OptionsMenu currentScreenLabel={"buy-letter"}/>
+      <OptionsMenu currentMenu={"buy-letter"}/>
     </div>
   )
 }

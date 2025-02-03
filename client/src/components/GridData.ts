@@ -1,4 +1,4 @@
-const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
+const NUM_GRID_CELLS = Number(getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells'));
 
 class CellData {
     constructor({ row, col, letter='', num=0, owningTeam='', state='empty' }) {
@@ -50,21 +50,21 @@ class GridData {
         );
     }
 
-    getCellData(row, col) {
+    getCellData(row: number, col: number) {
         return this.GridData[row][col];
     }
 
-    getState(row, col) {
+    getState(row: number, col: number) {
         // console.log(row, col);
         return this.GridData[row][col].state;
     }
-    getLetter(row, col) {
+    getLetter(row: number, col: number) {
         return this.GridData[row][col].letter;
     }
-    getNum(row, col) {
+    getNum(row: number, col: number) {
         return this.GridData[row][col].num;
     }
-    getOwningTeam(row, col) {
+    getOwningTeam(row: number, col: number) {
         return this.GridData[row][col].owningTeam;
     }
 
@@ -131,26 +131,26 @@ class GridData {
         console.log(output);
     }
 
-    setEmpty(row, col) {
+    setEmpty(row: number, col: number) {
         this.GridData[row][col].state = 'empty';
     }
 
-    setUnguessed(row, col, owningTeam) {
+    setUnguessed(row: number, col: number, owningTeam: team) {
         this.GridData[row][col].owningTeam = owningTeam;
         this.GridData[row][col].state = 'unguessed';
     }
 
-    setNum(row, col, num) {
+    setNum(row: number, col: number, num: number) {
         this.GridData[row][col].num = num;
     }
 
-    setGuessed(row, col, letter, team) {
+    setGuessed(row: number, col: number, letter: string, team: Team) {
         this.GridData[row][col].letter = letter;
         this.GridData[row][col].state = 'guessed';
         this.GridData[row][col].owningTeam = team;
     }
 
-    setLetter(row, col, letter) {
+    setLetter(row: number, col: number, letter: string) {
         console.log(row, col, letter);
         this.logGridLettersPretty();
         this.GridData[row][col].letter = letter;
@@ -169,7 +169,7 @@ class GridData {
     }
 
 
-    setTempBlockAdjacentCells(row, col, down) {
+    setTempBlockAdjacentCells(row: number, col: number, down: boolean) {
         if (down) {
             if (col > 0) {
                 this.setTempBlock(row, col - 1);
@@ -212,7 +212,6 @@ class GridData {
             }
         }
         // block CellData before word 
-        // maybe changed to temp-block later?
         if (down) {
             if (row > 0) {
                 this.setBlock(row - 1, col);
@@ -224,7 +223,6 @@ class GridData {
         }
 
         // permanently block CellData after word
-        // maybe changed to temp-block later?
         if (down) {
             if (row + length < NUM_GRID_CELLS) {
                 this.setBlock(row + length, col);
@@ -251,20 +249,9 @@ class GridData {
             }
             // this.logGridStatePretty();
         }
-
-        // // remove temp block CellData before word
-        // if (down) {
-        //     if (row > 0) {
-        //         this.removeTempBlock(row - 1, col);
-        //     }
-        // } else {
-        //     if (col > 0) {
-        //         this.removeTempBlock(row, col - 1);
-        //     }
-        // }
     }
 
-    removeTempBlock(row, col) {
+    removeTempBlock(row: number, col: number) {
         // check all adjacent CellDatas for unguessed CellDatas
         if (row > 0) {
             if (this.GridData[row - 1][col].state === 'unguessed') {
@@ -291,7 +278,7 @@ class GridData {
         }
     }
 
-    removeAdjacentTempBlocks(row, col, down) {
+    removeAdjacentTempBlocks(row: number, col: number, down: boolean) {
         if (down) {
             if (col > 0) {
                 this.removeTempBlock(row, col - 1);
