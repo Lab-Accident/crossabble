@@ -1,15 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import { Game, ICell } from '../models/gameModel';
 import * as types from '../types/gameTypes';
-import { SocketService } from '../services/socketService';
-
-
-let socketService: SocketService;
-const gameRouter = Router();
-export const initializeGameRouter = (socket: SocketService) => {
-  socketService = socket;
-  return gameRouter;
-}
+import { gameRouter } from '../app';
 
 
 const createCell = (row: number, col: number): ICell => ({
@@ -73,9 +65,9 @@ const joinGame: RequestHandler<{ gameCode: string; }, any, { preferredTeam?: typ
       game.status = 'active';
       await game.save();
       
-      socketService.notifyGameUpdate(game.gameCode, 'game_started', {
-          currentTurn: game.currentTurn
-      });
+      // socketService.notifyGameUpdate(game.gameCode, 'game_started', {
+      //     currentTurn: game.currentTurn
+      // });
   }
 
   res.json(game.toClientJSON(eligiblePositions[0]));
@@ -154,6 +146,7 @@ const deleteGames: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
 
 gameRouter.delete('/', deleteGames);
 gameRouter.post('/join/:gameCode', joinGame);
