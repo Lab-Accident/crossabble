@@ -7,7 +7,7 @@ function GameBoard() {
 
   const gameStore = useGameStore();
 
-  const MIN_GRID_SIZE = getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', '');;
+  const MIN_GRID_SIZE = Number(getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', ''));
 
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
 
@@ -36,14 +36,14 @@ function GameBoard() {
   },);
 
   const updateColHeights = () => {
-    const col = document.querySelector('.-left');
+    const col = document.querySelector('.-left') as HTMLElement;
     if (col) {
       setColHeight(col.offsetHeight);
     }
   };
 
   const updateTeamLabelTextWidth = () => {
-    const text = document.querySelector('.team-label-blue');
+    const text = document.querySelector('.team-label-blue') as HTMLElement;
     if (text) {
       setTeamLabelTextWidth(text.offsetWidth);
     }
@@ -54,7 +54,7 @@ function GameBoard() {
     setGridContainerSize(Math.max(MIN_GRID_SIZE, viewportHeight*0.4));
   }
 
-  const getTeamLabelStyle = (height, width, left) => {
+  const getTeamLabelStyle = (height: number, width: number, left: boolean) => {
     const scaleY = Math.min(2.5, (230 / width));
     const fontSize = height / 4;
     const direction = left ? -90 : 90;

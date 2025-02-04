@@ -29,11 +29,11 @@
         position: relative;
 
         &.team1::before {
-            content: attr(num) ". ";
+            content: attr(data-num) ". ";
             color: $COLOR_TEAM_1;
         }
         &.team2::before {
-            content: attr(num) ". ";
+            content: attr(data-num) ". ";
             color: $COLOR_TEAM_2; 
         }
 

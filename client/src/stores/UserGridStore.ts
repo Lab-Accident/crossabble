@@ -10,6 +10,7 @@ interface FrontendCell extends types.Cell {
 
 interface UserGridStore {
     grid: FrontendCell[][];
+    setLetter: (row: number, col: number, letter: string) => void;
 
     setSelected: (row: number, col: number, isSelected: boolean) => void;
     clearSelection: () => void;
@@ -21,14 +22,20 @@ const createEmptyGrid = (): FrontendCell[][] => {
       position: { row, col },
       state: types.CellState.Empty,
       letter: '',
-      owningTeam: types.Team.None,
-      isSelected: false
+      owningTeam: null,
+      isSelected: false,
+      number: 0,
+      playedBy: null
     }))
   );
 }
 
 const useUserGridStore = create<UserGridStore>()((set) => ({
     grid: createEmptyGrid(),
+
+    setLetter: (row, col, letter) => set(produce(store => {
+      store.grid[row][col].letter = letter;
+    })),
 
     setSelected: (row, col, isSelected) => set(produce(store => {
       store.grid[row][col].isSelected = isSelected

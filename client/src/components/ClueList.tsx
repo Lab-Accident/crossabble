@@ -1,11 +1,16 @@
-import { useContext } from 'react'; 
-import {UsersContext } from '../App';
-import { WordData, PublicWord } from './Word.ts';
-import { PublicGridContext } from '../App.tsx';
+import useSessionStore from '../stores/SessionStore';
+import useUserWordsStore from '../stores/UserWordStore';
 
 function ClueList() {
-  const { usersTeam } = useContext(UsersContext);
-  const { unguessedWords } = useContext(PublicGridContext);
+  const words = useUserWordsStore((state) => state.words);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+
+  const unguessedWords = words.filter(word => !word.revealed);
+
+  if (!usersTeam) {
+    return null;
+  }
+
 
   return (
     <>
@@ -15,9 +20,9 @@ function ClueList() {
     <ol className='cluelist'>
       {unguessedWords.map((clue) => (
         <li 
-          num={clue.num} 
-          key={clue.num} 
-          className={clue.team}>
+          data-num={clue.number}
+          key={clue.number} 
+          className={clue.playedBy.startsWith('T1') ? 'team1' : 'team2'}>
             {clue.clue}
         </li>
       ))}

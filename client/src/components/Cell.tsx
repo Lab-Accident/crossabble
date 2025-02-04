@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { UsersContext } from '../App.tsx';
 import useUserGridStore from '../stores/UserGridStore'
 import useGameStore from '../stores/GamePlayStore.ts';
-import { useContext } from 'react';
+import useSessionStore from '../stores/SessionStore.ts';
 
 interface CellProps {
   row: number;
@@ -15,7 +14,7 @@ function Cell({ row, col, accessKey }: CellProps) {
   const NUM_GRID_CELLS =  Number(getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells'));
   const MIN_GRID_SIZE =  Number(getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', ''));
 
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
   const gameStore = useGameStore();
   const userGrid = useUserGridStore();
   const cell = userGrid.grid[row]?.[col];
@@ -144,9 +143,9 @@ function Cell({ row, col, accessKey }: CellProps) {
         className={`cell 
           ${cell.isSelected ? 'selected' : ''} 
           ${gameStore.currentMenu} 
-          ${cell.owningTeam} 
+          ${cell.playedBy} 
           ${cell.state} 
-          ${gameStore.currentTeam}`}
+          ${usersTeam}`}
         accessKey={accessKey} 
         style={getCellSize(cellSize)} 
         onClick={handleCellClick}

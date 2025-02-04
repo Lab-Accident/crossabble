@@ -3,18 +3,18 @@ import * as types from '../types/gameTypes';
 
 interface ISession extends Document {
     sessionId: string;
-    gameCode: string;
-    playerPosition: types.Player;
+    gameCode: string | null;
+    playerPosition: types.Player | null;
     lastSeen: Date;
 }
 
 const SessionSchema = new Schema({
     sessionId: { type: String, required: true, unique: true },
-    gameCode: { type: String, required: true },
+    gameCode: { type: String, required: false },
     playerPosition: { 
         type: String,
         enum: Object.values(types.Player),
-        required: true 
+        required: false
     },
     lastSeen: { type: Date, default: Date.now }
 }, { timestamps: true });

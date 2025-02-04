@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import TestMongo from './components/TestMongo';
+import DebugSocketTest from './components/TestMongo';
+import useSessionStore from './stores/SessionStore';
 
 import './styles/main.scss';
 
 import PlayScreen from './pages/PlayScreen.tsx';
 
-export const UsersContext = React.createContext();
 
 const App = () => {
+  const { initializeSocket, reconnectToGame } = useSessionStore();
 
-  const [usersTeam, setUsersTeam] = useState('T2');
-  const [usersPlayer, setUsersPlayer] = useState('P2');
+  useEffect(() => {
+      initializeSocket();
+      reconnectToGame();
+  }, []);
 
   return (
     <>
-      <UsersContext.Provider value={{ usersTeam, setUsersTeam, usersPlayer, setUsersPlayer }}>
-        <TestMongo />
+        <DebugSocketTest />
         <PlayScreen />
 
             {/* <BrowserRouter>
@@ -26,7 +28,6 @@ const App = () => {
               <Route path="/games" element={GameListScreen} />
             </Routes>
             </BrowserRouter>     */}
-      </UsersContext.Provider>
     </>
   )
 }

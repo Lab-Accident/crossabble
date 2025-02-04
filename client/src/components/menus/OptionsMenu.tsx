@@ -1,10 +1,9 @@
-import { useContext } from 'react'; 
-import {UsersContext } from '../../App.tsx';
 import useGameStore from '../../stores/GamePlayStore.ts';
+import useSessionStore from '../../stores/SessionStore';
 
 function OptionsMenu({  currentMenu }: { currentMenu: string }) {
 
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
   const setMenu = useGameStore((state) => state.setMenu);
 
   const allOptions = [

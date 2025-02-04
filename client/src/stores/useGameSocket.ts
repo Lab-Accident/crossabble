@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import useSessionStore from './SessionStore';
 import useGameStore from './GamePlayStore';
 
+import * as types from '../../../server/src/types/gameTypes';
+
 const SOCKET_URL = 'http://localhost:3000';
 
 export const useGameSocket = () => {
@@ -26,7 +28,7 @@ export const useGameSocket = () => {
         
         // Game status updates
         socket.on('game_status_update', (data: {
-            status: 'waiting' | 'playing' | 'finished';
+            status: types.GameStatus;
             currentTurn?: string;
         }) => {
             setGameStatus(data.status);
@@ -39,7 +41,7 @@ export const useGameSocket = () => {
         socket.on('game_started', (data: {
             currentTurn: string;
         }) => {
-            setGameStatus('playing');
+            setGameStatus(types.GameStatus.Active);
             setCurrentTurn(data.currentTurn as any);
         });
         

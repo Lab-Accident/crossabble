@@ -1,25 +1,41 @@
 import { create } from 'zustand';
 import * as types from '../../../server/src/types/gameTypes';
+import { Socket } from 'socket.io-client';
+import io from 'socket.io-client';
 
-type ActivePlayer = Exclude<types.Player, types.Player.None>;
-
-interface GameSession {
+export interface GameSession {
     gameCode: string;
     playerPosition: types.Player;
     sessionId: string;
 }
+interface SessionStore {
+    socket: typeof Socket | null;
+    currentSession: GameSession | null;
+    gameStatus: types.GameStatus;
+    currentTurn: types.Player;
+    debugLogs: { timestamp: string; message: string; data: any }[];
+
+    initializeSocket: () => void;
+    addDebugLog: (message: string, data: any) => void;
+    joinGame: (gameCode: string, playerPosition: types.Player) => void;
+    reconnectToGame: () => Promise<boolean>;
+    leaveGame: () => void;
+    setGameStatus: (status: types.GameStatus) => void;
+    setCurrentTurn: (turn: types.Player) => void;
+}
+
 
 interface SessionStore {
     currentSession: GameSession | null;
-    gameStatus: 'waiting' | 'playing' | 'finished';
-    currentTurn: ActivePlayer;
+    gameStatus: types.GameStatus;
+    currentTurn: types.Player;
 
     joinGame: (gameCode: string, playerPosition: types.Player) => void;
     reconnectToGame: () => Promise<boolean>;
     leaveGame: () => void;
 
-    setGameStatus: (status: 'waiting' | 'playing' | 'finished') => void;
-    setCurrentTurn: (turn: ActivePlayer) => void;
+    setGameStatus: (status: types.GameStatus) => void;
+    setCurrentTurn: (turn: types.Player) => void;
 }
 
 const generateSessionId = () => Math.random().toString(36).substr(2, 15);
@@ -33,17 +49,66 @@ const loadSession = (): GameSession | null => {
     return savedSession ? JSON.parse(savedSession) : null;
 };
 
-const useSessionStore = create<SessionStore>((set) => ({
+const useSessionStore = create<SessionStore>((set, get) => ({
+    socket: null,
     currentSession: loadSession(),
-    gameStatus: 'waiting',
-    currentTurn: 'T1P1' as ActivePlayer,
+    gameStatus: types.GameStatus.Waiting,
+    currentTurn: 'T1P1' as types.Player,
+    debugLogs: [],
 
+    initializeSocket: () => {
+        const existingSessionId = get().currentSession?.sessionId;
+        
+        const socket = io('http://localhost:3000', {
+            auth: existingSessionId ? { sessionId: existingSessionId } : undefined
+        });
+
+        socket.on('connect', () => {
+            get().addDebugLog('Socket connected', { socketId: socket.id });
+        });
+
+        socket.on('session', (data: { sessionId: string }) => {
+            get().addDebugLog('Session created/restored', data);
+            const newSession: GameSession = {
+                ...get().currentSession,
+                sessionId: data.sessionId,
+                gameCode: get().currentSession?.gameCode || '',
+                playerPosition: get().currentSession?.playerPosition || 'T1P1' as types.Player,
+            };
+            saveSession(newSession);
+            set({ currentSession: newSession });
+        });
+
+        socket.on('gameStateUpdate', (gameState: any) => {
+            set({
+                gameStatus: gameState.status,
+                currentTurn: gameState.currentTurn
+            });
+        });
+
+        set({ socket });
+    },
+
+    addDebugLog: (message: string, data: any) => {
+        set(state => ({
+            debugLogs: [{
+                timestamp: new Date().toISOString(),
+                message,
+                data
+            }, ...state.debugLogs].slice(0, 20)
+        }));
+    },
+
+    // Enhanced joinGame method
     joinGame: (gameCode: string, playerPosition: types.Player) => {
-        const sessionId = generateSessionId();
+        const { socket } = get();
+        if (!socket) return;
+
+        socket.emit('joinGame', { gameCode });
         const newSession: GameSession = { 
             gameCode, 
             playerPosition, 
-            sessionId 
+            sessionId: get().currentSession?.sessionId || generateSessionId()
         };
         saveSession(newSession);
         set({ currentSession: newSession });
@@ -84,8 +149,8 @@ const useSessionStore = create<SessionStore>((set) => ({
         localStorage.removeItem('gameSession');
         set({ 
             currentSession: null, 
-            gameStatus: 'waiting', 
-            currentTurn: 'T1P1' as ActivePlayer
+            gameStatus: types.GameStatus.Waiting,
+            currentTurn: 'T1P1' as types.Player
          });
     },
 

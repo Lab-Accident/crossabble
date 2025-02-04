@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import ClueList from '../components/ClueList.tsx'
 import GameBoard from '../components/GameBoard.tsx'
 
@@ -8,12 +7,15 @@ import BuyLetterMenu from '../components/menus/BuyLetterMenu.tsx'
 import InactiveMenu from '../components/menus/InactiveMenu.tsx'
 import BuyWordMenu from '../components/menus/BuyWordMenu.tsx'
 
-import { UsersContext } from '../App'
-import useGameStore from '../stores/GamePlayStore.ts';
+import useSessionStore from '../stores/SessionStore.ts'
+import useGameStore from '../stores/GamePlayStore.ts'
+
+import * as types from '../../../server/src/types/gameTypes';
 
 const PlayScreen = () => {
   const currentMenu = useGameStore((state) => state.currentMenu);
-  const { usersTeam, usersPlayer } = useContext(UsersContext);
+  const usersPlayer = useSessionStore((state) => state.currentSession?.playerPosition);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
 
   const renderMenu = () => {
     switch (currentMenu) {
@@ -46,14 +48,14 @@ const PlayScreen = () => {
         </h1>
 
         <h2 className={`player-name ${usersTeam}`}>
-          player {usersTeam === 'T1' ? 'blue' : 'green'} {usersPlayer === 'P1' ? '1' : '2'}
+          player {usersTeam === 'T1' ? 'blue' : 'green'} {usersPlayer === types.Player.Team1_Player1 || usersPlayer === types.Player.Team2_Player1 ? '1' : '2'}
         </h2>
         
         <GameBoard />
     
         {renderMenu()}
 
-        {/* <ClueList /> */}
+        <ClueList />
       </div>
     </>
   )

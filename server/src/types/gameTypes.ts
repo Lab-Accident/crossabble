@@ -9,7 +9,6 @@ export enum CellState {
 export enum Team {
     Team1 = 'team1',
     Team2 = 'team2',
-    None = ''
 }
 
 export enum Player {
@@ -17,10 +16,13 @@ export enum Player {
     Team2_Player1 = "T2P1",
     Team1_Player2 = "T1P2",
     Team2_Player2 = "T2P2",
-    None = ''
 }
 
-export type GameStatus = 'waiting' | 'active' | 'paused' | 'completed';
+export enum GameStatus {
+    Waiting = 'waiting',
+    Active = 'active',
+    Finished = 'finished',
+}
 
 export interface Position {
     row: number;
@@ -30,19 +32,25 @@ export interface Position {
 export interface Cell {
     position: Position;
     state: CellState;
-    letter?: string;
-    number?: number;
-    owningTeam: Team;
-    playedBy?: Player;
+    letter: string | null;
+    number: number | null;
+    playedBy: Player | null;
 } 
 
 export interface Word {
     word: string | null;
     clue: string;
-    owner?: Player;
+    playedBy: Player;
     position: Position;
     down: boolean;
     length: number;
     number: number;
     revealed: boolean;
+}
+
+export interface PlayerState {
+    sessionId: string | null;
+    connected: boolean;
+    forfeited: boolean;
+    lastActive: Date;
 }

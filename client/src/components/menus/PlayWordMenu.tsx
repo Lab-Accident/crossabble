@@ -1,10 +1,10 @@
-import { useRef, useEffect, useState, useContext } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import OptionsMenu from './OptionsMenu.tsx'
-import { UsersContext } from '../../App.tsx';
 import useUserGridStore from '../../stores/UserGridStore';
+import useSessionStore from '../../stores/SessionStore';
 
 function PlayWordMenu() {
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
   const userGrid = useUserGridStore();
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');

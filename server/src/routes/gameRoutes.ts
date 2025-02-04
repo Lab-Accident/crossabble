@@ -1,132 +1,172 @@
 import { Router, RequestHandler } from 'express';
-import { Game, ICell } from '../models/gameModel';
+import { Game } from '../models/gameModel';
+import { Session } from '../models/gameSessionModel';
 import * as types from '../types/gameTypes';
-import { gameRouter } from '../app';
 
+const gameRouter = Router();
 
-const createCell = (row: number, col: number): ICell => ({
+const createCell = (row: number, col: number): types.Cell => ({
   position: { row, col },
   state: types.CellState.Empty,
-  letter: '',
-  team: types.Team.None
+  letter: null,
+  number: null,
+  playedBy: null,
 });
 
-const joinGame: RequestHandler<{ gameCode: string; }, any, { preferredTeam?: types.Team; }> = async (req, res, next) => {
+
+
+const joinGame: RequestHandler<{ gameCode: string }, any, { 
+  preferredTeam?: types.Team;
+  sessionId: string;
+}> = async (req, res) => {
   try {
-    const { gameCode } = req.params;
-    const { preferredTeam } = req.body;
-    const sessionId = Math.random().toString(36).substring(2, 15);
+      const { gameCode } = req.params;
+      const { preferredTeam, sessionId } = req.body;
 
-    // Find positions to try, ordered by preference
-    const positions = [
-      types.Player.Team1_Player1,
-      types.Player.Team1_Player2,
-      types.Player.Team2_Player1,
-      types.Player.Team2_Player2
-    ];
-    
-    const eligiblePositions = preferredTeam
-      ? positions.filter(pos => pos.startsWith(preferredTeam))
-      : positions;
+      // Validate session exists
+      const session = await Session.findOne({ sessionId });
+      if (!session) {
+          res.status(400).json({ error: 'Invalid session' });
+          return;
+      }
 
-    // Try to atomically claim a position
-    const game = await Game.findOneAndUpdate(
-      { 
-        gameCode,
-        status: 'waiting',
-        // Check all eligible positions in one query
-        $or: eligiblePositions.map(pos => ({
-          [`players.${pos}.connected`]: false
-        }))
-      },
-      {
-        $set: {
-          [`players.${eligiblePositions[0]}.sessionId`]: sessionId,
-          [`players.${eligiblePositions[0]}.connected`]: true,
-          [`players.${eligiblePositions[0]}.forfeited`]: false,
-          [`players.${eligiblePositions[0]}.lastActive`]: new Date()
-        }
-      },
-      { new: true }
-    );
+      // Find positions to try based on preference
+      const eligiblePositions = preferredTeam
+          ? [
+              preferredTeam === types.Team.Team1 
+                  ? types.Player.Team1_Player1 
+                  : types.Player.Team2_Player1,
+              preferredTeam === types.Team.Team1 
+                  ? types.Player.Team1_Player2 
+                  : types.Player.Team2_Player2
+            ]
+          : Object.values(types.Player);
 
-    if (!game) {
-      res.status(400).json({
-        error: preferredTeam
-          ? `No positions available on team ${preferredTeam}`
-          : 'Game is full or not available'
+      // Try to claim a position
+      const game = await Game.findOneAndUpdate(
+          {
+              gameCode,
+              status: types.GameStatus.Waiting,
+              $or: eligiblePositions.map(pos => ({
+                  [`players.${pos}.sessionId`]: null,
+                  [`players.${pos}.connected`]: false
+              }))
+          },
+          {
+              $set: {
+                  [`players.${eligiblePositions[0]}.sessionId`]: sessionId,
+                  [`players.${eligiblePositions[0]}.lastActive`]: new Date()
+              }
+          },
+          { new: true }
+      );
+
+      if (!game) {
+          res.status(400).json({
+              error: preferredTeam
+                  ? `No positions available on team ${preferredTeam}`
+                  : 'Game is full or not available'
+          });
+          return;
+      }
+
+      // Update session with game info
+      session.gameCode = gameCode;
+      session.playerPosition = eligiblePositions[0];
+      await session.save();
+
+      res.json({
+          game: game.toClientJSON(eligiblePositions[0]),
+          playerPosition: eligiblePositions[0]
       });
-      return;
-    }
-
-    // Check if all players connected and update game status if needed
-    const allConnected = Object.values(game.players).every(p => p.connected);
-    if (allConnected) {
-      game.status = 'active';
-      await game.save();
-      
-      // socketService.notifyGameUpdate(game.gameCode, 'game_started', {
-      //     currentTurn: game.currentTurn
-      // });
-  }
-
-  res.json(game.toClientJSON(eligiblePositions[0]));
   } catch (error) {
-    next(error);
+      res.status(500).json({ 
+          error: error instanceof Error ? error.message : 'An unknown error occurred'
+      });
   }
 };
 
-const createGame: RequestHandler<{}, any, { preferredTeam?: types.Team; }> = async (req, res, next) => {
+
+const createGame: RequestHandler<{}, any, { 
+  preferredTeam?: types.Team;
+  sessionId: string; 
+}> = async (req, res) => {
   try {
-    const { preferredTeam } = req.body;
-    const sessionId = Math.random().toString(36).substring(2, 15);
+      const { preferredTeam, sessionId } = req.body;
+      
+      // Validate session exists
+      const session = await Session.findOne({ sessionId });
+      if (!session) {
+          res.status(400).json({ error: 'Invalid session' });
+          return;
+      }
+      
+      // Generate game code
+      const gameCode = Math.random().toString(36).substr(2, 4).toUpperCase();
+      
+      // Initialize player position based on preferred team
+      const playerPosition = preferredTeam === types.Team.Team2 
+          ? types.Player.Team2_Player1 
+          : types.Player.Team1_Player1;
 
-    let gameCode;
-    let exists = true;
-    while (exists) {
-      gameCode = Math.random().toString(36).substr(2, 4).toUpperCase();
-      exists = (await Game.exists({ gameCode })) !== null;
-    }
+      // Create initial game state with players object
+      const initialPlayers = {
+          [types.Player.Team1_Player1]: {
+              sessionId: playerPosition === types.Player.Team1_Player1 ? sessionId : null,
+              connected: false,
+              forfeited: false,
+              lastActive: new Date()
+          },
+          [types.Player.Team1_Player2]: {
+              sessionId: null,
+              connected: false,
+              forfeited: false,
+              lastActive: new Date()
+          },
+          [types.Player.Team2_Player1]: {
+              sessionId: playerPosition === types.Player.Team2_Player1 ? sessionId : null,
+              connected: false,
+              forfeited: false,
+              lastActive: new Date()
+          },
+          [types.Player.Team2_Player2]: {
+              sessionId: null,
+              connected: false,
+              forfeited: false,
+              lastActive: new Date()
+          }
+      };
 
-    const grid = Array(15).fill(null).map((_, row) => 
-      Array(15).fill(null).map((_, col) => createCell(row, col))
-    );
+      // Create game
+      const game = await Game.create({
+          gameCode,
+          status: types.GameStatus.Waiting,
+          currentTurn: types.Player.Team1_Player1,
+          players: initialPlayers,
+          grid: Array(15).fill(null).map((_, row) => 
+              Array(15).fill(null).map((_, col) => createCell(row, col))
+          ),
+          words: [],
+          score: { team1: 0, team2: 0 }
+      });
 
-    const position = preferredTeam 
-      ? `${preferredTeam}_Player1` as types.Player
-      : types.Player.Team1_Player1;
-  
-    const game = await Game.create({
-      gameCode,
-      status: 'waiting',
-      currentTurn: types.Player.Team1_Player1,
-      grid,
-      words: [],
-      players: {
-        [types.Player.Team1_Player1]: { connected: false},
-        [types.Player.Team1_Player2]: { connected: false },
-        [types.Player.Team2_Player1]: { connected: false },
-        [types.Player.Team2_Player2]: { connected: false },
-        [position]: {
-          sessionId,
-          connected: true,
-          forfeited: false,
-          lastActive: new Date()
-        }
-      },
-      score: { team1: 0, team2: 0 }
-    });
+      // Update session with game info
+      session.gameCode = gameCode;
+      session.playerPosition = playerPosition;
+      await session.save();
 
-    if (!game) {
-      res.status(500).json({ error: 'Failed to create game' });
-      return;
-    }
-
-    res.json(game.toClientJSON(position));
+      res.json({
+          game: game.toClientJSON(playerPosition),
+          playerPosition
+      });
   } catch (error) {
-    next(error);
+      console.error('Error creating game:', error);
+      res.status(500).json({ 
+          error: error instanceof Error ? error.message : 'An unknown error occurred'
+      });
   }
 };
+
 
 
 const getGames: RequestHandler = async (req, res, next) => {

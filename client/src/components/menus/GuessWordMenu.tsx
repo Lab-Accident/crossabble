@@ -1,16 +1,16 @@
-import { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import OptionsMenu from './OptionsMenu'
-import { UsersContext } from '../../App.tsx';
 
 import useUserGridStore from '../../stores/UserGridStore';
 import useUserWordsStore from '../../stores/UserWordStore';
+import useSessionStore from '../../stores/SessionStore';
 
 function GuessWordMenu() {
 
   const [wordGuessed, setWordGuessed] = useState(false);
   const [guess, setGuess] = useState('');
 
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
 
   const userGrid = useUserGridStore();
   const userWords = useUserWordsStore();

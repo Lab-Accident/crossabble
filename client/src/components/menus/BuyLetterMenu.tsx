@@ -1,11 +1,11 @@
-import { useEffect, useContext } from 'react'; 
+import { useEffect } from 'react'; 
 import OptionsMenu from './OptionsMenu.tsx'
-import { UsersContext } from '../../App.tsx';
 import useUserGridStore from '../../stores/UserGridStore';
+import useSessionStore from '../../stores/SessionStore';
 
 function BuyLetterMenu() {
   const userGrid = useUserGridStore();
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
 
   const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 

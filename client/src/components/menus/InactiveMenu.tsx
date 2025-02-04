@@ -1,8 +1,8 @@
-import { useState, useContext } from 'react';
-import {UsersContext } from '../../App.tsx';
+import { useState } from 'react';
+import useSessionStore from '../../stores/SessionStore';
 
 function InactiveMenu() {
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
   const [message, setMessage] = useState('Default Message For Inactive Menu');
 
   return (

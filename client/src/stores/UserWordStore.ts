@@ -34,7 +34,7 @@ const deselectWordInGrid = (word: types.Word, setSelected: (row: number, col: nu
   }
 };
 
-const useUserWordsStore = create<WordStoreState>((set) => ({
+const useUserWordsStore = create<WordStoreState>((set, get) => ({
   words: [],
   currSelectedWord: null,
 
@@ -72,39 +72,43 @@ const useUserWordsStore = create<WordStoreState>((set) => ({
     }));
   },
 
-  selectNextUnguessedWord: () => set(
-    produce((state) => {
-      const unguessedWords = state.words.filter((w: types.Word) => !w.revealed);
-      if (unguessedWords.length === 0) return;
+  selectNextUnguessedWord: () => {
+    const state = get();
+    const unguessedWords = state.words.filter(w => !w.revealed);
+    if (unguessedWords.length === 0) return;
 
-      const currentIndex = state.currSelectedWord
-        ? unguessedWords.findIndex((w: types.Word) => w === state.currSelectedWord)
-        : -1;
+    const currentIndex = state.currSelectedWord
+      ? unguessedWords.findIndex(w => w === state.currSelectedWord)
+      : -1;
 
-      const nextIndex = currentIndex === -1 
-        ? 0 
-        : (currentIndex + 1) % unguessedWords.length;
+    const nextIndex = currentIndex === -1 
+      ? 0 
+      : (currentIndex + 1) % unguessedWords.length;
 
-      state.setSelectedWord(unguessedWords[nextIndex]);
-    })
-  ),
+    const nextWord = unguessedWords[nextIndex];
+    if (nextWord) {
+      get().setSelectedWord(nextWord);
+    }
+  },
 
-  selectPrevUnguessedWord: () => set(
-    produce((state) => {
-      const unguessedWords = state.words.filter((w: types.Word) => !w.revealed);
-      if (unguessedWords.length === 0) return;
+  selectPrevUnguessedWord: () => {
+    const state = get();
+    const unguessedWords = state.words.filter(w => !w.revealed);
+    if (unguessedWords.length === 0) return;
 
-      const currentIndex = state.currSelectedWord
-        ? unguessedWords.findIndex((w: types.Word) => w === state.currSelectedWord)
-        : -1;
+    const currentIndex = state.currSelectedWord
+      ? unguessedWords.findIndex(w => w === state.currSelectedWord)
+      : -1;
 
-      const prevIndex = currentIndex === -1 
-        ? unguessedWords.length - 1 
-        : (currentIndex - 1 + unguessedWords.length) % unguessedWords.length;
+    const prevIndex = currentIndex === -1 
+      ? unguessedWords.length - 1 
+      : (currentIndex - 1 + unguessedWords.length) % unguessedWords.length;
 
-      state.setSelectedWord(unguessedWords[prevIndex]);
-    })
-  ),
+    const prevWord = unguessedWords[prevIndex];
+    if (prevWord) {
+      get().setSelectedWord(prevWord);
+    }
+  },
 }));
 
 export default useUserWordsStore;

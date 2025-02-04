@@ -1,10 +1,10 @@
-import { useContext } from 'react'; 
 import OptionsMenu from './OptionsMenu.tsx'
-import {UsersContext } from '../../App.tsx';
+
+import useSessionStore from '../../stores/SessionStore';
 
 function BuyWordMenu() {
 
-  const { usersTeam } = useContext(UsersContext);
+  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
 
   return (
     <div className='menu-container'>

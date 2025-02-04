@@ -1,7 +1,7 @@
 import Cell from './Cell.tsx'
 
 function Grid() {
-  const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
+  const NUM_GRID_CELLS = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells'), 10);
 
   return (
     <div className="grid">
