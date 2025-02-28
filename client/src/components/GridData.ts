@@ -5,7 +5,7 @@ class CellData {
         this.row = row;                 //int, 0-indexed
         this.col = col;                 //int, 0-indexed
         this.letter =  '';              //string of length 1 or ''
-        this.num = 0;                   //int, 1-indexed, 0 for no number
+        this.num = 0;                   //int, 1-indexed
         this.owningTeam = owningTeam;   // 'team1', 'team2', or '', only for unguessed/guessed
         this.state = state;             // 'empty', 'guessed', 'unguessed', 'temp-block', 'block'
     

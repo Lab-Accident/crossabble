@@ -3,7 +3,4 @@
 .grid {
     height: 100%;
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat($NUM_GRID_CELLS, 1fr);
-    grid-template-rows: repeat($NUM_GRID_CELLS, 1fr);
 }

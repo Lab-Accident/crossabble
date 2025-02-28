@@ -1,13 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
 import OptionsMenu from './OptionsMenu.tsx'
 import useUserGridStore from '../../stores/UserGridStore';
-import useSessionStore from '../../stores/SessionStore';
+import { getCurrentTeam } from '../../hooks/useSocket';
+import useGameStore from '../../stores/GamePlayStore';
 
 function PlayWordMenu() {
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
   const userGrid = useUserGridStore();
-
-  const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
+  const gameStore = useGameStore();
 
   const [wordPlayed, setWordPlayed] = useState(false);
   const [cluePlayed, setCluePlayed] = useState(false);
@@ -24,8 +24,8 @@ function PlayWordMenu() {
 
     const { row, col } = selection;
     let maxLength = currentlyDown ? 
-      parseInt(NUM_GRID_CELLS) - row : 
-      parseInt(NUM_GRID_CELLS) - col;
+      gameStore.numGridCells - row : 
+      gameStore.numGridCells - col;
 
     for (let i = 0; i < maxLength; i++) {
       const curr = currentlyDown 
@@ -121,7 +121,7 @@ function PlayWordMenu() {
     let col = startCol;
 
     const wrapPosition = (pos: number): number => {
-      const size = parseInt(NUM_GRID_CELLS);
+      const size = gameStore.numGridCells;
       if (pos < 0) return size - 1;
       if (pos >= size) return 0;
       return pos;

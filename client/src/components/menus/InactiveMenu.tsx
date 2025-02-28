@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import useSessionStore from '../../stores/SessionStore';
+import { getCurrentTeam } from '../../hooks/useSocket';
 
 function InactiveMenu() {
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
   const [message, setMessage] = useState('Default Message For Inactive Menu');
 
   return (

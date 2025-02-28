@@ -1,174 +1,175 @@
-import React, { useState, useEffect } from 'react';
-import { Team, Player } from '../../../server/src/types/gameTypes';
-import { Socket } from 'socket.io-client';
-import io from 'socket.io-client';
+import { useCallback, useEffect, useRef } from 'react';
+import { Team, GameData, GameSession, Player } from '../../../server/src/types/gameTypes';
 
-const DebugSocketTest = () => {
-    const [socket, setSocket] = useState<typeof Socket | null>(null);
-    const [sessionId, setSessionId] = useState<string | null>(() => 
-        // Initialize from localStorage if available
-        localStorage.getItem('sessionId')
-    );
-    const [gameCode, setGameCode] = useState('');
-    const [error, setError] = useState('');
-    const [debugLogs, setDebugLogs] = useState<{ timestamp: string; message: string; data: any }[]>([]);
-    const [currentGame, setCurrentGame] = useState(null);
+interface SocketState {
+  connected: boolean;
+  sessionId: string | null;
+  currentGame: GameSession | null;
+  availableGames: GameData[];
+  error: string | null;
+}
+
+interface SocketActions {
+  createGame: (team: Team) => void;
+  joinGame: (gameCode: string, team: Team) => void;
+}
+
+const DebugSocketTest = ({ socketState, socketActions }: { socketState: SocketState; socketActions: SocketActions }) => {
+  const { connected, sessionId, currentGame, availableGames, error } = socketState;
+  const { createGame, joinGame } = socketActions;
+
+  const componentId = useRef(Math.random().toString(36).substr(2, 9));
     
-    const addDebugLog = (message: string, data: any) => {
-        setDebugLogs(prev => [{
-            timestamp: new Date().toISOString(),
-            message,
-            data
-        }, ...prev].slice(0, 20));
-    };
+  console.log(`[Component Debug] DebugSocketTest ${componentId.current} rendering`, {
+      connected: socketState.connected,
+      sessionId: socketState.sessionId
+  });
 
-    // Initialize socket connection
-    useEffect(() => {
-        // Get existing sessionId from localStorage if available
-        const existingSessionId = localStorage.getItem('sessionId');
-        
-        // Connect with the existing sessionId if available
-        const newSocket = io('http://localhost:3000', {
-            auth: existingSessionId ? { sessionId: existingSessionId } : undefined
-        });
-        
-        newSocket.on('connect', () => {
-            addDebugLog('Socket connected', { socketId: newSocket.id });
-        });
+  useEffect(() => {
+      console.log(`[Component Debug] DebugSocketTest ${componentId.current} mounted`);
+      return () => {
+          console.log(`[Component Debug] DebugSocketTest ${componentId.current} unmounting`);
+      };
+  }, []);
 
-        newSocket.on('session', (data: { sessionId: string }) => {
-            addDebugLog('Session created/restored', data);
-            setSessionId(data.sessionId);
-            // Store sessionId in localStorage
-            localStorage.setItem('sessionId', data.sessionId);
-        });
 
-        newSocket.on('error', (error: any) => {
-            addDebugLog('Socket error', error);
-            setError(error.message);
-        });
+  // Memoize handlers
+  const handleCreateGame = useCallback((team: Team) => {
+    if (sessionId) {
+      createGame(team);
+    }
+  }, [sessionId, createGame]);
 
-        setSocket(newSocket);
+  const handleJoinGame = useCallback((gameCode: string, team: Team) => {
+    if (sessionId) {
+      joinGame(gameCode, team);
+    }
+  }, [sessionId, joinGame]);
 
-        return () => {
-            newSocket.close();
-        };
-    }, []);
+  // Memoize helper function
+  const areTeamPositionsTaken = useCallback((game: GameData, team: string) => {
+    const player1Key = `${team}P1` as keyof typeof game.players;
+    const player2Key = `${team}P2` as keyof typeof game.players;
 
-    const createGame = async (preferredTeam?: Team) => {
-        try {
-            if (!sessionId) {
-                throw new Error('No session ID available');
-            }
+    return game.players[player1Key]?.connected !== false && 
+           game.players[player2Key]?.connected !== false;
+  }, []);
 
-            addDebugLog('Creating game', { preferredTeam, sessionId });
-            
-            const res = await fetch('http://localhost:3000/api/games', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    preferredTeam,
-                    sessionId 
-                })
-            });
-            
-            const rawResponse = await res.text();
-            addDebugLog('Raw server response', rawResponse);
-            
-            let newGame;
-            try {
-                newGame = JSON.parse(rawResponse);
-                addDebugLog('Parsed server response', newGame);
-            } catch (parseError) {
-                addDebugLog('Failed to parse server response', { error: parseError instanceof Error ? parseError.message : 'Unknown error' });
-                throw new Error('Invalid server response format');
-            }
-            
-            if (!res.ok) {
-                addDebugLog('Server returned error', { status: res.status, error: newGame.error });
-                throw new Error(newGame.error || 'Failed to create game');
-            }
-
-            setCurrentGame(newGame);
-            setGameCode(newGame.game.gameCode);
-
-            // Join the game room via socket
-            socket?.emit('join_game', newGame.game.gameCode);
-
-            addDebugLog('Game created successfully', {
-                gameCode: newGame.game.gameCode,
-                playerPosition: newGame.playerPosition
-            });
-            
-            setError('');
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-            setError(errorMessage);
-            addDebugLog('Create game error', { error: errorMessage });
-        }
-    };
-
-    return (
-        <div className="p-5">
-            <h1 className="text-2xl font-bold mb-5">Debug Socket Test</h1>
-            
-            <div className="mb-5">
-                <div className="mb-3">
-                    <strong>Socket Status:</strong> {socket?.connected ? 'Connected' : 'Disconnected'}
-                </div>
-                <div className="mb-3">
-                    <strong>Session ID:</strong> {sessionId || 'Not assigned'}
-                </div>
-                
-                {error && (
-                    <div className="p-3 bg-red-100 text-red-700 rounded-md mb-3">
-                        {error}
-                    </div>
-                )}
-
-                <div className="flex gap-3">
-                    <button 
-                        onClick={() => createGame(Team.Team1)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                        disabled={!sessionId}
-                    >
-                        Create (Team 1)
-                    </button>
-                    <button 
-                        onClick={() => createGame(Team.Team2)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                        disabled={!sessionId}
-                    >
-                        Create (Team 2)
-                    </button>
-                </div>
-            </div>
-
-            {currentGame && (
-                <div className="mb-5 p-3 border rounded-md">
-                    <h3 className="font-bold mb-2">Current Game State</h3>
-                    <pre className="bg-gray-100 p-3 rounded-md overflow-auto">
-                        {JSON.stringify(currentGame, null, 2)}
-                    </pre>
-                </div>
-            )}
-
-            <div>
-                <h3 className="font-bold mb-2">Debug Logs</h3>
-                <div className="max-h-96 overflow-auto">
-                    {debugLogs.map((log, index) => (
-                        <div key={index} className="mb-3 p-3 border rounded-md">
-                            <div className="text-gray-600">{log.timestamp}</div>
-                            <div className="font-bold">{log.message}</div>
-                            <pre className="bg-gray-100 p-3 rounded-md mt-2 overflow-auto">
-                                {JSON.stringify(log.data, null, 2)}
-                            </pre>
-                        </div>
-                    ))}
-                </div>
-            </div>
+  return (
+    <div className="debug-container">
+      <h1 className="debug-title">Debug Socket Test</h1>
+      
+      <div className="debug-section">
+        <div className="status-info">
+          <strong>Socket Status:</strong> {connected ? 'Connected' : 'Disconnected'}
         </div>
-    );
+        <div className="status-info">
+          <strong>Session ID:</strong> {sessionId || 'Not assigned'}
+        </div>
+        
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        {!currentGame && (
+          <div className="button-group">
+            <button 
+              onClick={() => handleCreateGame(Team.Team1)}
+              className="create-button"
+              disabled={!sessionId}
+            >
+              Create (Team 1)
+            </button>
+            <button 
+              onClick={() => handleCreateGame(Team.Team2)}
+              className="create-button"
+              disabled={!sessionId}
+            >
+              Create (Team 2)
+            </button>
+          </div>
+        )}
+
+        <div className="games-section">
+          <h3 className="section-title">Available Games</h3>
+          <div className="games-list">
+            <div>Available Games: {availableGames.length}</div>
+            {availableGames.map((game: GameData) => (
+              <div key={game.gameCode} className="game-card">
+                <div className="game-info">
+                  <div className="game-header">
+                    <div>
+                      <strong>Game Code:</strong> {game.gameCode}
+                      <span className="game-status">
+                        <strong>Status:</strong> {game.status}
+                      </span>
+                    </div>
+                    {!currentGame && (
+                      <div className="join-buttons">
+                        <button
+                          onClick={() => handleJoinGame(game.gameCode, Team.Team1)}
+                          className="join-button"
+                          disabled={!sessionId || areTeamPositionsTaken(game, 'T1')}
+                        >
+                          Join Team 1
+                        </button>
+                        <button
+                          onClick={() => handleJoinGame(game.gameCode, Team.Team2)}
+                          className="join-button"
+                          disabled={!sessionId || areTeamPositionsTaken(game, 'T2')}
+                        >
+                          Join Team 2
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {game.players && (
+                    <div className="players-section">
+                      <div className="players-title">
+                        <strong>Players:</strong>
+                      </div>
+                      <div className="players-list">
+                        {Object.entries({
+                          'Team 1 Player 1': game.players.T1P1,
+                          'Team 1 Player 2': game.players.T1P2,
+                          'Team 2 Player 1': game.players.T2P1,
+                          'Team 2 Player 2': game.players.T2P2,
+                        }).map(([label, player]) => (
+                          <div key={label} className="player-info">
+                            {label}: {
+                              player.connected === true ?
+                                (player.sessionId === sessionId ?
+                                  'You' : 'Connected')
+                                : 'Empty'
+                            }
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {currentGame && (
+        <div className="current-game">
+          <h3 className="section-title">Current Game State</h3>
+          <pre className="game-state">
+            {JSON.stringify({
+              gameCode: currentGame.gameCode,
+              playerPosition: currentGame.playerPosition,
+              sessionId: currentGame.sessionId
+            }, null, 2)}
+          </pre>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default DebugSocketTest;

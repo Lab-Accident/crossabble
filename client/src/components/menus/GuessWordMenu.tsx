@@ -3,14 +3,14 @@ import OptionsMenu from './OptionsMenu'
 
 import useUserGridStore from '../../stores/UserGridStore';
 import useUserWordsStore from '../../stores/UserWordStore';
-import useSessionStore from '../../stores/SessionStore';
+import { getCurrentTeam } from '../../hooks/useSocket';
 
 function GuessWordMenu() {
 
   const [wordGuessed, setWordGuessed] = useState(false);
   const [guess, setGuess] = useState('');
 
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
 
   const userGrid = useUserGridStore();
   const userWords = useUserWordsStore();

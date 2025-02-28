@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import ClueList from '../components/ClueList.tsx'
 import GameBoard from '../components/GameBoard.tsx'
 
@@ -7,15 +9,22 @@ import BuyLetterMenu from '../components/menus/BuyLetterMenu.tsx'
 import InactiveMenu from '../components/menus/InactiveMenu.tsx'
 import BuyWordMenu from '../components/menus/BuyWordMenu.tsx'
 
-import useSessionStore from '../stores/SessionStore.ts'
+import { getCurrentTeam, getCurrentPlayer } from '../hooks/useSocket'
+
+
 import useGameStore from '../stores/GamePlayStore.ts'
+import useUserGridStore from '../stores/UserGridStore.ts'
 
 import * as types from '../../../server/src/types/gameTypes';
 
 const PlayScreen = () => {
   const currentMenu = useGameStore((state) => state.currentMenu);
-  const usersPlayer = useSessionStore((state) => state.currentSession?.playerPosition);
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersPlayer = getCurrentPlayer();
+  const usersTeam = getCurrentTeam();
+
+  useEffect(() => {
+    useUserGridStore.getState().initializeGrid();
+}, []);
 
   const renderMenu = () => {
     switch (currentMenu) {

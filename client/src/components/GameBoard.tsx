@@ -4,15 +4,11 @@ import useGameStore from '../stores/GamePlayStore.ts';
 
 
 function GameBoard() {
-
   const gameStore = useGameStore();
 
-  const MIN_GRID_SIZE = Number(getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', ''));
-
   const [teamLabelTextWidth, setTeamLabelTextWidth] = useState(70);
-
   const [gridContainerSize, setGridContainerSize] = useState(() => {
-    const initialContainerSize = document.documentElement.clientHeight * 0.4;
+    const initialContainerSize = Math.max(gameStore.minGridSize, document.documentElement.clientHeight * 0.4);
     return initialContainerSize;
   });
 
@@ -22,18 +18,22 @@ function GameBoard() {
   
   useEffect(() => {
     const handleResize = () => {
+      const viewportHeight = document.documentElement.clientHeight;
+      const newSize = Math.max(gameStore.minGridSize, viewportHeight * 0.4);
+      setGridContainerSize(newSize);
+      
       updateColHeights();
       updateTeamLabelTextWidth();
-      updateGridContainerSize();
     };
-    handleResize();
 
+    handleResize();
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  },);
+  }, [gameStore.minGridSize]);
+
 
   const updateColHeights = () => {
     const col = document.querySelector('.-left') as HTMLElement;
@@ -49,11 +49,6 @@ function GameBoard() {
     }
   };
 
-  const updateGridContainerSize = () => {
-    const viewportHeight = document.documentElement.clientHeight;
-    setGridContainerSize(Math.max(MIN_GRID_SIZE, viewportHeight*0.4));
-  }
-
   const getTeamLabelStyle = (height: number, width: number, left: boolean) => {
     const scaleY = Math.min(2.5, (230 / width));
     const fontSize = height / 4;
@@ -64,9 +59,6 @@ function GameBoard() {
     };
   };
 
-  const [blueScore, setBlueScore] = useState(0);
-  const [greenScore, setGreenScore] = useState(0);
-
   return ( 
   <>
 
@@ -74,8 +66,8 @@ function GameBoard() {
     <div 
       className="grid-container" 
       style={{
-          height: gridContainerSize, 
-          width: gridContainerSize
+          height: `${gridContainerSize}px`,
+          width:`${gridContainerSize}px`,
         }}>  
           <Grid />
     </div>

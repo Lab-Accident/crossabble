@@ -1,35 +1,25 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DebugSocketTest from './components/TestMongo';
-import useSessionStore from './stores/SessionStore';
-
+import GameSelection from './components/GameSelection';
+import { useSocket } from './hooks/useSocket';
+import PlayScreen from './pages/PlayScreen';
 import './styles/main.scss';
 
-import PlayScreen from './pages/PlayScreen.tsx';
-
-
 const App = () => {
-  const { initializeSocket, reconnectToGame } = useSessionStore();
+  const [state, actions] = useSocket();
 
   useEffect(() => {
-      initializeSocket();
-      reconnectToGame();
-  }, []);
+    actions.fetchGames();
+  }, [actions]);
+
 
   return (
     <>
-        <DebugSocketTest />
-        <PlayScreen />
-
-            {/* <BrowserRouter>
-            <Routes>
-              <Route path="/" element={HomeScreen} />
-              <Route path="/play" element={PlayScreen} />
-              <Route path="/games" element={GameListScreen} />
-            </Routes>
-            </BrowserRouter>     */}
+      <DebugSocketTest socketState={state} socketActions={actions} />
+      {/* <GameSelection socketState={state} socketActions={actions} /> */}
+      <PlayScreen />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;

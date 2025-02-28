@@ -4,7 +4,7 @@ class WordData {
     constructor({ clue, team, row, col, num, down, length }) {
         //clue
         this.clue = clue;           //string
-        this.num = num;             //int, 1-indexed, 0 for no number
+        this.num = num;             //int, 1-indexed
 
         //owner
         this.team = team;           // 'team1' or 'team2'

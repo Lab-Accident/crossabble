@@ -1,196 +1,149 @@
 import { Router, RequestHandler } from 'express';
 import { Game } from '../models/gameModel';
-import { Session } from '../models/gameSessionModel';
 import * as types from '../types/gameTypes';
+import { Team, Player } from '../types/gameTypes';
+import { GameService, GameError } from '../services/gameService';
 
-const gameRouter = Router();
+export function createGameRouter(gameService: GameService) {
+    const gameRouter = Router();
 
-const createCell = (row: number, col: number): types.Cell => ({
-  position: { row, col },
-  state: types.CellState.Empty,
-  letter: null,
-  number: null,
-  playedBy: null,
-});
+    const joinGame: RequestHandler<{ gameCode: string }, any, { 
+        preferredTeam?: types.Team;
+        sessionId: string;
+    }> = async (req, res) => {
+        try {
+            const { gameCode } = req.params;
+            const { preferredTeam, sessionId } = req.body;
 
+            console.log(`[GameRouter] Join game request for ${gameCode} from session ${sessionId}, team preference: ${preferredTeam || 'none'}`);
 
+            const result = await gameService.joinGame(sessionId, gameCode, preferredTeam);
+            
+            console.log(`[GameRouter] Join successful for ${gameCode}, position: ${result.playerPosition}`);
+            console.log(`[GameRouter] Game player state after join: ${JSON.stringify(result.game.players)}`);
+            
 
-const joinGame: RequestHandler<{ gameCode: string }, any, { 
-  preferredTeam?: types.Team;
-  sessionId: string;
-}> = async (req, res) => {
-  try {
-      const { gameCode } = req.params;
-      const { preferredTeam, sessionId } = req.body;
+            res.json({
+                game: result.game,
+                playerPosition: result.playerPosition
+            });
+        } catch (error) {
+            console.error(`[GameRouter] Error joining game:`, error);
+            if (error instanceof GameError) {
+                res.status(error.code).json({ error: error.message });
+            } else {
+                res.status(500).json({ 
+                    error: error instanceof Error ? error.message : 'An unknown error occurred'
+                });
+            }
+        }
+    };
 
-      // Validate session exists
-      const session = await Session.findOne({ sessionId });
-      if (!session) {
-          res.status(400).json({ error: 'Invalid session' });
-          return;
-      }
+    const createGame: RequestHandler<{}, any, { 
+        preferredTeam?: Team;
+        sessionId: string;
+        gameSize?: number;
+    }> = async (req, res) => {
+        try {
+            const { preferredTeam, sessionId, gameSize } = req.body;
+            console.log('Creating game with team:', preferredTeam, 'and size:', gameSize, 'for session:', sessionId);
+            const result = await gameService.createGame(sessionId, preferredTeam, gameSize);
+            console.log('Game created:', result.game.gameCode);
+            console.log('Player position:', result.game.players);
+            res.json({
+                game: result.game,
+                playerPosition: result.playerPosition
+            });
+        } catch (error) {
+            if (error instanceof GameError) {
+                res.status(error.code).json({ error: error.message });
+            } else {
+                res.status(500).json({ 
+                    error: error instanceof Error ? error.message : 'An unknown error occurred'
+                });
+            }
+        }
+    };
 
-      // Find positions to try based on preference
-      const eligiblePositions = preferredTeam
-          ? [
-              preferredTeam === types.Team.Team1 
-                  ? types.Player.Team1_Player1 
-                  : types.Player.Team2_Player1,
-              preferredTeam === types.Team.Team1 
-                  ? types.Player.Team1_Player2 
-                  : types.Player.Team2_Player2
-            ]
-          : Object.values(types.Player);
+    const reconnectToGame: RequestHandler<{
+        gameCode: string;
+    }, any, {
+        sessionId: string;
+        playerPosition: Player;
+    }> = async (req, res) => {
+        try {
+            const { gameCode } = req.params;
+            const { sessionId, playerPosition } = req.body;
 
-      // Try to claim a position
-      const game = await Game.findOneAndUpdate(
-          {
-              gameCode,
-              status: types.GameStatus.Waiting,
-              $or: eligiblePositions.map(pos => ({
-                  [`players.${pos}.sessionId`]: null,
-                  [`players.${pos}.connected`]: false
-              }))
-          },
-          {
-              $set: {
-                  [`players.${eligiblePositions[0]}.sessionId`]: sessionId,
-                  [`players.${eligiblePositions[0]}.lastActive`]: new Date()
-              }
-          },
-          { new: true }
-      );
+            const game = await gameService.findGame(gameCode);
+            
+            const player = game.players[playerPosition];
+            if (player.sessionId !== sessionId) {
+                res.status(403).json({ error: 'Invalid player session' });
+                return;
+            }
 
-      if (!game) {
-          res.status(400).json({
-              error: preferredTeam
-                  ? `No positions available on team ${preferredTeam}`
-                  : 'Game is full or not available'
-          });
-          return;
-      }
+            if (!player.connected) {
+                game.players[playerPosition].connected = true;
+                game.players[playerPosition].lastActive = new Date();
+                await game.save();
+            }
 
-      // Update session with game info
-      session.gameCode = gameCode;
-      session.playerPosition = eligiblePositions[0];
-      await session.save();
+            res.json(game.toClientJSON(playerPosition));
+        } catch (error) {
+            if (error instanceof GameError) {
+                res.status(error.code).json({ error: error.message });
+            } else {
+                res.status(500).json({ 
+                    error: error instanceof Error ? error.message : 'An unknown error occurred'
+                });
+            }
+        }
+    };
 
-      res.json({
-          game: game.toClientJSON(eligiblePositions[0]),
-          playerPosition: eligiblePositions[0]
-      });
-  } catch (error) {
-      res.status(500).json({ 
-          error: error instanceof Error ? error.message : 'An unknown error occurred'
-      });
-  }
-};
+    const getGames: RequestHandler = async (req, res, next) => {
+    try {
+        const games = await Game.find();
+        res.json(games);
+    } catch (error) {
+        next(error);
+    }
+    };
 
+    const getGamesPlayers: RequestHandler = async (req, res, next) => {
+        try {
+            const games = await Game.find();
+            const playersWithGameCode = games.map(game => ({
+                gameCode: game.gameCode,
+                gameStatus: game.status,
+                players: game.players
+            }));
+            
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(playersWithGameCode, null, 2));
+        } catch (error) {
+            next(error);
+        }
+    };
 
-const createGame: RequestHandler<{}, any, { 
-  preferredTeam?: types.Team;
-  sessionId: string; 
-}> = async (req, res) => {
-  try {
-      const { preferredTeam, sessionId } = req.body;
-      
-      // Validate session exists
-      const session = await Session.findOne({ sessionId });
-      if (!session) {
-          res.status(400).json({ error: 'Invalid session' });
-          return;
-      }
-      
-      // Generate game code
-      const gameCode = Math.random().toString(36).substr(2, 4).toUpperCase();
-      
-      // Initialize player position based on preferred team
-      const playerPosition = preferredTeam === types.Team.Team2 
-          ? types.Player.Team2_Player1 
-          : types.Player.Team1_Player1;
-
-      // Create initial game state with players object
-      const initialPlayers = {
-          [types.Player.Team1_Player1]: {
-              sessionId: playerPosition === types.Player.Team1_Player1 ? sessionId : null,
-              connected: false,
-              forfeited: false,
-              lastActive: new Date()
-          },
-          [types.Player.Team1_Player2]: {
-              sessionId: null,
-              connected: false,
-              forfeited: false,
-              lastActive: new Date()
-          },
-          [types.Player.Team2_Player1]: {
-              sessionId: playerPosition === types.Player.Team2_Player1 ? sessionId : null,
-              connected: false,
-              forfeited: false,
-              lastActive: new Date()
-          },
-          [types.Player.Team2_Player2]: {
-              sessionId: null,
-              connected: false,
-              forfeited: false,
-              lastActive: new Date()
-          }
-      };
-
-      // Create game
-      const game = await Game.create({
-          gameCode,
-          status: types.GameStatus.Waiting,
-          currentTurn: types.Player.Team1_Player1,
-          players: initialPlayers,
-          grid: Array(15).fill(null).map((_, row) => 
-              Array(15).fill(null).map((_, col) => createCell(row, col))
-          ),
-          words: [],
-          score: { team1: 0, team2: 0 }
-      });
-
-      // Update session with game info
-      session.gameCode = gameCode;
-      session.playerPosition = playerPosition;
-      await session.save();
-
-      res.json({
-          game: game.toClientJSON(playerPosition),
-          playerPosition
-      });
-  } catch (error) {
-      console.error('Error creating game:', error);
-      res.status(500).json({ 
-          error: error instanceof Error ? error.message : 'An unknown error occurred'
-      });
-  }
-};
+    const deleteGames: RequestHandler = async (req, res, next) => {
+    try {
+        await Game.deleteMany({});
+        res.json({ message: 'All games deleted' });
+    } catch (error) {
+        next(error);
+    }
+    };
 
 
 
-const getGames: RequestHandler = async (req, res, next) => {
-  try {
-    const games = await Game.find();
-    res.json(games);
-  } catch (error) {
-    next(error);
-  }
-};
+    gameRouter.delete('/', deleteGames);
+    gameRouter.post('/join/:gameCode', joinGame);
+    gameRouter.post('/', createGame);
+    gameRouter.get('/', getGames);
+    gameRouter.post('/reconnect/:gameCode', reconnectToGame);
+    gameRouter.get('/players', getGamesPlayers);
 
-const deleteGames: RequestHandler = async (req, res, next) => {
-  try {
-    await Game.deleteMany({});
-    res.json({ message: 'All games deleted' });
-  } catch (error) {
-    next(error);
-  }
-};
+    return gameRouter;
+}
 
-
-gameRouter.delete('/', deleteGames);
-gameRouter.post('/join/:gameCode', joinGame);
-gameRouter.post('/', createGame);
-gameRouter.get('/', getGames);
-
-export default gameRouter;

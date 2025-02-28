@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import useUserGridStore from '../stores/UserGridStore'
 import useGameStore from '../stores/GamePlayStore.ts';
-import useSessionStore from '../stores/SessionStore.ts';
+import { getCurrentTeam } from '../hooks/useSocket';
 
 interface CellProps {
   row: number;
@@ -10,31 +10,28 @@ interface CellProps {
 }
 
 function Cell({ row, col, accessKey }: CellProps) {
-
-  const NUM_GRID_CELLS =  Number(getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells'));
-  const MIN_GRID_SIZE =  Number(getComputedStyle(document.documentElement).getPropertyValue('--min-grid-size').replace('px', '').replace('#', ''));
-
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
   const gameStore = useGameStore();
+  const usersTeam = getCurrentTeam();
+  const numGridCells = useGameStore(state => state.numGridCells);
   const userGrid = useUserGridStore();
   const cell = userGrid.grid[row]?.[col];
 
-  const [cellSize, setCellSize] = useState(() => {
-    const gridContainerSize = Number(Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4));
-    return (gridContainerSize / NUM_GRID_CELLS);
-  });
+  const [cellSize, setCellSize] = useState(0);
 
-  useEffect(() => {  
+  useEffect(() => {
     const handleResize = () => {
-        const gridContainerSize = Math.max(MIN_GRID_SIZE, document.documentElement.clientHeight * 0.4);
-        let size = Math.floor(gridContainerSize / NUM_GRID_CELLS);
-        setCellSize(size);
+      const gridElement = document.querySelector('.grid-container') as HTMLElement;
+      if (!gridElement) return;
+      
+      const gridHeight = gridElement.clientWidth;
+      const size = Math.floor(gridHeight / numGridCells);
+      setCellSize(size);
     };
   
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [numGridCells]);
 
   const getNumTextStyle = (size: number) => ({
     fontSize: `${size / 2}px`,
@@ -77,8 +74,8 @@ function Cell({ row, col, accessKey }: CellProps) {
           break;
       }
 
-      if (nextRow < 0 || nextRow >= NUM_GRID_CELLS || 
-          nextCol < 0 || nextCol >= NUM_GRID_CELLS) {
+      if (nextRow < 0 || nextRow >= gameStore.numGridCells || 
+          nextCol < 0 || nextCol >= gameStore.numGridCells) {
         break;
       }
 

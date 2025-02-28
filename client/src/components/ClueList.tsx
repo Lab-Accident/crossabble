@@ -1,9 +1,9 @@
-import useSessionStore from '../stores/SessionStore';
+import { getCurrentTeam } from '../hooks/useSocket';
 import useUserWordsStore from '../stores/UserWordStore';
 
 function ClueList() {
   const words = useUserWordsStore((state) => state.words);
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
 
   const unguessedWords = words.filter(word => !word.revealed);
 
@@ -22,7 +22,7 @@ function ClueList() {
         <li 
           data-num={clue.number}
           key={clue.number} 
-          className={clue.playedBy.startsWith('T1') ? 'team1' : 'team2'}>
+          className={clue.playedBy?.startsWith('T1') ? 'team1' : 'team2'}>
             {clue.clue}
         </li>
       ))}

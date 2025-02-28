@@ -1,23 +1,24 @@
 import { useEffect } from 'react'; 
 import OptionsMenu from './OptionsMenu.tsx'
 import useUserGridStore from '../../stores/UserGridStore';
-import useSessionStore from '../../stores/SessionStore';
+import { getCurrentTeam } from '../../hooks/useSocket';
+import useGameStore from '../../stores/GamePlayStore.ts';
 
 function BuyLetterMenu() {
   const userGrid = useUserGridStore();
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
+  const gameStore = useGameStore();
 
-  const NUM_GRID_CELLS = getComputedStyle(document.documentElement).getPropertyValue('--num-grid-cells');
 
   const wrapRow = (row: number): number => {
-    const numGridCells = parseInt(NUM_GRID_CELLS);
+    const numGridCells = gameStore.numGridCells;
     if (row < 0) return numGridCells - 1;
     if (row >= numGridCells) return 0;
     return row;
   };
 
   const wrapCol = (col: number): number => {
-    const numGridCells = parseInt(NUM_GRID_CELLS);
+    const numGridCells = gameStore.numGridCells;
     if (col < 0) return numGridCells - 1;
     if (col >= numGridCells) return 0;
     return col;

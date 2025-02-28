@@ -1,9 +1,9 @@
 import useGameStore from '../../stores/GamePlayStore.ts';
-import useSessionStore from '../../stores/SessionStore';
+import { getCurrentTeam } from '../../hooks/useSocket';
 
 function OptionsMenu({  currentMenu }: { currentMenu: string }) {
 
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
   const setMenu = useGameStore((state) => state.setMenu);
 
   const allOptions = [

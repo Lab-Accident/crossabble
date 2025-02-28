@@ -1,10 +1,10 @@
 import OptionsMenu from './OptionsMenu.tsx'
 
-import useSessionStore from '../../stores/SessionStore';
+import { getCurrentTeam } from '../../hooks/useSocket';
 
 function BuyWordMenu() {
 
-  const usersTeam = useSessionStore((state) => state.currentSession?.playerPosition?.slice(0, 2));
+  const usersTeam = getCurrentTeam();
 
   return (
     <div className='menu-container'>
