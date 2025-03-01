@@ -1,44 +1,48 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import logger from './utils/logger';
+import { config } from './config';
 
 dotenv.config();
 
 export const connectDB = async () => {
   try {
+    logger.info('Connecting to MongoDB');
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/crossable');
-    console.log('MongoDB connected');
-    
+    logger.info('MongoDB connected successfully');
+
     mongoose.connection.on('error', err => {
-      console.error('MongoDB connection error:', err);
+      logger.error(err, 'MongoDB connection error');
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      logger.warn('MongoDB disconnected');
     });
 
     if (mongoose.connection.db) {
+      logger.debug('Checking for problematic TTL indexes');
       const indexes = await mongoose.connection.db.collection('sessions').indexes();
       const ttlIndexes = indexes.filter(idx => idx.expireAfterSeconds !== undefined);
+      
       if (ttlIndexes.length > 0) {
-        console.warn('⚠️ WARNING: Found TTL indexes on sessions collection:');
-        console.warn(JSON.stringify(ttlIndexes, null, 2));
-        
-        // Ask if you want to drop them automatically
-        // console.warn('Dropping problematic TTL indexes...');
-        // for (const idx of ttlIndexes) {
-        //   if (idx.expireAfterSeconds !== undefined && idx.expireAfterSeconds <= 96000) { // Only drop short-lived indexes (<=1 hour)
-        //     console.log(`Dropping index ${idx.name} with expireAfterSeconds=${idx.expireAfterSeconds}`);
-        //     if (idx.name) {
-        //       await mongoose.connection.db.collection('sessions').dropIndex(idx.name);
-        //     }
-        //   }
-        // }
+        logger.warn({ ttlIndexes }, 'Found TTL indexes on sessions collection');        
       } else {
-        console.log('✅ No TTL indexes found on sessions collection.');
-      }
+        logger.info('No TTL indexes found on sessions collection');      }
     }
 
-    mongoose.connection.on('disconnected', () => {
-      console.log('MongoDB disconnected');
-    });
+    return mongoose.connection;
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    logger.error(error as Error, 'Failed to connect to MongoDB');
     process.exit(1);
+  }
+};
+
+export const disconnectDB = async () => {
+  try {
+    logger.info('Disconnecting from MongoDB');
+    await mongoose.disconnect();
+    logger.info('MongoDB disconnected successfully');
+  } catch (error) {
+    logger.error(error as Error, 'Error disconnecting from MongoDB');
   }
 };

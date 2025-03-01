@@ -1,9 +1,6 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 import { Player } from '../types/gameTypes';
-
-
-const ONE_DAY= 24 * 60 * 60;
-const ONE_MINUTE = 60;
+import logger from '../utils/logger';
 
 export interface ISession extends Document {
     sessionId: string;
@@ -39,14 +36,14 @@ const SessionSchema = new Schema({
 
 // Add hooks for monitoring
 SessionSchema.pre('findOne', function() {
-    console.log(`[SessionSchema] Looking up session: ${JSON.stringify(this.getFilter())}`);
+    logger.debug({ filter: this.getFilter() }, 'Looking up session');
   });
   
   SessionSchema.post('findOne', function(doc) {
     if (doc) {
-      console.log(`[SessionSchema] Found session: ${doc.sessionId}, last seen: ${doc.lastSeen}`);
+      logger.debug({ sessionId: doc.sessionId, lastSeen: doc.lastSeen }, 'Session found');
     } else {
-      console.log(`[SessionSchema] Session not found for query: ${JSON.stringify(this.getFilter())}`);
+      logger.warn({ filter: this.getFilter() }, 'Session not found');
     }
   });
   
@@ -57,16 +54,16 @@ SessionSchema.pre('findOne', function() {
         this.debug.refreshCount = (this.debug.refreshCount || 0) + 1;
         this.debug.lastRefreshed = new Date();
       }
-      console.log(`[SessionSchema] Updating session ${this.sessionId}, refresh #${this.debug?.refreshCount}`);
+      logger.debug({ sessionId: this.sessionId, refreshCount: this.debug?.refreshCount }, 'Updating session');
     }
   });
   
   SessionSchema.post('save', function(doc) {
-    console.log(`[SessionSchema] Saved session: ${doc.sessionId}, last seen: ${doc.lastSeen}`);
+    logger.debug({ sessionId: doc.sessionId, lastSeen: doc.lastSeen }, 'Session updated');
   });
   
   SessionSchema.post('deleteMany', function(result) {
-    console.log(`[SessionSchema] Deleted ${result.deletedCount} sessions`);
+    logger.debug(`Deleted ${result.deletedCount} sessions`);
   });
   
   // Index optimization
